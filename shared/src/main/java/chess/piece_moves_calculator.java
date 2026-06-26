@@ -43,7 +43,7 @@ public class piece_moves_calculator {
             // initialize direction for while loop:
             ChessPosition position_next = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()+1);
             while ((position_next.getRow() != 9 && position_next.getRow() != 0)  && (position_next.getColumn() != 9 && position_next.getColumn() != 0)){
-                ChessPiece piece_next = board.getPiece(new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()+1));
+                ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
                 if (piece_next == null){
                     // if space is empty, add move to list
                     bishop_valid_moves.add(new ChessMove(myPosition, position_next, null));
@@ -67,7 +67,7 @@ public class piece_moves_calculator {
             // initialize direction for while loop:
             position_next = new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()+1);
             while ((position_next.getRow() != 9 && position_next.getRow() != 0)  && (position_next.getColumn() != 9 && position_next.getColumn() != 0)){
-                ChessPiece piece_next = board.getPiece(new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()+1));
+                ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
                 if (piece_next == null){
                     // if space is empty, add move to list
                     bishop_valid_moves.add(new ChessMove(myPosition, position_next, null));
@@ -93,7 +93,7 @@ public class piece_moves_calculator {
             // initialize direction for while loop:
             position_next = new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()-1);
             while ((position_next.getRow() != 9 && position_next.getRow() != 0)  && (position_next.getColumn() != 9 && position_next.getColumn() != 0)){
-                ChessPiece piece_next = board.getPiece(new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()-1));
+                ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
                 if (piece_next == null){
                     // if space is empty, add move to list
                     bishop_valid_moves.add(new ChessMove(myPosition, position_next, null));
@@ -120,7 +120,7 @@ public class piece_moves_calculator {
             // initialize direction for while loop:
             position_next = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()-1);
             while ((position_next.getRow() != 9 && position_next.getRow() != 0)  && (position_next.getColumn() != 9 && position_next.getColumn() != 0)){
-                ChessPiece piece_next = board.getPiece(new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()-1));
+                ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
                 if (piece_next == null){
                     // if space is empty, add move to list
                     bishop_valid_moves.add(new ChessMove(myPosition, position_next, null));
