@@ -763,6 +763,20 @@ public class piece_moves_calculator {
         }
 
 
+// PAWN:
+        // pseudocode for PAWN:
+            // white_pawn:
+                // - Only can move up the board
+                // - If pawn is on row2 then it can move up 2 spaces
+                // - If row of next position is row8 then promotion happens?
+                // - Only can capture up_right(row+1,col+1) or up_left(row+1,col-1)
+            // black_pawn:
+                // - Only can move down the board
+                // - If pawn is on row7 then it can move down 2 spaces
+                // - If row of next position is row1 then promotion happens?
+                // - Only can capture down_right(row-1,col+1) or down_left(row-1,col-1)
+
+
 
 
 
