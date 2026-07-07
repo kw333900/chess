@@ -764,7 +764,7 @@ public class piece_moves_calculator {
 
 
 // PAWN:
-        // pseudocode for PAWN:
+        // implementation of PAWN movement:
         // white_pawn:
         // - Only can move up the board (up twice if on row2, up once if
         // - If pawn is on row2 then it can move up 2 spaces
