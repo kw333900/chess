@@ -58,6 +58,7 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         throw new RuntimeException("Not implemented");
     }
+    // ^this involves a whole turn (movement, rules, changing team turn)
 
     /**
      * Determines if the given team is in check
@@ -106,5 +107,28 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         throw new RuntimeException("Not implemented");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // Overrides - I'm not sure if these are correct:
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }
