@@ -9,6 +9,11 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    ChessBoard chessGameBoard;
+    int turn_count_variable;
+
+//    ChessBoard chess_game_board;
+
 
     public ChessGame() {
 
@@ -18,8 +23,21 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+        /* pseudocode:
+            if count_var is even:
+                return white
+            else if count_var is odd:
+                return odd */
+        if (turn_count_variable%2 == 0){
+            return TeamColor.WHITE;
+        } else {
+            return TeamColor.BLACK;
+        }
     }
+
+
+
 
     /**
      * Sets which teams turn it is
@@ -27,13 +45,23 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+
+        if (team == TeamColor.WHITE){
+            turn_count_variable = 0;
+        } else {
+            turn_count_variable = 1;
+        }
+
+
     }
 
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
     public enum TeamColor {
+        // White always starts the game. Use even/odd numbers
+        // to determine whose turn it is. even=white,odd=black.
         WHITE,
         BLACK
     }
@@ -46,7 +74,27 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+
+        /* pseudocode:
+            if there is a piece at startPosition:
+                do piece_moves_calculator
+                helper function to remove invalid check moves?
+                return valid_moves_list
+            else:
+                return null
+        */
+
+        if (startPosition != null){
+            piece_moves_calculator piece_moves = new piece_moves_calculator();
+            return piece_moves.calculate_piece_moves(chessGameBoard, startPosition);
+
+
+        } else {
+            return null;
+        }
+
+
     }
 
     /**
@@ -56,7 +104,11 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+
+
+        turn_count_variable++;
+
     }
     // ^this involves a whole turn (movement, rules, changing team turn)
 
@@ -97,7 +149,9 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+        chessGameBoard = board;
+
     }
 
     /**
@@ -106,8 +160,11 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+        return chessGameBoard;
+
     }
+
 
 
 
