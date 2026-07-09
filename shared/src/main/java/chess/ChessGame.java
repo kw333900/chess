@@ -12,6 +12,8 @@ import java.util.List;
 public class ChessGame {
     ChessBoard chessGameBoard;
     int turn_count_variable;
+//    Collection<ChessMove> validMovesList;
+
 
 //    ChessBoard chess_game_board;
 
@@ -75,12 +77,14 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
 
         /* pseudocode:
-            if there is a piece at startPosition:
-                do piece_moves_calculator
-                helper function to remove invalid check moves?
-                return valid_moves_list
-            else:
-                return null
+            candidateMoves = pieceMoves(...)
+
+            for each move
+                copy the board
+                make the move on the copy
+
+                if king is NOT in check on copied board
+                    keep move
 
         */
 
@@ -119,9 +123,27 @@ public class ChessGame {
             throw InvalidMoveException
         else:
             execute move
+            increment turn counter
          */
 
-        turn_count_variable++;
+        if (!validMoves(move.getStartPosition()).contains(move)){
+//            throw InvalidMoveException;
+        } else {
+            ChessPiece chess_piece = chessGameBoard.getPiece(move.getStartPosition());
+//            if (move.getPromotionPiece()==null){
+//                ChessPiece.PieceType piece_type = chess_piece.getPieceType();
+//            }
+
+            // move piece:
+            chessGameBoard.addPiece(move.getEndPosition(), chess_piece);
+            // set to null where it moved from:
+            chessGameBoard.addPiece(move.getStartPosition(), null);
+            // change turn:
+            turn_count_variable++;
+        }
+
+
+
 
     }
     // ^this involves a whole turn (movement, rules, changing team turn)
@@ -136,10 +158,17 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
 
         /*
-        if passed in team's king can be captured by another piece on the board:
-            return true
-        else:
-            return false
+        Find that team's king.
+
+        For every enemy piece:
+
+            Calculate its piece moves.
+
+            If one attacks the king's square
+
+                return true
+
+        return false
          */
 
     }
