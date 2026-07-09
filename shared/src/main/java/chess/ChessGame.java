@@ -23,7 +23,6 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-//        throw new RuntimeException("Not implemented");
         /* pseudocode:
             if count_var is even:
                 return white
@@ -45,7 +44,6 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-//        throw new RuntimeException("Not implemented");
 
         if (team == TeamColor.WHITE){
             turn_count_variable = 0;
@@ -74,7 +72,6 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-//        throw new RuntimeException("Not implemented");
 
         /* pseudocode:
             if there is a piece at startPosition:
@@ -83,6 +80,7 @@ public class ChessGame {
                 return valid_moves_list
             else:
                 return null
+
         */
 
         if (startPosition != null){
@@ -104,8 +102,14 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-//        throw new RuntimeException("Not implemented");
+        /*
+        move is illegal if move is invalid for piece at startPosition, or it's not the corresponding team's turn
 
+        if move is illegal:
+            throw InvalidMoveException
+        else:
+            execute move
+         */
 
         turn_count_variable++;
 
@@ -120,6 +124,14 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
+
+        /*
+        if passed in team's king can be captured by another piece on the board:
+            return true
+        else:
+            return false
+         */
+
     }
 
     /**
@@ -130,6 +142,15 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
+
+        /*
+        if isInCheck is true for all the team's pieces on the board:
+            return true
+        else:
+            return false
+         */
+
+
     }
 
     /**
@@ -141,6 +162,14 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
+
+
+        /*
+        if valid moves is empty and isInCheck is false:
+            return true
+        else:
+            return false
+         */
     }
 
     /**
@@ -149,7 +178,6 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-//        throw new RuntimeException("Not implemented");
         chessGameBoard = board;
 
     }
@@ -160,22 +188,18 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-//        throw new RuntimeException("Not implemented");
         return chessGameBoard;
 
     }
 
 
-
-
-
-
-
-
-
-
-
-
+//    @Override
+//    public String toString() {
+//        return "ChessGame{" +
+//                "chessGameBoard=" + chessGameBoard +
+//                ", turn_count_variable=" + turn_count_variable +
+//                '}';
+//    }
 
     // Overrides - I'm not sure if these are correct:
     @Override
