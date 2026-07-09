@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A class that can manage a chess game, making moves on a board
@@ -85,7 +86,16 @@ public class ChessGame {
 
         if (startPosition != null){
             piece_moves_calculator piece_moves = new piece_moves_calculator();
-            return piece_moves.calculate_piece_moves(chessGameBoard, startPosition);
+            Collection<ChessMove> validMovesList = piece_moves.calculate_piece_moves(chessGameBoard, startPosition);
+            // iterate through list and remove moves that cause are in check (or cause check?):
+            for (ChessMove move : validMovesList){
+
+                // if in check:
+                if (isInCheck(getTeamTurn())){   // WHY IS THE PARAMETER TO isInCheck THE TEAMCOLOR?!
+                    validMovesList.remove(move);
+                }
+            }
+            return validMovesList;
 
 
         } else {
