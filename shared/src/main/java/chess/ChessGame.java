@@ -9,18 +9,12 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessGame {
+public class ChessGame implements Cloneable{
     ChessBoard chessGameBoard = new ChessBoard();
-//    int turn_count_variable=0;
     ChessPosition curr_team_kings_position;
     TeamColor curr_team_color = TeamColor.WHITE;
 
 
-
-    //    Collection<ChessMove> validMovesList;
-
-
-//    ChessBoard chess_game_board;
 
 
     public ChessGame() {
@@ -31,16 +25,6 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        /* pseudocode:
-            if count_var is even:
-                return white
-            else if count_var is odd:
-                return odd */
-//        if (turn_count_variable%2 == 0){
-//            return TeamColor.WHITE;
-//        } else {
-//            return TeamColor.BLACK;
-//        }
         return curr_team_color;
     }
 
@@ -53,14 +37,19 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-
-//        if (team == TeamColor.WHITE){
-//            turn_count_variable = 0;
-//        } else {
-//            turn_count_variable = 1;
-//        }
         curr_team_color = team;
 
+    }
+
+    @Override
+    public ChessGame clone() {
+        try {
+            ChessGame clone = (ChessGame) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 
     /**
@@ -101,7 +90,8 @@ public class ChessGame {
             // iterate through list and remove moves that cause are in check (or cause check?):
             for (ChessMove move : validMovesList){
 
-                // if in check:
+                // make the move and then if in check:
+
                 if (isInCheck(curr_piece.getTeamColor())){
                     validMovesList.remove(move);
                 }
