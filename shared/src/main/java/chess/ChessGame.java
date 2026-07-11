@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -83,25 +84,83 @@ public class ChessGame {
         if (startPosition != null){
             ChessPiece curr_piece = chessGameBoard.getPiece(startPosition);
             piece_moves_calculator piece_moves = new piece_moves_calculator();
-            Collection<ChessMove> validMovesList = piece_moves.calculate_piece_moves(chessGameBoard, startPosition);
+            Collection<ChessMove> potential_validMovesList = piece_moves.calculate_piece_moves(chessGameBoard, startPosition);
+            Collection<ChessMove> final_validMovesList = new java.util.ArrayList<>(List.of());
             // iterate through list and remove moves that cause are in check (or cause check?):
-            for (ChessMove move : validMovesList){
+            for (ChessMove move : potential_validMovesList){
 
 
                 // make copy:
-                ChessBoard copy = new ChessBoard(chessGameBoard);
-                // make the move and then if in check:
+                ChessBoard copy_board = new ChessBoard(chessGameBoard);
+                // make the move on copy board and then if in check:
+//                makeMove(move);
 
-                if (isInCheck(curr_piece.getTeamColor())){
-                    validMovesList.remove(move);
+
+
+
+
+                 curr_piece = copy_board.getPiece(startPosition);
+//
+
+                // move piece:
+                copy_board.addPiece(move.getEndPosition(), curr_piece);
+                // set to null where it moved from:
+                copy_board.addPiece(move.getStartPosition(), null);
+
+
+
+
+
+
+
+                if (!helper_isInCheck(curr_piece.getTeamColor(), copy_board)){
+                    final_validMovesList.add(move);
                 }
             }
-            return validMovesList;
+            return final_validMovesList;
 
 
         } else {
             return null;
         }
+
+
+
+
+
+
+
+//        if (startPosition != null){
+//
+//            ChessBoard copy_board = new ChessBoard(chessGameBoard);
+//            ChessPiece curr_copy_piece = copy_board.getPiece(startPosition);
+//            piece_moves_calculator piece_moves = new piece_moves_calculator();
+//            Collection<ChessMove> validMovesList = piece_moves.calculate_piece_moves(copy_board, startPosition);
+//
+//
+//            // iterate through list and remove moves that cause are in check (or cause check?):
+//            for (ChessMove move : validMovesList){
+//
+//
+//                // make copy:
+//                // make the move on copy board and then if in check:
+//                makeMove(move);
+//                if (isInCheck(curr_copy_piece.getTeamColor())){
+//                    validMovesList.remove(move);
+//                }
+//            }
+//            return validMovesList;
+//
+//
+//        } else {
+//            return null;
+//        }
+
+
+
+
+
+
 
 
     }
@@ -183,6 +242,17 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+       return helper_isInCheck(teamColor, chessGameBoard);
+    }
+
+
+
+
+
+
+
+
+    public boolean helper_isInCheck (TeamColor teamColor, ChessBoard board){
         /*
 
         My words:
@@ -208,7 +278,7 @@ public class ChessGame {
             for (int j=1; j<9; j++){
                 // check piece type and teamColor:
                 ChessPosition curr_position = new ChessPosition(i,j);
-                ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
+                ChessPiece curr_piece = board.getPiece(curr_position);
                 if (curr_piece != null) {
                     if (curr_piece.getPieceType() == ChessPiece.PieceType.KING && curr_piece.getTeamColor() == teamColor) {
                         curr_team_kings_position = new ChessPosition(i, j);
@@ -223,13 +293,13 @@ public class ChessGame {
         for (int i=1; i<9; i++){
             for (int j=1; j<9; j++){
                 ChessPosition curr_position = new ChessPosition(i,j);
-                ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
+                ChessPiece curr_piece = board.getPiece(curr_position);
                 if (curr_piece != null) {
                     // if position contains enemy piece:
                     if (curr_piece.getTeamColor() != teamColor) {
                         // generate the piece's moves:
                         piece_moves_calculator piece_moves = new piece_moves_calculator();
-                        Collection<ChessMove> curr_piece_moves = piece_moves.calculate_piece_moves(chessGameBoard, curr_position);
+                        Collection<ChessMove> curr_piece_moves = piece_moves.calculate_piece_moves(board, curr_position);
                         // for each move:
                         for (ChessMove m : curr_piece_moves) {
                             // if m lands on kings_position:
@@ -244,7 +314,12 @@ public class ChessGame {
 
 
         return false;
+
+
+
+
     }
+
 
 
 

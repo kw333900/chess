@@ -23,13 +23,18 @@ public class ChessBoard {
 
 
 
-    public ChessBoard (ChessBoard deep_copy){
-        squares = Arrays.copyOf(deep_copy.squares, deep_copy.squares.length);
+//    public ChessBoard (ChessBoard deep_copy){
+//        squares = Arrays.copyOf(deep_copy.squares, deep_copy.squares.length);
+//    }
+
+
+
+    public ChessBoard(ChessBoard deep_copy) {
+        squares = new ChessPiece[deep_copy.squares.length][];
+        for (int i = 0; i < deep_copy.squares.length; i++) {
+            squares[i] = Arrays.copyOf(deep_copy.squares[i], deep_copy.squares[i].length);
+        }
     }
-
-
-
-
 
 
 
