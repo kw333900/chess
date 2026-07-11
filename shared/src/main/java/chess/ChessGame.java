@@ -93,10 +93,6 @@ public class ChessGame {
                 // make copy:
                 ChessBoard copy_board = new ChessBoard(chessGameBoard);
                 // make the move on copy board and then if in check:
-//                makeMove(move);
-
-
-
 
 
                  curr_piece = copy_board.getPiece(startPosition);
@@ -333,7 +329,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
 
         /*
         My words:
@@ -344,7 +340,100 @@ public class ChessGame {
             will make isInCheck be false. If not return true.
 
             How to see if any friendly move will make isInCheck be false?
+
+
+
+            Other concept:
+            if the king is in check mate, see if any other friendly pieces moves can change that, if not return true
          */
+
+
+        // if isincheck is true and validmoves is empty
+
+        // iterate through board to find and store team's king (2d array):
+        ChessPosition curr_team_kings_position = null;
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9; j++){
+                // check piece type and teamColor:
+                ChessPosition curr_position = new ChessPosition(i,j);
+                ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
+                if (curr_piece != null) {
+                    if (curr_piece.getPieceType() == ChessPiece.PieceType.KING && curr_piece.getTeamColor() == teamColor) {
+                        curr_team_kings_position = new ChessPosition(i, j);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+
+        if (isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty()){
+            // iterate through all friendly pieces and see if their moves will change check:
+
+
+
+
+            // iterate through all positions on board:
+            for (int i=1; i<9; i++){
+                for (int j=1; j<9; j++){
+                    ChessPosition curr_position = new ChessPosition(i,j);
+                    ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
+                    if (curr_piece != null) {
+                        // if position contains friendly piece:
+                        if (curr_piece.getTeamColor() == teamColor) {
+                            // generate the piece's moves:
+                            piece_moves_calculator piece_moves = new piece_moves_calculator();
+                            Collection<ChessMove> curr_piece_moves = piece_moves.calculate_piece_moves(chessGameBoard, curr_position);
+                            // for each move:
+                            for (ChessMove m : curr_piece_moves) {
+                                // if move makes isincheck be false:
+
+
+
+                                // make copy:
+                                ChessBoard copy_board = new ChessBoard(chessGameBoard);
+                                // make the move on copy board and then if in check:
+
+
+                                curr_piece = copy_board.getPiece(curr_position);
+//
+
+                                // move piece:
+                                copy_board.addPiece(m.getEndPosition(), curr_piece);
+                                // set to null where it moved from:
+                                copy_board.addPiece(m.getStartPosition(), null);
+
+
+
+
+
+
+
+                                if (!helper_isInCheck(curr_piece.getTeamColor(), copy_board)){
+                                    return false;
+                                }
+
+
+
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
+
+
+
+
+        }
+
+
+        return isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty();
+
+
 
 
     }
@@ -357,7 +446,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
 
 
         /*
@@ -366,6 +455,26 @@ public class ChessGame {
         else:
             return false
          */
+        // iterate through board to find and store team's king (2d array):
+        ChessPosition curr_team_kings_position = null;
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9; j++){
+                // check piece type and teamColor:
+                ChessPosition curr_position = new ChessPosition(i,j);
+                ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
+                if (curr_piece != null) {
+                    if (curr_piece.getPieceType() == ChessPiece.PieceType.KING && curr_piece.getTeamColor() == teamColor) {
+                        curr_team_kings_position = new ChessPosition(i, j);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        return !isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty() && (curr_team_kings_position.getRow() != 1 && curr_team_kings_position.getColumn() != 5);
+
+
     }
 
     /**
