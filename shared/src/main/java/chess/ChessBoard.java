@@ -17,6 +17,28 @@ public class ChessBoard {
 
     }
 
+
+
+
+
+
+
+    public ChessBoard (ChessBoard deep_copy){
+        squares = Arrays.copyOf(deep_copy.squares, deep_copy.squares.length);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Adds a chess piece to the chessboard
      *

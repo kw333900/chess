@@ -9,9 +9,8 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessGame implements Cloneable{
+public class ChessGame {
     ChessBoard chessGameBoard = new ChessBoard();
-    ChessPosition curr_team_kings_position;
     TeamColor curr_team_color = TeamColor.WHITE;
 
 
@@ -20,6 +19,13 @@ public class ChessGame implements Cloneable{
     public ChessGame() {
         chessGameBoard.resetBoard();
     }
+
+
+
+
+
+
+
 
     /**
      * @return Which team's turn it is
@@ -41,16 +47,7 @@ public class ChessGame implements Cloneable{
 
     }
 
-    @Override
-    public ChessGame clone() {
-        try {
-            ChessGame clone = (ChessGame) super.clone();
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
-    }
+
 
     /**
      * Enum identifying the 2 possible teams in a chess game
@@ -90,6 +87,9 @@ public class ChessGame implements Cloneable{
             // iterate through list and remove moves that cause are in check (or cause check?):
             for (ChessMove move : validMovesList){
 
+
+                // make copy:
+                ChessBoard copy = new ChessBoard(chessGameBoard);
                 // make the move and then if in check:
 
                 if (isInCheck(curr_piece.getTeamColor())){
@@ -114,6 +114,14 @@ public class ChessGame implements Cloneable{
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         /*
+        My words:
+            - if move is illegal (or not in validmoves list), throw exception. else, execute it.
+
+            execute it means
+
+
+
+
         move is illegal if move is invalid for piece at startPosition, or it's not the corresponding team's turn
 
         if move is illegal:
@@ -122,28 +130,51 @@ public class ChessGame implements Cloneable{
             execute move
             increment turn counter
          */
+        ChessPiece chess_piece = chessGameBoard.getPiece(move.getStartPosition());
+        if (chess_piece == null){
+            throw new InvalidMoveException("");
+        }
 
-        if (!validMoves(move.getStartPosition()).contains(move)){
-//            throw InvalidMoveException;
+
+        if (chess_piece.getPieceType() != ChessPiece.PieceType.KING && (validMoves(move.getStartPosition()).isEmpty() || !validMoves(move.getStartPosition()).contains(move))){
+            throw new InvalidMoveException("");
         } else {
-            ChessPiece chess_piece = chessGameBoard.getPiece(move.getStartPosition());
-//            if (move.getPromotionPiece()==null){
-//                ChessPiece.PieceType piece_type = chess_piece.getPieceType();
-//            }
+            chess_piece = chessGameBoard.getPiece(move.getStartPosition());
+            if (chess_piece.getTeamColor() != getTeamTurn()){
+                throw new InvalidMoveException("");
+            }
+            if (move.getPromotionPiece()!=null){
+                ChessPiece.PieceType promo_piece_type = move.getPromotionPiece();
+                // move piece:
+                chessGameBoard.addPiece(move.getEndPosition(), new ChessPiece(chess_piece.getTeamColor(), promo_piece_type));
+                // set to null where it moved from:
+                chessGameBoard.addPiece(move.getStartPosition(), null);
+                // change turn:
+                if (getTeamTurn() == TeamColor.WHITE){
+                    setTeamTurn(TeamColor.BLACK);
+                } else{
+                    setTeamTurn(TeamColor.WHITE);
+                }
+            } else{
+                // move piece:
+                chessGameBoard.addPiece(move.getEndPosition(), chess_piece);
+                // set to null where it moved from:
+                chessGameBoard.addPiece(move.getStartPosition(), null);
+                // change turn:
+                if (getTeamTurn() == TeamColor.WHITE){
+                    setTeamTurn(TeamColor.BLACK);
+                } else{
+                    setTeamTurn(TeamColor.WHITE);
+                }
+            }
 
-            // move piece:
-            chessGameBoard.addPiece(move.getEndPosition(), chess_piece);
-            // set to null where it moved from:
-            chessGameBoard.addPiece(move.getStartPosition(), null);
-            // change turn:
-//            turn_count_variable++;
+
         }
 
 
 
 
     }
-    // ^this involves a whole turn (movement, rules, changing team turn)
 
     /**
      * Determines if the given team is in check
@@ -172,7 +203,7 @@ public class ChessGame implements Cloneable{
 
 
         // iterate through board to find and store team's king (2d array):
-//        ChessPosition curr_team_kings_position;
+        ChessPosition curr_team_kings_position = null;
         for (int i=1; i<9; i++){
             for (int j=1; j<9; j++){
                 // check piece type and teamColor:
@@ -288,16 +319,11 @@ public class ChessGame implements Cloneable{
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return Objects.equals(chessGameBoard, chessGame.chessGameBoard) && Objects.equals(curr_team_kings_position, chessGame.curr_team_kings_position) && curr_team_color == chessGame.curr_team_color;
+        return Objects.equals(chessGameBoard, chessGame.chessGameBoard) && curr_team_color == chessGame.curr_team_color;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(chessGameBoard, curr_team_kings_position, curr_team_color);
+        return Objects.hash(chessGameBoard, curr_team_color);
     }
-
-
-
-
-
 }

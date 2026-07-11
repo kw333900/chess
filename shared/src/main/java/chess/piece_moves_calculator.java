@@ -23,8 +23,11 @@ public class piece_moves_calculator {
     }
 
     // method to return list of valid moves for a particular piece type
-    public Collection<ChessMove> calculate_piece_moves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> calculate_piece_moves(ChessBoard board, ChessPosition myPosition)  {
         ChessPiece piece = board.getPiece(myPosition);
+        if (piece == null){
+            return List.of();
+        }
 
 
 // BISHOP:
