@@ -1,7 +1,7 @@
 package chess;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * A class that can manage a chess game, making moves on a board
@@ -12,6 +12,7 @@ import java.util.List;
 public class ChessGame {
     ChessBoard chessGameBoard;
     int turn_count_variable;
+    ChessPosition curr_team_kings_position;
 //    Collection<ChessMove> validMovesList;
 
 
@@ -155,23 +156,73 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
-
         /*
-        Find that team's king.
 
-        For every enemy piece:
+        My words:
+            - To determine if White is in check: First, find the white king. Iterate through all positions on the board and if that position
+            contains an enemy, generate its moves and see if one of those moves is the white king's position. If you find one, return true.
+            Otherwise, return false.
 
-            Calculate its piece moves.
+        My words (critiqued from Chat to be more precise):
+            - To determine if White is in check: First, find and store the white king's position. Iterate through all positions on the board and if that position
+            contains an enemy, generate its moves and for each move, compare the move's endPosition to white king's current position.
+            If any enemy move ends on king's position, return true.
+            Otherwise, return false.
 
-            If one attacks the king's square
-
-                return true
-
-        return false
+            - How will I find and store the white king's position: Iterate through the board (2d array) and check piece type (Queen, Rook etc.)
+            and check teamColor (White or Black). If King and White, store the ChessPosition (row, col) and exit loop.
          */
 
+
+
+        // iterate through board to find and store team's king (2d array):
+//        ChessPosition curr_team_kings_position;
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9; j++){
+                // check piece type and teamColor:
+                ChessPosition curr_position = new ChessPosition(i,j);
+                ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
+                if (curr_piece != null) {
+                    if (curr_piece.getPieceType() == ChessPiece.PieceType.KING && curr_piece.getTeamColor() == teamColor) {
+                        curr_team_kings_position = new ChessPosition(i, j);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        // iterate through all positions on board:
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9; j++){
+                ChessPosition curr_position = new ChessPosition(i,j);
+                ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
+                if (curr_piece != null) {
+                    // if position contains enemy piece:
+                    if (curr_piece.getTeamColor() != teamColor) {
+                        // generate the piece's moves:
+                        piece_moves_calculator piece_moves = new piece_moves_calculator();
+                        Collection<ChessMove> curr_piece_moves = piece_moves.calculate_piece_moves(chessGameBoard, curr_position);
+                        // for each move:
+                        for (ChessMove m : curr_piece_moves) {
+                            // if m lands on kings_position:
+                            if (m.getEndPosition() == curr_team_kings_position) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return false;
     }
+
+
+
+
+
 
     /**
      * Determines if the given team is in checkmate
@@ -241,14 +292,29 @@ public class ChessGame {
 //    }
 
     // Overrides - I'm not sure if these are correct:
+//    @Override
+//    public int hashCode() {
+//        return super.hashCode();
+//    }
+//
+//
+//    @Override
+//    public boolean equals(Object obj) {
+//        return super.equals(obj);
+//    }
+
+
     @Override
-    public int hashCode() {
-        return super.hashCode();
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return turn_count_variable == chessGame.turn_count_variable && Objects.equals(chessGameBoard, chessGame.chessGameBoard) && Objects.equals(curr_team_kings_position, chessGame.curr_team_kings_position);
     }
 
-
     @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
+    public int hashCode() {
+        return Objects.hash(chessGameBoard, turn_count_variable, curr_team_kings_position);
     }
 }
