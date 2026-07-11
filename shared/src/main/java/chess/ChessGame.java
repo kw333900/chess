@@ -10,17 +10,21 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessGame {
-    ChessBoard chessGameBoard;
-    int turn_count_variable;
+    ChessBoard chessGameBoard = new ChessBoard();
+//    int turn_count_variable=0;
     ChessPosition curr_team_kings_position;
-//    Collection<ChessMove> validMovesList;
+    TeamColor curr_team_color = TeamColor.WHITE;
+
+
+
+    //    Collection<ChessMove> validMovesList;
 
 
 //    ChessBoard chess_game_board;
 
 
     public ChessGame() {
-
+        chessGameBoard.resetBoard();
     }
 
     /**
@@ -32,11 +36,12 @@ public class ChessGame {
                 return white
             else if count_var is odd:
                 return odd */
-        if (turn_count_variable%2 == 0){
-            return TeamColor.WHITE;
-        } else {
-            return TeamColor.BLACK;
-        }
+//        if (turn_count_variable%2 == 0){
+//            return TeamColor.WHITE;
+//        } else {
+//            return TeamColor.BLACK;
+//        }
+        return curr_team_color;
     }
 
 
@@ -49,12 +54,12 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
 
-        if (team == TeamColor.WHITE){
-            turn_count_variable = 0;
-        } else {
-            turn_count_variable = 1;
-        }
-
+//        if (team == TeamColor.WHITE){
+//            turn_count_variable = 0;
+//        } else {
+//            turn_count_variable = 1;
+//        }
+        curr_team_color = team;
 
     }
 
@@ -90,13 +95,14 @@ public class ChessGame {
         */
 
         if (startPosition != null){
+            ChessPiece curr_piece = chessGameBoard.getPiece(startPosition);
             piece_moves_calculator piece_moves = new piece_moves_calculator();
             Collection<ChessMove> validMovesList = piece_moves.calculate_piece_moves(chessGameBoard, startPosition);
             // iterate through list and remove moves that cause are in check (or cause check?):
             for (ChessMove move : validMovesList){
 
                 // if in check:
-                if (isInCheck(getTeamTurn())){   // WHY IS THE PARAMETER TO isInCheck THE TEAMCOLOR?!
+                if (isInCheck(curr_piece.getTeamColor())){
                     validMovesList.remove(move);
                 }
             }
@@ -140,7 +146,7 @@ public class ChessGame {
             // set to null where it moved from:
             chessGameBoard.addPiece(move.getStartPosition(), null);
             // change turn:
-            turn_count_variable++;
+//            turn_count_variable++;
         }
 
 
@@ -206,7 +212,7 @@ public class ChessGame {
                         // for each move:
                         for (ChessMove m : curr_piece_moves) {
                             // if m lands on kings_position:
-                            if (m.getEndPosition() == curr_team_kings_position) {
+                            if (m.getEndPosition().equals(curr_team_kings_position)) {
                                 return true;
                             }
                         }
@@ -234,10 +240,14 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
 
         /*
-        if isInCheck is true for all the team's pieces on the board:
-            return true
-        else:
-            return false
+        My words:
+            - A team's king is in checkmate if it's currently in check and any move that it makes
+            results in the king still being in check.
+
+            First, call isInCheck. If that returns true, then we need to see if any move from one of our own pieces
+            will make isInCheck be false. If not return true.
+
+            How to see if any friendly move will make isInCheck be false?
          */
 
 
@@ -282,39 +292,22 @@ public class ChessGame {
 
     }
 
-
-//    @Override
-//    public String toString() {
-//        return "ChessGame{" +
-//                "chessGameBoard=" + chessGameBoard +
-//                ", turn_count_variable=" + turn_count_variable +
-//                '}';
-//    }
-
-    // Overrides - I'm not sure if these are correct:
-//    @Override
-//    public int hashCode() {
-//        return super.hashCode();
-//    }
-//
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        return super.equals(obj);
-//    }
-
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return turn_count_variable == chessGame.turn_count_variable && Objects.equals(chessGameBoard, chessGame.chessGameBoard) && Objects.equals(curr_team_kings_position, chessGame.curr_team_kings_position);
+        return Objects.equals(chessGameBoard, chessGame.chessGameBoard) && Objects.equals(curr_team_kings_position, chessGame.curr_team_kings_position) && curr_team_color == chessGame.curr_team_color;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(chessGameBoard, turn_count_variable, curr_team_kings_position);
+        return Objects.hash(chessGameBoard, curr_team_kings_position, curr_team_color);
     }
+
+
+
+
+
 }
