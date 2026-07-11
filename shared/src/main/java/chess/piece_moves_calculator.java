@@ -482,7 +482,7 @@ public class piece_moves_calculator {
                     // check enemy or friend, add to list if enemy:
                     if (piece.getTeamColor() != piece_next.getTeamColor()) {
                         king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-//                    }
+                    }
                     }
                 }
 
@@ -600,7 +600,7 @@ public class piece_moves_calculator {
                 return king_valid_moves;
 
             }
-        }
+
 
 
 // Knight:

@@ -352,10 +352,10 @@ public class ChessGame {
 
         // iterate through board to find and store team's king (2d array):
         ChessPosition curr_team_kings_position = null;
-        for (int i=1; i<9; i++){
-            for (int j=1; j<9; j++){
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
                 // check piece type and teamColor:
-                ChessPosition curr_position = new ChessPosition(i,j);
+                ChessPosition curr_position = new ChessPosition(i, j);
                 ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
                 if (curr_piece != null) {
                     if (curr_piece.getPieceType() == ChessPiece.PieceType.KING && curr_piece.getTeamColor() == teamColor) {
@@ -367,17 +367,15 @@ public class ChessGame {
         }
 
 
-
-        if (isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty()){
+        ChessBoard copy_board = null;
+        if (isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty()) {
             // iterate through all friendly pieces and see if their moves will change check:
 
 
-
-
             // iterate through all positions on board:
-            for (int i=1; i<9; i++){
-                for (int j=1; j<9; j++){
-                    ChessPosition curr_position = new ChessPosition(i,j);
+            for (int i = 1; i < 9; i++) {
+                for (int j = 1; j < 9; j++) {
+                    ChessPosition curr_position = new ChessPosition(i, j);
                     ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
                     if (curr_piece != null) {
                         // if position contains friendly piece:
@@ -390,9 +388,8 @@ public class ChessGame {
                                 // if move makes isincheck be false:
 
 
-
                                 // make copy:
-                                ChessBoard copy_board = new ChessBoard(chessGameBoard);
+                                copy_board = new ChessBoard(chessGameBoard);
                                 // make the move on copy board and then if in check:
 
 
@@ -405,15 +402,9 @@ public class ChessGame {
                                 copy_board.addPiece(m.getStartPosition(), null);
 
 
-
-
-
-
-
-                                if (!helper_isInCheck(curr_piece.getTeamColor(), copy_board)){
+                                if (!helper_isInCheck(curr_piece.getTeamColor(), copy_board)) {
                                     return false;
                                 }
-
 
 
                             }
@@ -423,17 +414,12 @@ public class ChessGame {
             }
 
 
-
-
-
-
-
         }
+
+        System.out.println(copy_board);
 
 
         return isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty();
-
-
 
 
     }
