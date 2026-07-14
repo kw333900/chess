@@ -1,5 +1,5 @@
 package dataaccess;
-
+// create interface class for each DAO class
 
 
 /*
@@ -16,7 +16,7 @@ From spec:
 
 import model.*;
 
-public class UserDAO {
+public class UserDAO implements UserDAOinterface{
 
 
 
