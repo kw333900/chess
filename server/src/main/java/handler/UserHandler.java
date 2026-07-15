@@ -117,7 +117,21 @@ public class UserHandler {
 
 
     public void handle_list_games (@NotNull Context context){
+        var serializer = new Gson();
 
+
+        String authToken = context.header("authorization");
+        ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
+
+        try {
+            ListGamesResult listGamesResult = userService.listGames(listGamesRequest);
+            var json = serializer.toJson(listGamesResult);
+            context.result(json);
+        } catch (InvalidGameIDException e){
+            context.status(401);
+            var json = serializer.toJson(Map.of("message", e.getMessage()));
+            context.result(json);
+        }
 
 
     }
@@ -131,9 +145,52 @@ public class UserHandler {
 
     public void handle_create_game (@NotNull Context context){
 
+        var serializer = new Gson();
+
+
+
+
+        String gameName = context.body();
+        if (gameName.equals("{}")){
+            gameName = null;
+        }
+
+        String authToken = context.header("authorization");
+        CreateGameRequest createGameRequest = new CreateGameRequest(authToken, gameName);
+
+        try {
+            CreateGameResult createGameResult = userService.createGame(createGameRequest);
+            var json = serializer.toJson(createGameResult);
+            context.result(json);
+        } catch (InvalidLoginException e){
+            context.status(401);
+            var json = serializer.toJson(Map.of("message", e.getMessage()));
+            context.result(json);
+        } catch (BadRequestException e){
+            context.status(400);
+            var json = serializer.toJson(Map.of("message", e.getMessage()));
+            context.result(json);
+
+        }
 
 
     }
+
+
+
+
+    public void handle_join_game (@NotNull Context context){
+
+
+
+
+
+    }
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
 package service;
 
-public record CreateGameResult() {
+public record CreateGameResult(int gameID) {
 }

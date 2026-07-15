@@ -1,10 +1,12 @@
 package service;
 import dataaccess.*;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Objects;
 
 public class UserService {
@@ -93,7 +95,47 @@ public class UserService {
 
 
 
+    public CreateGameResult createGame (CreateGameRequest createGameRequest) throws InvalidLoginException{
+        AuthData authData = authDAO.getAuthDataByToken(createGameRequest.authToken());
 
+        // if BadRequest: throw exception
+        if (createGameRequest.gameName() == null){
+            throw new BadRequestException("Error: bad request");
+        }
+
+
+        if (authData == null){
+            throw new InvalidLoginException("Error: unauthorized");
+        }
+        // call createGame(gameName)
+        int gameID = gameDAO.createGame(createGameRequest.gameName());
+
+        return new CreateGameResult(gameID);
+    }
+
+
+
+
+
+    public ListGamesResult listGames (ListGamesRequest listGamesRequest) throws InvalidGameIDException{
+        AuthData authData = authDAO.getAuthDataByToken(listGamesRequest.authToken());
+
+
+        if (authData == null){
+            throw new InvalidGameIDException("Error: unauthorized");
+        }
+
+        Collection<GameData> games = gameDAO.getGames();
+
+
+        return new ListGamesResult(games);
+    }
+
+
+
+    public void joinGame (){
+
+    }
 
 
 
