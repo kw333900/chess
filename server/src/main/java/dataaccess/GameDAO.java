@@ -5,9 +5,10 @@ import model.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class GameDAO implements GameDAOinterface{
-    final Collection<GameData> games = new ArrayList<>();
+    final List<GameData> games = new ArrayList<>();
     int gameIDcounter=1;
 
     public void clear () {
@@ -39,8 +40,30 @@ public class GameDAO implements GameDAOinterface{
 
 
 
+    public void updateGameDataWhite (GameData gameData){
+        int i=0;
+        for (GameData g : games){
+
+            if (g.gameID() == gameData.gameID()){
+                games.set(i, gameData);
+                break;
+           }
+            i++;
+        }
+    }
 
 
-
+    public void updateGameDataBlack (GameData gameData){
+        int i=0;
+        for (GameData g : games){
+            if (g.gameID() == gameData.gameID()){
+                games.set(i, gameData);
+                break;
+            }
+            i++;
+        }
+    }
+    
+    
 
 }

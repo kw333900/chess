@@ -147,13 +147,9 @@ public class UserHandler {
 
         var serializer = new Gson();
 
+        CreateGameRequestBody bodyContext = serializer.fromJson(context.body(), CreateGameRequestBody.class);
+        String gameName = bodyContext.gameName();
 
-
-
-        String gameName = context.body();
-        if (gameName.equals("{}")){
-            gameName = null;
-        }
 
         String authToken = context.header("authorization");
         CreateGameRequest createGameRequest = new CreateGameRequest(authToken, gameName);
@@ -182,28 +178,20 @@ public class UserHandler {
     public void handle_join_game (@NotNull Context context){
 
 
+
         var serializer = new Gson();
 
-
-
-//
-//        String gameName = context.body();
-//        if (gameName.equals("{}")){
-//            gameName = null;
-//        }
-
         String authToken = context.header("authorization");
-        JoinGameRequest bodyContext = context.bodyAsClass(JoinGameRequest.class);
+        JoinGameRequestBody bodyContext = serializer.fromJson(context.body(), JoinGameRequestBody.class); // <--- error hapenning here
         String playerColor = bodyContext.playerColor();
         int gameID = bodyContext.gameID();
-
         JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, playerColor, gameID);
 
         try {
             userService.joinGame(joinGameRequest);
 //            var json = serializer.toJson(createGameResult);
 //            context.result(json);
-        } catch (InvalidLoginException e){
+        } catch (InvalidGameIDException e){
             context.status(401);
             var json = serializer.toJson(Map.of("message", e.getMessage()));
             context.result(json);

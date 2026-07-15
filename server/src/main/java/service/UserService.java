@@ -138,7 +138,10 @@ public class UserService {
         AuthData authData = authDAO.getAuthDataByToken(joinGameRequest.authToken());
 
         // if BadRequest: throw exception
-        if (/* joinGameRequest.gameID() == null || */ joinGameRequest.playerColor() == null){
+        if (joinGameRequest.gameID() <1 || joinGameRequest.gameID() >100 || joinGameRequest.playerColor() == null){
+            throw new BadRequestException("Error: bad request");
+        }
+        if (!joinGameRequest.playerColor().equals("WHITE") && !joinGameRequest.playerColor().equals("BLACK")){
             throw new BadRequestException("Error: bad request");
         }
 
@@ -158,8 +161,17 @@ public class UserService {
             throw new GameAlreadyTakenException("Error: already taken");
         }
 
-        // join and update game:
 
+
+        // join and update game depending on color:
+        if (Objects.equals(joinGameRequest.playerColor(), "WHITE")){
+            GameData updatedGameData = new GameData(joinGameRequest.gameID(), authData.username(), gameData.blackUsername(), gameData.gameName(), gameData.game());
+            gameDAO.updateGameDataWhite(updatedGameData);
+        }
+        else if (Objects.equals(joinGameRequest.playerColor(), "BLACK")){
+            GameData updatedGameData = new GameData(joinGameRequest.gameID(), gameData.whiteUsername(), authData.username(), gameData.gameName(), gameData.game());
+            gameDAO.updateGameDataBlack(updatedGameData);
+        }
 
 
     }
