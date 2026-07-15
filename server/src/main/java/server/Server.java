@@ -9,12 +9,15 @@ public class Server {
 
     public Server() {
         httpHandler = Javalin.create(config -> config.staticFiles.add("web"));
+        // Register your endpoints and exception handlers here.
+
         UserHandler u = new UserHandler();
+
         httpHandler.post("/user", u::handle_register);
 
         httpHandler.delete("/db", u::handle_clear);
 
-        // Register your endpoints and exception handlers here.
+
 
 
 

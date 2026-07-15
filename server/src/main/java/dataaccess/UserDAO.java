@@ -59,4 +59,11 @@ public class UserDAO implements UserDAOinterface{
     }
 
 
+
+    public void clear () {
+        usersList.clear();
+    }
+
+
+
 }

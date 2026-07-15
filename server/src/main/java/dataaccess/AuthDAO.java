@@ -32,4 +32,10 @@ public class AuthDAO implements AuthDAOinterface{
         return null;
     }
 
+
+    public void clear () {
+        authList.clear();
+    }
+
+
 }
