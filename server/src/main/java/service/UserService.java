@@ -2,12 +2,15 @@ package service;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
 public class UserService {
 
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private UserDAO userDAO;
     private AuthDAO authDAO;
     private GameDAO gameDAO;
@@ -72,10 +75,19 @@ public class UserService {
     }
 
 
-    public LogoutResult logout(LogoutRequest logoutRequest) {
+    public void logout(LogoutRequest logoutRequest) throws InvalidLogoutException {
+
+        // see if logout is valid:
+
+        AuthData authData = authDAO.getAuthDataByToken(logoutRequest.authToken());
+
+        if (authData == null){
+            throw new InvalidLogoutException("Error: unauthorized");
+        }
+
+        authDAO.deleteAuthData(authData);
 
 
-        return null;
     }
 
 

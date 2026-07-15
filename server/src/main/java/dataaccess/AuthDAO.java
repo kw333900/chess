@@ -21,6 +21,10 @@ public class AuthDAO implements AuthDAOinterface{
         authList.add(a);
     }
 
+    public void deleteAuthData (AuthData a){
+        authList.remove(a);
+    }
+
 
     public AuthData getAuthData (String username){
         for (AuthData a : authList){
@@ -31,6 +35,17 @@ public class AuthDAO implements AuthDAOinterface{
         }
         return null;
     }
+
+    public AuthData getAuthDataByToken (String token){
+        for (AuthData a : authList){
+            if (a.authToken().equals(token)){
+//                throw AlreadyTakenException;
+                return a;
+            }
+        }
+        return null;
+    }
+
 
 
     public void clear () {
