@@ -43,7 +43,13 @@ public class UserService {
 
 
 
-    public LoginResult login(LoginRequest loginRequest) throws InvalidLoginException {
+    public LoginResult login(LoginRequest loginRequest) throws InvalidLoginException, BadRequestException {
+        // if BadRequest: throw exception
+        if (loginRequest.username() == null || loginRequest.password() == null){
+            throw new BadRequestException("Error: bad request");
+        }
+
+
         // see if login is valid:
         if (userDAO.getUser(loginRequest.username()) == null){
             throw new InvalidLoginException("Error: unauthorized");
