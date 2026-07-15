@@ -1,8 +1,9 @@
 package service;
 import dataaccess.*;
-import io.javalin.http.BadRequestResponse;
 import model.AuthData;
 import model.UserData;
+
+import java.util.Objects;
 
 public class UserService {
 
@@ -51,9 +52,15 @@ public class UserService {
 
 
         // see if login is valid:
-        if (userDAO.getUser(loginRequest.username()) == null){
+        UserData userData = userDAO.getUser(loginRequest.username());
+
+        if (userData == null || !Objects.equals(userData.password(), loginRequest.password())){
             throw new InvalidLoginException("Error: unauthorized");
         }
+
+
+
+
         // if does exist, createAuth:
         String authToken = authDAO.generateAuthToken();
         authDAO.addAuthData(new AuthData(authToken, loginRequest.username()));
@@ -65,18 +72,17 @@ public class UserService {
     }
 
 
-    public void logout(LogoutRequest logoutRequest) {
+    public LogoutResult logout(LogoutRequest logoutRequest) {
 
 
+        return null;
     }
 
 
 
 
     public void clear (){
-        UserDAO userDAO = new UserDAO();
-        AuthDAO authDAO = new AuthDAO();
-        GameDAO gameDAO = new GameDAO();
+
 
         userDAO.clear();
         authDAO.clear();

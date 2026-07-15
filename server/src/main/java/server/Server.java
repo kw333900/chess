@@ -27,7 +27,8 @@ public class Server {
         httpHandler.delete("/db", u::handle_clear);
         // Endpoint: Login
         httpHandler.post("/session", u::handle_login);
-
+        // Endpoint: Logout
+        httpHandler.delete("/session", u::handle_logout);
 
 
 

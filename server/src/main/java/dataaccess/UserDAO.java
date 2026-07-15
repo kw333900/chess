@@ -47,6 +47,8 @@ public class UserDAO implements UserDAOinterface{
 //    }
 
 
+//    public String getUserPass (String)
+
 
     public UserData getUser (String username){
         for (UserData u : usersList){

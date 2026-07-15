@@ -91,4 +91,39 @@ public class UserHandler {
 
     }
 
+
+
+    public void handle_logout (@NotNull Context context) {
+        // create LoginRequest object and then pass it into service method and call it
+
+
+        var serializer = new Gson();
+
+
+
+        // deserialize
+        LogoutRequest logoutRequest = serializer.fromJson(context.body(), LogoutRequest.class);
+
+        try {
+            LogoutResult logoutResult = userService.logout(logoutRequest);
+            var json = serializer.toJson(logoutResult);
+            context.result(json);
+        } catch (InvalidLoginException e){
+            context.status(401);
+            var json = serializer.toJson(Map.of("message", e.getMessage()));
+            context.result(json);
+        } catch (BadRequestException e){
+            context.status(400);
+            var json = serializer.toJson(Map.of("message", e.getMessage()));
+            context.result(json);
+
+        }
+
+
+
+    }
+
+
+
+
 }
