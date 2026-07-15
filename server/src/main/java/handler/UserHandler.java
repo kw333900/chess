@@ -182,7 +182,40 @@ public class UserHandler {
     public void handle_join_game (@NotNull Context context){
 
 
+        var serializer = new Gson();
 
+
+
+//
+//        String gameName = context.body();
+//        if (gameName.equals("{}")){
+//            gameName = null;
+//        }
+
+        String authToken = context.header("authorization");
+        JoinGameRequest bodyContext = context.bodyAsClass(JoinGameRequest.class);
+        String playerColor = bodyContext.playerColor();
+        int gameID = bodyContext.gameID();
+
+        JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, playerColor, gameID);
+
+        try {
+            userService.joinGame(joinGameRequest);
+//            var json = serializer.toJson(createGameResult);
+//            context.result(json);
+        } catch (InvalidLoginException e){
+            context.status(401);
+            var json = serializer.toJson(Map.of("message", e.getMessage()));
+            context.result(json);
+        } catch (BadRequestException e){
+            context.status(400);
+            var json = serializer.toJson(Map.of("message", e.getMessage()));
+            context.result(json);
+        } catch (GameAlreadyTakenException e){
+            context.status(403);
+            var json = serializer.toJson(Map.of("message", e.getMessage()));
+            context.result(json);
+        }
 
 
     }

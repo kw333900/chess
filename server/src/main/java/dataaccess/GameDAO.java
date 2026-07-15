@@ -28,4 +28,19 @@ public class GameDAO implements GameDAOinterface{
     }
 
 
+    public GameData getGameData (int gameID){
+        for (GameData g : games){
+            if (g.gameID() == gameID){
+                return g;
+            }
+        }
+        return null;
+    }
+
+
+
+
+
+
+
 }

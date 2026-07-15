@@ -133,7 +133,34 @@ public class UserService {
 
 
 
-    public void joinGame (){
+    public void joinGame (JoinGameRequest joinGameRequest) throws BadRequestException, InvalidGameIDException, GameAlreadyTakenException{
+
+        AuthData authData = authDAO.getAuthDataByToken(joinGameRequest.authToken());
+
+        // if BadRequest: throw exception
+        if (/* joinGameRequest.gameID() == null || */ joinGameRequest.playerColor() == null){
+            throw new BadRequestException("Error: bad request");
+        }
+
+        if (authData == null){
+            throw new InvalidGameIDException("Error: unauthorized");
+        }
+
+
+
+        GameData gameData = gameDAO.getGameData(joinGameRequest.gameID());
+
+        // if color already taken in gamedata: throw gamealreadytaken exception
+        if (Objects.equals(joinGameRequest.playerColor(), "WHITE") && gameData.whiteUsername() != null){
+            throw new GameAlreadyTakenException("Error: already taken");
+        }
+        else if (Objects.equals(joinGameRequest.playerColor(), "BLACK") && gameData.blackUsername() != null){
+            throw new GameAlreadyTakenException("Error: already taken");
+        }
+
+        // join and update game:
+
+
 
     }
 
