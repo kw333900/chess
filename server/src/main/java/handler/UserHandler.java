@@ -115,4 +115,29 @@ public class UserHandler {
 
 
 
+
+    public void handle_list_games (@NotNull Context context){
+
+
+
+    }
+
+
+
+
+
+
+
+
+    public void handle_create_game (@NotNull Context context){
+
+
+
+    }
+
+
+
+
+
+
 }

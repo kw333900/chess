@@ -29,6 +29,11 @@ public class Server {
         httpHandler.post("/session", u::handle_login);
         // Endpoint: Logout
         httpHandler.delete("/session", u::handle_logout);
+        // Endpoint: Create Game
+
+        // Endpoint: List Games
+
+
 
 
 
