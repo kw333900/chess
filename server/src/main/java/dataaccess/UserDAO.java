@@ -16,12 +16,47 @@ From spec:
 
 import model.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class UserDAO implements UserDAOinterface{
+    final Collection<UserData> usersList = new ArrayList<>();
 
 
+    public void addUser(UserData u) /*throws DataAccessException*/ {
 
-    void addUser(UserData u) throws DataAccessException {
 
+        usersList.add(u);
     }
+
+//    public boolean existsUser(UserData u) throws DataAccessException {
+//        // search through usersList by username
+//        // if username already exists:
+//            // throw AlreadyTakenException
+//        // else: addUser
+//
+//        for (UserData userData : usersList){
+//            if (userData.username().equals(u.username())){
+////                throw AlreadyTakenException;
+//                return false;
+//            }
+//        }
+//        return true;
+//
+//
+//    }
+
+
+
+    public UserData getUser (String username){
+        for (UserData u : usersList){
+            if (u.username().equals(username)){
+//                throw AlreadyTakenException;
+                return u;
+            }
+        }
+        return null;
+    }
+
 
 }

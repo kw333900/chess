@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 import service.RegisterRequest;
+import service.RegisterResult;
 import service.UserService;
 
 public class UserHandler {
@@ -19,7 +20,10 @@ public class UserHandler {
 // deserialize
         RegisterRequest registerRequest = serializer.fromJson(context.body(), RegisterRequest.class);
         UserService userService = new UserService();
-        userService.register(registerRequest);
+
+        RegisterResult registerResult = userService.register(registerRequest);
+
+        var json = serializer.toJson(registerResult);
 
 
     }
