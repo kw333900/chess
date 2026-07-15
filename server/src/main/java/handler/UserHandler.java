@@ -1,6 +1,7 @@
 package handler;
 
 import com.google.gson.Gson;
+import dataaccess.AlreadyTakenException;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 import service.RegisterRequest;
@@ -21,10 +22,27 @@ public class UserHandler {
         RegisterRequest registerRequest = serializer.fromJson(context.body(), RegisterRequest.class);
         UserService userService = new UserService();
 
-        RegisterResult registerResult = userService.register(registerRequest);
-
-        var json = serializer.toJson(registerResult);
-
+       try {
+           RegisterResult registerResult = userService.register(registerRequest);
+           var json = serializer.toJson(registerResult);
+           context.result(json);
+       } catch (AlreadyTakenException e){
+           context.status(403);
+           var json = serializer.toJson(e);
+           context.result(json);
+       }
 
     }
+
+    public void handle_clear(@NotNull Context context){
+
+    }
+
+
+
+
+
+
+
+
 }

@@ -1,7 +1,5 @@
 package service;
-
-import dataaccess.AuthDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 
@@ -12,7 +10,9 @@ public class UserService {
         // see if user already exists:
         UserDAO userDAO = new UserDAO();
         if (userDAO.getUser(registerRequest.username()) != null){
-            //                throw AlreadyTakenException;
+
+            throw new AlreadyTakenException("Error: username already taken");
+
         }
         // if not, add user to db
         userDAO.addUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
