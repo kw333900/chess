@@ -311,20 +311,8 @@ public class ChessGame {
         // if isincheck is true and validmoves is empty
 
         // iterate through board to find and store team's king (2d array):
-        ChessPosition curr_team_kings_position = null;
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
-                // check piece type and teamColor:
-                ChessPosition curr_position = new ChessPosition(i, j);
-                ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
-                if (curr_piece != null) {
-                    if (curr_piece.getPieceType() == ChessPiece.PieceType.KING && curr_piece.getTeamColor() == teamColor) {
-                        curr_team_kings_position = new ChessPosition(i, j);
-                        break;
-                    }
-                }
-            }
-        }
+        ChessPosition curr_team_kings_position =
+                findKingPosition(teamColor, chessGameBoard);
 
 
         ChessBoard copy_board = null;
@@ -384,20 +372,8 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
 
         // iterate through board to find and store team's king (2d array):
-        ChessPosition curr_team_kings_position = null;
-        for (int i=1; i<9; i++){
-            for (int j=1; j<9; j++){
-                // check piece type and teamColor:
-                ChessPosition curr_position = new ChessPosition(i,j);
-                ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
-                if (curr_piece != null) {
-                    if (curr_piece.getPieceType() == ChessPiece.PieceType.KING && curr_piece.getTeamColor() == teamColor) {
-                        curr_team_kings_position = new ChessPosition(i, j);
-                        break;
-                    }
-                }
-            }
-        }
+        ChessPosition curr_team_kings_position =
+                findKingPosition(teamColor, chessGameBoard);
 
 
         return !isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty() && (curr_team_kings_position.getRow() != 1 && curr_team_kings_position.getColumn() != 5);
@@ -429,6 +405,28 @@ public class ChessGame {
 
 
 
+
+
+
+    private ChessPosition findKingPosition(TeamColor teamColor, ChessBoard board) {
+
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+
+                ChessPosition position = new ChessPosition(i, j);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null
+                        && piece.getPieceType() == ChessPiece.PieceType.KING
+                        && piece.getTeamColor() == teamColor) {
+
+                    return position;
+                }
+            }
+        }
+
+        return null;
+    }
 
 
 
