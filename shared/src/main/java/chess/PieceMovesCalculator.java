@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class piece_moves_calculator {
+public class PieceMovesCalculator {
 
     // logic for returning collection of valid moves for a specific piece:
         /*
@@ -18,12 +18,12 @@ public class piece_moves_calculator {
          */
 
     // empty constructor:
-    public piece_moves_calculator() {
+    public PieceMovesCalculator() {
 
     }
 
     // method to return list of valid moves for a particular piece type
-    public Collection<ChessMove> calculate_piece_moves(ChessBoard board, ChessPosition myPosition)  {
+    public Collection<ChessMove> calculatePieceMoves(ChessBoard board, ChessPosition myPosition)  {
         ChessPiece piece = board.getPiece(myPosition);
         if (piece == null){
             return List.of();

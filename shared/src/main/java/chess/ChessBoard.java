@@ -23,16 +23,10 @@ public class ChessBoard {
 
 
 
-//    public ChessBoard (ChessBoard deep_copy){
-//        squares = Arrays.copyOf(deep_copy.squares, deep_copy.squares.length);
-//    }
-
-
-
-    public ChessBoard(ChessBoard deep_copy) {
-        squares = new ChessPiece[deep_copy.squares.length][];
-        for (int i = 0; i < deep_copy.squares.length; i++) {
-            squares[i] = Arrays.copyOf(deep_copy.squares[i], deep_copy.squares[i].length);
+    public ChessBoard(ChessBoard deepCopy) {
+        squares = new ChessPiece[deepCopy.squares.length][];
+        for (int i = 0; i < deepCopy.squares.length; i++) {
+            squares[i] = Arrays.copyOf(deepCopy.squares[i], deepCopy.squares[i].length);
         }
     }
 
@@ -112,13 +106,6 @@ public class ChessBoard {
         addPiece(new ChessPosition(7, 8), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
 
     }
-
-//
-//    public void remove_all_pieces(ChessBoard board, ChessPosition myPosition) {
-//        // loop for setting all pieces to null:
-//        ChessPiece piece = board.getPiece(myPosition);
-//        addPiece(myPosition, null);
-//    }
 
 
     @Override
