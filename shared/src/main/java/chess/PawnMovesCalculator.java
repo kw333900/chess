@@ -24,7 +24,7 @@ public class PawnMovesCalculator {
     // - Only can capture down_right(row-1,col+1) or down_left(row-1,col-1)
 
     public Collection<ChessMove> calculatePawnMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
-        List<ChessMove> pawn_valid_moves = new ArrayList<>();
+        List<ChessMove> pawnValidMoves = new ArrayList<>();
         // validate (make sure it's on the board) the myPosition given as parameter
         if (myPosition.getRow() < 1 || myPosition.getRow() > 8 || myPosition.getColumn() < 1 || myPosition.getColumn() > 8) {
             return List.of();
@@ -43,13 +43,13 @@ public class PawnMovesCalculator {
             if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
                 piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
                 if (position_next.getRow() == 8 && piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
                 } else if (piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
                     // if space isn't empty and enemy piece, add move to list
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, null));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
                 }
             }
 
@@ -62,13 +62,13 @@ public class PawnMovesCalculator {
             if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
                 piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
                 if (position_next.getRow() == 8 && piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
                 } else if (piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
                     // if space isn't empty and enemy piece, add move to list
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, null));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
                 }
             }
 
@@ -81,14 +81,14 @@ public class PawnMovesCalculator {
             piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
             if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
                 if (position_next.getRow() == 8 && piece_next == null){
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
                 }
                 else if (piece_next == null) {
                     // if space is empty, add move to list
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, null));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
                 }
             }
 
@@ -102,7 +102,7 @@ public class PawnMovesCalculator {
                     piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
                     if (piece_next == null) {
                         // if space is empty, add move to list
-                        pawn_valid_moves.add(new ChessMove(myPosition, position_next, null));
+                        pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
                     }
                 }
 
@@ -125,13 +125,13 @@ public class PawnMovesCalculator {
             if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
                 piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
                 if (position_next.getRow() == 1 && piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
                 } else if (piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
                     // if space isn't empty and enemy piece, add move to list
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, null));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
                 }
             }
 
@@ -144,13 +144,13 @@ public class PawnMovesCalculator {
             if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
                 piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
                 if (position_next.getRow() == 1 && piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
                 } else if (piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
                     // if space isn't empty and enemy piece, add move to list
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, null));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
                 }
             }
 
@@ -163,21 +163,21 @@ public class PawnMovesCalculator {
             piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
             if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
                 if (position_next.getRow() == 1 && piece_next == null){
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
                 }
                 else if (piece_next == null) {
                     // if space is empty, add move to list
-                    pawn_valid_moves.add(new ChessMove(myPosition, position_next, null));
+                    pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
                 }
             }
 
 
             // starting DOWN direction (row-2, col):
 //            PieceMovesCalculator p = new PieceMovesCalculator();
-//            p.pawnStarting(board, myPosition, piece, -2, 0, pawn_valid_moves);
+//            p.pawnStarting(board, myPosition, piece, -2, 0, pawnValidMoves);
 
             if (myPosition.getRow() == 7 && piece_next == null) {
                 // initialize direction:
@@ -186,7 +186,7 @@ public class PawnMovesCalculator {
                     piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
                     if (piece_next == null) {
                         // if space is empty, add move to list
-                        pawn_valid_moves.add(new ChessMove(myPosition, position_next, null));
+                        pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
                     }
                 }
             }
@@ -195,7 +195,7 @@ public class PawnMovesCalculator {
         }
 
 
-        return pawn_valid_moves;
+        return pawnValidMoves;
     }
 
 
