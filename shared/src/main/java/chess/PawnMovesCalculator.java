@@ -32,69 +32,27 @@ public class PawnMovesCalculator {
 
         // WHITE_PAWN:
         if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+            ChessPiece piece_next;
 
+            PieceMovesCalculator p = new PieceMovesCalculator();
 
             // UP_RIGHT direction for capture (row+1, col+1):
-
-
-            // initialize direction:
-            ChessPosition position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
-            ChessPiece piece_next;
-            if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-                piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-                if (position_next.getRow() == 8 && piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
-                } else if (piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
-                    // if space isn't empty and enemy piece, add move to list
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
+            p.pawnOneSpaceCapture(board, myPosition, piece, 1, 1, pawnValidMoves);
 
 
             // UP_LEFT direction for capture (row+1, col-1):
-
-
-            // initialize direction:
-            position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
-            if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-                piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-                if (position_next.getRow() == 8 && piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
-                } else if (piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
-                    // if space isn't empty and enemy piece, add move to list
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
-
+            p.pawnOneSpaceCapture(board, myPosition, piece, 1, -1, pawnValidMoves);
 
             // UP direction (row+1, col):
+            p.pawnOneSpace(board, myPosition, piece, 1, 0, pawnValidMoves);
 
-
-            // initialize direction:
-            position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
-            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-                if (position_next.getRow() == 8 && piece_next == null){
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
-                }
-                else if (piece_next == null) {
-                    // if space is empty, add move to list
-                    pawnValidMoves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
 
 
             // starting UP direction (row+2, col):
-
+//            p.pawnStarting(board, myPosition, piece, 1, 0, pawnValidMoves);
+//
+            ChessPosition position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
             if (myPosition.getRow() == 2 && piece_next == null) {
                 // initialize direction:
                 position_next = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn());
@@ -116,7 +74,32 @@ public class PawnMovesCalculator {
         if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
 
 
-            // DOWN_RIGHT direction for capture (row-1, col+1):
+
+
+//            ChessPiece piece_next;
+
+//            PieceMovesCalculator p = new PieceMovesCalculator();
+//
+//            // DOWN_RIGHT direction for capture (row-1, col+1):
+//            p.pawnOneSpaceCapture(board, myPosition, piece, -1, 1, pawnValidMoves);
+//
+//
+//            // DOWN_LEFT direction for capture (row-1, col-1):
+//            p.pawnOneSpaceCapture(board, myPosition, piece, -1, -1, pawnValidMoves);
+//
+//            // DOWN direction (row-1, col):
+//            p.pawnOneSpace(board, myPosition, piece, -1, 0, pawnValidMoves);
+
+
+
+
+
+
+
+
+
+
+
 
 
             // initialize direction:
@@ -136,7 +119,7 @@ public class PawnMovesCalculator {
             }
 
 
-            // DOWN_LEFT direction for capture (row-1, col-1):
+
 
 
             // initialize direction:
@@ -155,7 +138,6 @@ public class PawnMovesCalculator {
             }
 
 
-            // DOWN direction (row-1, col):
 
 
             // initialize direction:
