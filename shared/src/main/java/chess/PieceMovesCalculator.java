@@ -119,59 +119,70 @@ public class PieceMovesCalculator {
     }
 
 
-    public void pawnOneSpace(ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col, Collection<ChessMove> validMoves){
+
+
+
+
+    public void pawnOneSpace(ChessBoard board, ChessPosition myPosition, ChessPiece piece,
+                             int row, int col, Collection<ChessMove> validMoves){
+
         // initialize direction:
-        ChessPosition position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
-        ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-            if (position_next.getRow() == 8 && piece_next == null){
+        ChessPosition position_next = new ChessPosition(myPosition.getRow() + row,
+                myPosition.getColumn() + col);
+
+        ChessPiece piece_next;
+
+        if ((position_next.getRow() < 9 && position_next.getRow() > 0)
+                && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
+
+            piece_next = board.getPiece(position_next);
+
+            if (((piece.getTeamColor() == ChessGame.TeamColor.WHITE && position_next.getRow() == 8)
+                    || (piece.getTeamColor() == ChessGame.TeamColor.BLACK && position_next.getRow() == 1))
+                    && piece_next == null) {
+
                 validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
                 validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
                 validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
                 validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
+
             }
             else if (piece_next == null) {
-                // if space is empty, add move to list
                 validMoves.add(new ChessMove(myPosition, position_next, null));
             }
         }
     }
 
 
-    public void pawnOneSpaceCapture(ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col, Collection<ChessMove> validMoves){
+    public void pawnOneSpaceCapture(ChessBoard board, ChessPosition myPosition, ChessPiece piece,
+                                    int row, int col, Collection<ChessMove> validMoves){
+
         // initialize direction:
-        ChessPosition position_next = new ChessPosition(myPosition.getRow() + row, myPosition.getColumn() + col);
+        ChessPosition position_next = new ChessPosition(myPosition.getRow() + row,
+                myPosition.getColumn() + col);
+
         ChessPiece piece_next;
-        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (position_next.getRow() == 8 && piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
+
+        if ((position_next.getRow() < 9 && position_next.getRow() > 0)
+                && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
+
+            piece_next = board.getPiece(position_next);
+
+            if ((((piece.getTeamColor() == ChessGame.TeamColor.WHITE && position_next.getRow() == 8)
+                    || (piece.getTeamColor() == ChessGame.TeamColor.BLACK && position_next.getRow() == 1)))
+                    && piece_next != null
+                    && piece.getTeamColor() != piece_next.getTeamColor()) {
+
                 validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
                 validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
                 validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
                 validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
-            } else if (piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
-                // if space isn't empty and enemy piece, add move to list
+
+            }
+            else if (piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
+
                 validMoves.add(new ChessMove(myPosition, position_next, null));
             }
-        }
-    }
-
-
-
-    public void pawnStarting(ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col, Collection<ChessMove> validMoves){
-        ChessPosition position_next = new ChessPosition(myPosition.getRow() + row, myPosition.getColumn() + col);
-        ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-        if (myPosition.getRow() == 2 && piece_next == null) {
-            // initialize direction:
-            position_next = new ChessPosition(myPosition.getRow() + row, myPosition.getColumn() + col);
-            if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-                piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-                if (piece_next == null) {
-                    // if space is empty, add move to list
-                    validMoves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
-
         }
     }
 
