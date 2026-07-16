@@ -78,18 +78,18 @@ public class PieceMovesCalculator {
 
 
 
-    public void toEndOfBoard(ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col, Collection<ChessMove> ValidMoves){
+    public void toEndOfBoard(ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col, Collection<ChessMove> validMoves){
         // initialize direction for while loop:
         ChessPosition position_next = new ChessPosition(myPosition.getRow() + row, myPosition.getColumn() + col);
         while ((position_next.getRow() != 9 && position_next.getRow() != 0) && (position_next.getColumn() != 9 && position_next.getColumn() != 0)) {
             ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
             if (piece_next == null) {
                 // if space is empty, add move to list
-                ValidMoves.add(new ChessMove(myPosition, position_next, null));
+                validMoves.add(new ChessMove(myPosition, position_next, null));
             } else {
                 // check enemy or friend, add to list if enemy:
                 if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    ValidMoves.add(new ChessMove(myPosition, position_next, null));
+                    validMoves.add(new ChessMove(myPosition, position_next, null));
                 }
                 // break out of this direction loop bc space is blocked
                 break;
@@ -100,6 +100,46 @@ public class PieceMovesCalculator {
     }
 
 
+    public void oneSpace(ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col, Collection<ChessMove> validMoves){
+        // initialize direction:
+        ChessPosition position_next = new ChessPosition(myPosition.getRow() + row, myPosition.getColumn() + col);
+        ChessPiece piece_next;
+        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
+            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
+            if (piece_next == null) {
+                // if space is empty, add move to list
+                validMoves.add(new ChessMove(myPosition, position_next, null));
+            } else {
+                // check enemy or friend, add to list if enemy:
+                if (piece.getTeamColor() != piece_next.getTeamColor()) {
+                    validMoves.add(new ChessMove(myPosition, position_next, null));
+                }
+            }
+        }
+    }
+
+
+    public void pawnOneSpace(ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col, Collection<ChessMove> validMoves){
+
+    }
+
+
+    public void pawnStarting(ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col, Collection<ChessMove> validMoves){
+        ChessPosition position_next = new ChessPosition(myPosition.getRow() + row, myPosition.getColumn() + col);
+        ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
+
+        if (myPosition.getRow() == 7 && piece_next == null) {
+            // initialize direction:
+            position_next = new ChessPosition(myPosition.getRow() + row, myPosition.getColumn() + col);
+            if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
+                piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
+                if (piece_next == null) {
+                    // if space is empty, add move to list
+                    validMoves.add(new ChessMove(myPosition, position_next, null));
+                }
+            }
+        }
+    }
 
 
 

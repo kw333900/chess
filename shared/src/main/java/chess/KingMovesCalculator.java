@@ -12,162 +12,31 @@ public class KingMovesCalculator {
 
 
     public Collection<ChessMove> calculateKingMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
-        List<ChessMove> king_valid_moves = new ArrayList<>();
-        // validate the myPosition parameter (make sure it's on the board)
+        List<ChessMove> kingValidMoves = new ArrayList<>();
+        // validate (make sure it's on the board) the myPosition given as parameter
         if (myPosition.getRow() < 1 || myPosition.getRow() > 8 || myPosition.getColumn() < 1 || myPosition.getColumn() > 8) {
             return List.of();
         }
 
+        PieceMovesCalculator p = new PieceMovesCalculator();
         // UP_RIGHT direction (row+1, col+1):
-
-
-        // initialize direction:
-        ChessPosition position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
-        ChessPiece piece_next;
-        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
-        }
-
-
+        p.oneSpace(board, myPosition, piece, 1, 1, kingValidMoves);
         // DOWN_RIGHT direction (row-1, col+1):
-
-
-        // initialize direction:
-        position_next = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
-        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
-        }
-
+        p.oneSpace(board, myPosition, piece, -1, 1, kingValidMoves);
         // DOWN_LEFT direction (row-1, col-1):
-
-
-        // initialize direction:
-        position_next = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
-        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
-
-        }
+        p.oneSpace(board, myPosition, piece, -1, -1, kingValidMoves);
         // UP_LEFT direction (row+1, col-1):
-
-
-        // initialize direction:
-        position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
-        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
-        }
-
-//-----------------------------division between diagonal and forward movements of king--------------------------------
-
-
+        p.oneSpace(board, myPosition, piece, 1, -1, kingValidMoves);
         // UP direction (row+1, col):
-
-
-        // initialize direction:
-        position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
-        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
-        }
-
+        p.oneSpace(board, myPosition, piece, 1, 0, kingValidMoves);
         // RIGHT direction (row, col+1):
-
-
-        // initialize direction:
-        position_next = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1);
-        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
-        }
-
+        p.oneSpace(board, myPosition, piece, 0, 1, kingValidMoves);
         // DOWN direction (row-1, col):
-
-
-        // initialize direction:
-        position_next = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
-        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
-        }
-
+        p.oneSpace(board, myPosition, piece, -1, 0, kingValidMoves);
         // LEFT direction (row, col-1):
+        p.oneSpace(board, myPosition, piece, 0, -1, kingValidMoves);
 
-
-        // initialize direction:
-        position_next = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - 1);
-        if ((position_next.getRow() < 9 && position_next.getRow() > 0) && (position_next.getColumn() < 9 && position_next.getColumn() > 0)) {
-            piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    king_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-            }
-        }
-
-        return king_valid_moves;
+        return kingValidMoves;
     }
 
 }

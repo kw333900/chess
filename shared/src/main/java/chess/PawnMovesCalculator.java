@@ -176,6 +176,8 @@ public class PawnMovesCalculator {
 
 
             // starting DOWN direction (row-2, col):
+//            PieceMovesCalculator p = new PieceMovesCalculator();
+//            p.pawnStarting(board, myPosition, piece, -2, 0, pawn_valid_moves);
 
             if (myPosition.getRow() == 7 && piece_next == null) {
                 // initialize direction:
