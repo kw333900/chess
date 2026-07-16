@@ -109,7 +109,7 @@ class UserServiceTest {
 
     @Test
     void listGamesNegative() {
-        ListGamesRequest badRequest = new ListGamesRequest("tokenDNE");
+        ListGamesRequest badRequest = new ListGamesRequest("tokenDNEe");
         assertThrows(InvalidGameIDException.class, () -> userService.listGames(badRequest));
     }
 
