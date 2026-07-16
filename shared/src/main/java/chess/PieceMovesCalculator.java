@@ -141,11 +141,7 @@ public class PieceMovesCalculator {
                     || (piece.getTeamColor() == ChessGame.TeamColor.BLACK && position_next.getRow() == 1))
                     && piece_next == null) {
 
-                validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
-
+                addPromotionMoves(myPosition, position_next, validMoves);
             }
             else if (piece_next == null) {
                 validMoves.add(new ChessMove(myPosition, position_next, null));
@@ -173,10 +169,7 @@ public class PieceMovesCalculator {
                     && piece_next != null
                     && piece.getTeamColor() != piece_next.getTeamColor()) {
 
-                validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.QUEEN));
-                validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.BISHOP));
-                validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.ROOK));
-                validMoves.add(new ChessMove(myPosition, position_next, ChessPiece.PieceType.KNIGHT));
+                addPromotionMoves(myPosition, position_next, validMoves);
 
             }
             else if (piece_next != null && piece.getTeamColor() != piece_next.getTeamColor()) {
@@ -185,6 +178,19 @@ public class PieceMovesCalculator {
             }
         }
     }
+
+
+    private void addPromotionMoves(ChessPosition start,
+                                   ChessPosition end,
+                                   Collection<ChessMove> validMoves) {
+
+        validMoves.add(new ChessMove(start, end, ChessPiece.PieceType.QUEEN));
+        validMoves.add(new ChessMove(start, end, ChessPiece.PieceType.BISHOP));
+        validMoves.add(new ChessMove(start, end, ChessPiece.PieceType.ROOK));
+        validMoves.add(new ChessMove(start, end, ChessPiece.PieceType.KNIGHT));
+    }
+
+
 
 
 

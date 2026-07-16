@@ -90,18 +90,9 @@ public class ChessGame {
             for (ChessMove move : potential_validMovesList){
 
 
-                // make copy:
-                ChessBoard copy_board = new ChessBoard(chessGameBoard);
-                // make the move on copy board and then if in check:
+                ChessBoard copy_board = makeMoveOnCopy(chessGameBoard, move, startPosition);
 
-
-                 curr_piece = copy_board.getPiece(startPosition);
-//
-
-                // move piece:
-                copy_board.addPiece(move.getEndPosition(), curr_piece);
-                // set to null where it moved from:
-                copy_board.addPiece(move.getStartPosition(), null);
+                curr_piece = copy_board.getPiece(move.getEndPosition());
 
 
 
@@ -356,19 +347,9 @@ public class ChessGame {
                             for (ChessMove m : curr_piece_moves) {
                                 // if move makes isincheck be false:
 
+                                copy_board = makeMoveOnCopy(chessGameBoard, m, curr_position);
 
-                                // make copy:
-                                copy_board = new ChessBoard(chessGameBoard);
-                                // make the move on copy board and then if in check:
-
-
-                                curr_piece = copy_board.getPiece(curr_position);
-//
-
-                                // move piece:
-                                copy_board.addPiece(m.getEndPosition(), curr_piece);
-                                // set to null where it moved from:
-                                copy_board.addPiece(m.getStartPosition(), null);
+                                curr_piece = copy_board.getPiece(m.getEndPosition());
 
 
                                 if (!helperIsInCheck(curr_piece.getTeamColor(), copy_board)) {
@@ -423,6 +404,39 @@ public class ChessGame {
 
 
     }
+
+
+
+
+
+
+
+
+
+    private ChessBoard makeMoveOnCopy(ChessBoard board,
+                                      ChessMove move,
+                                      ChessPosition startPosition) {
+
+        ChessBoard copy = new ChessBoard(board);
+
+        ChessPiece piece = copy.getPiece(startPosition);
+
+        copy.addPiece(move.getEndPosition(), piece);
+        copy.addPiece(move.getStartPosition(), null);
+
+        return copy;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Sets this game's chessboard to a given board
