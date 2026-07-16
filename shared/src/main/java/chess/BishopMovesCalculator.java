@@ -18,47 +18,20 @@ public class BishopMovesCalculator {
             return List.of();
         }
 
+        PieceMovesCalculator p = new PieceMovesCalculator();
         // UP_RIGHT direction (row+1, col+1):
-        bishopDirection(board, myPosition, piece, 1, 1, bishopValidMoves);
-
+        p.toEndOfBoard(board, myPosition, piece, 1, 1, bishopValidMoves);
         // DOWN_RIGHT direction (row-1, col+1):
-        bishopDirection(board, myPosition, piece, -1, 1, bishopValidMoves);
-
+        p.toEndOfBoard(board, myPosition, piece, -1, 1, bishopValidMoves);
         // DOWN_LEFT direction (row-1, col-1):
-        bishopDirection(board, myPosition, piece, -1, -1, bishopValidMoves);
-
+        p.toEndOfBoard(board, myPosition, piece, -1, -1, bishopValidMoves);
         // UP_LEFT direction (row+1, col-1):
-        bishopDirection(board, myPosition, piece, 1, -1, bishopValidMoves);
+        p.toEndOfBoard(board, myPosition, piece, 1, -1, bishopValidMoves);
 
         return bishopValidMoves;
 
 
     }
-
-
-
-
-    public void bishopDirection (ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col, Collection<ChessMove> bishopValidMoves){
-        // initialize direction for while loop:
-        ChessPosition position_next = new ChessPosition(myPosition.getRow() + row, myPosition.getColumn() + col);
-        while ((position_next.getRow() != 9 && position_next.getRow() != 0) && (position_next.getColumn() != 9 && position_next.getColumn() != 0)) {
-            ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                bishopValidMoves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    bishopValidMoves.add(new ChessMove(myPosition, position_next, null));
-                }
-                // break out of this direction loop bc space is blocked
-                break;
-            }
-            // increment to next position in that direction
-            position_next = new ChessPosition(position_next.getRow() + row, position_next.getColumn() + col);
-        }
-    }
-
 
 
 }

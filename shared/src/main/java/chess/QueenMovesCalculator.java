@@ -13,200 +13,31 @@ public class QueenMovesCalculator {
 
 
     public Collection<ChessMove> calculateQueenMoves (ChessBoard board, ChessPosition myPosition, ChessPiece piece){
-        List<ChessMove> queen_valid_moves = new ArrayList<>();
+        List<ChessMove> queenValidMoves = new ArrayList<>();
         // validate (make sure it's on the board) the myPosition given as parameter
         if (myPosition.getRow() < 1 || myPosition.getRow() > 8 || myPosition.getColumn() < 1 || myPosition.getColumn() > 8) {
             return List.of();
         }
 
+        PieceMovesCalculator p = new PieceMovesCalculator();
         // UP_RIGHT direction (row+1, col+1):
-
-
-        // initialize direction for while loop:
-        ChessPosition position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
-        while ((position_next.getRow() != 9 && position_next.getRow() != 0) && (position_next.getColumn() != 9 && position_next.getColumn() != 0)) {
-            ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-                // break out of this direction loop bc space is blocked
-                break;
-            }
-            // increment to next position in that direction
-            position_next = new ChessPosition(position_next.getRow() + 1, position_next.getColumn() + 1);
-        }
-
-
+        p.toEndOfBoard(board, myPosition, piece, 1, 1, queenValidMoves);
         // DOWN_RIGHT direction (row-1, col+1):
-
-
-        // initialize direction for while loop:
-        position_next = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1);
-        while ((position_next.getRow() != 9 && position_next.getRow() != 0) && (position_next.getColumn() != 9 && position_next.getColumn() != 0)) {
-            ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-                // break out of this direction loop bc space is blocked
-                break;
-            }
-            // increment to next position in that direction
-            position_next = new ChessPosition(position_next.getRow() - 1, position_next.getColumn() + 1);
-        }
-
-
+        p.toEndOfBoard(board, myPosition, piece, -1, 1, queenValidMoves);
         // DOWN_LEFT direction (row-1, col-1):
-
-
-        // initialize direction for while loop:
-        position_next = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1);
-        while ((position_next.getRow() != 9 && position_next.getRow() != 0) && (position_next.getColumn() != 9 && position_next.getColumn() != 0)) {
-            ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-                // break out of this direction loop bc space is blocked
-                break;
-            }
-            // increment to next position in that direction
-            position_next = new ChessPosition(position_next.getRow() - 1, position_next.getColumn() - 1);
-        }
-
-
+        p.toEndOfBoard(board, myPosition, piece, -1, -1, queenValidMoves);
         // UP_LEFT direction (row+1, col-1):
-
-
-        // initialize direction for while loop:
-        position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
-        while ((position_next.getRow() != 9 && position_next.getRow() != 0) && (position_next.getColumn() != 9 && position_next.getColumn() != 0)) {
-            ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-                // break out of this direction loop bc space is blocked
-                break;
-            }
-            // increment to next position in that direction
-            position_next = new ChessPosition(position_next.getRow() + 1, position_next.getColumn() - 1);
-        }
-
-
-//-----------------------------division between diagonal and forward movements of queen--------------------------------
-
-
+        p.toEndOfBoard(board, myPosition, piece, 1, -1, queenValidMoves);
         // UP direction (row+1, col):
-
-
-        // initialize direction for while loop:
-        position_next = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
-        while ((position_next.getRow() != 9 && position_next.getRow() != 0) && (position_next.getColumn() != 9 && position_next.getColumn() != 0)) {
-            ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-                // break out of this direction loop bc space is blocked
-                break;
-            }
-            // increment to next position in that direction
-            position_next = new ChessPosition(position_next.getRow() + 1, position_next.getColumn());
-        }
-
-
+        p.toEndOfBoard(board, myPosition, piece, 1, 0, queenValidMoves);
         // RIGHT direction (row, col+1):
-
-
-        // initialize direction for while loop:
-        position_next = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1);
-        while ((position_next.getRow() != 9 && position_next.getRow() != 0) && (position_next.getColumn() != 9 && position_next.getColumn() != 0)) {
-            ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-                // break out of this direction loop bc space is blocked
-                break;
-            }
-            // increment to next position in that direction
-            position_next = new ChessPosition(position_next.getRow(), position_next.getColumn() + 1);
-        }
-
-
+        p.toEndOfBoard(board, myPosition, piece, 0, 1, queenValidMoves);
         // DOWN direction (row-1, col):
-
-
-        // initialize direction for while loop:
-        position_next = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
-        while ((position_next.getRow() != 9 && position_next.getRow() != 0) && (position_next.getColumn() != 9 && position_next.getColumn() != 0)) {
-            ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-                // break out of this direction loop bc space is blocked
-                break;
-            }
-            // increment to next position in that direction
-            position_next = new ChessPosition(position_next.getRow() - 1, position_next.getColumn());
-        }
-
-
+        p.toEndOfBoard(board, myPosition, piece, -1, 0, queenValidMoves);
         // LEFT direction (row, col-1):
+        p.toEndOfBoard(board, myPosition, piece, 0, -1, queenValidMoves);
 
-
-        // initialize direction for while loop:
-        position_next = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - 1);
-        while ((position_next.getRow() != 9 && position_next.getRow() != 0) && (position_next.getColumn() != 9 && position_next.getColumn() != 0)) {
-            ChessPiece piece_next = board.getPiece(new ChessPosition(position_next.getRow(), position_next.getColumn()));
-            if (piece_next == null) {
-                // if space is empty, add move to list
-                queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-            } else {
-                // check enemy or friend, add to list if enemy:
-                if (piece.getTeamColor() != piece_next.getTeamColor()) {
-                    queen_valid_moves.add(new ChessMove(myPosition, position_next, null));
-                }
-                // break out of this direction loop bc space is blocked
-                break;
-            }
-            // increment to next position in that direction
-            position_next = new ChessPosition(position_next.getRow(), position_next.getColumn() - 1);
-        }
-
-
-        return queen_valid_moves;
+        return queenValidMoves;
     }
 
 }
