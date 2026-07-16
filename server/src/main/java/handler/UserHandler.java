@@ -2,7 +2,6 @@ package handler;
 
 import com.google.gson.Gson;
 import dataaccess.*;
-import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 import service.*;
@@ -22,7 +21,7 @@ public class UserHandler {
         this.userService = new UserService(userDAO, authDAO, gameDAO);
     }
 
-    public void handle_register(@NotNull Context context) {
+    public void handleRegister(@NotNull Context context) {
         // create RegisterRequest object and then pass it into service method and call it
 
 
@@ -50,7 +49,7 @@ public class UserHandler {
 
     }
 
-    public void handle_clear(@NotNull Context context){
+    public void handleClear(@NotNull Context context){
 
         userService.clear();
 
@@ -61,7 +60,7 @@ public class UserHandler {
 
 
 
-    public void handle_login (@NotNull Context context) {
+    public void handleLogin(@NotNull Context context) {
         // create LoginRequest object and then pass it into service method and call it
 
 
@@ -93,7 +92,7 @@ public class UserHandler {
 
 
 
-    public void handle_logout (@NotNull Context context) {
+    public void handleLogout(@NotNull Context context) {
 
         String authToken = context.header("authorization");
         LogoutRequest logoutRequest = new LogoutRequest(authToken);
@@ -116,7 +115,7 @@ public class UserHandler {
 
 
 
-    public void handle_list_games (@NotNull Context context){
+    public void handleListGames(@NotNull Context context){
         var serializer = new Gson();
 
 
@@ -143,7 +142,7 @@ public class UserHandler {
 
 
 
-    public void handle_create_game (@NotNull Context context){
+    public void handleCreateGame(@NotNull Context context){
 
         var serializer = new Gson();
 
@@ -175,14 +174,14 @@ public class UserHandler {
 
 
 
-    public void handle_join_game (@NotNull Context context){
+    public void handleJoinGame(@NotNull Context context){
 
 
 
         var serializer = new Gson();
 
         String authToken = context.header("authorization");
-        JoinGameRequestBody bodyContext = serializer.fromJson(context.body(), JoinGameRequestBody.class); // <--- error hapenning here
+        JoinGameRequestBody bodyContext = serializer.fromJson(context.body(), JoinGameRequestBody.class);
         String playerColor = bodyContext.playerColor();
         int gameID = bodyContext.gameID();
         JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, playerColor, gameID);

@@ -22,19 +22,19 @@ public class Server {
 
 
         // Endpoint: Register
-        httpHandler.post("/user", u::handle_register);
+        httpHandler.post("/user", u::handleRegister);
         // Endpoint: Clear
-        httpHandler.delete("/db", u::handle_clear);
+        httpHandler.delete("/db", u::handleClear);
         // Endpoint: Login
-        httpHandler.post("/session", u::handle_login);
+        httpHandler.post("/session", u::handleLogin);
         // Endpoint: Logout
-        httpHandler.delete("/session", u::handle_logout);
+        httpHandler.delete("/session", u::handleLogout);
         // Endpoint: Create Game
-        httpHandler.post("/game", u::handle_create_game);
+        httpHandler.post("/game", u::handleCreateGame);
         // Endpoint: List Games
-        httpHandler.get("/game", u::handle_list_games);
+        httpHandler.get("/game", u::handleListGames);
         // Endpoint: Join Game
-        httpHandler.put("/game", u::handle_join_game);
+        httpHandler.put("/game", u::handleJoinGame);
 
 
 

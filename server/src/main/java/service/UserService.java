@@ -12,7 +12,6 @@ import java.util.Objects;
 public class UserService {
 
 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private UserDAO userDAO;
     private AuthDAO authDAO;
     private GameDAO gameDAO;
@@ -165,12 +164,16 @@ public class UserService {
 
         // join and update game depending on color:
         if (Objects.equals(joinGameRequest.playerColor(), "WHITE")){
-            GameData updatedGameData = new GameData(joinGameRequest.gameID(), authData.username(), gameData.blackUsername(), gameData.gameName(), gameData.game());
-            gameDAO.updateGameDataWhite(updatedGameData);
+            int newID = joinGameRequest.gameID();
+            String newUsername = authData.username();
+            GameData updatedGameData = new GameData(newID, newUsername, gameData.blackUsername(), gameData.gameName(), gameData.game());
+            gameDAO.updateGameData(updatedGameData);
         }
         else if (Objects.equals(joinGameRequest.playerColor(), "BLACK")){
-            GameData updatedGameData = new GameData(joinGameRequest.gameID(), gameData.whiteUsername(), authData.username(), gameData.gameName(), gameData.game());
-            gameDAO.updateGameDataBlack(updatedGameData);
+            int newID = joinGameRequest.gameID();
+            String newUsername = authData.username();
+            GameData updatedGameData = new GameData(newID, gameData.whiteUsername(), newUsername, gameData.gameName(), gameData.game());
+            gameDAO.updateGameData(updatedGameData);
         }
 
 

@@ -29,25 +29,6 @@ public class UserDAO implements UserDAOinterface{
         usersList.add(u);
     }
 
-//    public boolean existsUser(UserData u) throws DataAccessException {
-//        // search through usersList by username
-//        // if username already exists:
-//            // throw AlreadyTakenException
-//        // else: addUser
-//
-//        for (UserData userData : usersList){
-//            if (userData.username().equals(u.username())){
-////                throw AlreadyTakenException;
-//                return false;
-//            }
-//        }
-//        return true;
-//
-//
-//    }
-
-
-//    public String getUserPass (String)
 
 
     public UserData getUser (String username){

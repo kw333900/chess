@@ -26,15 +26,6 @@ public class AuthDAO implements AuthDAOinterface{
     }
 
 
-    public AuthData getAuthData (String username){
-        for (AuthData a : authList){
-            if (a.username().equals(username)){
-//                throw AlreadyTakenException;
-                return a;
-            }
-        }
-        return null;
-    }
 
     public AuthData getAuthDataByToken (String token){
         for (AuthData a : authList){

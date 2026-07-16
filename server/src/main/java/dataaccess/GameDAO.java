@@ -39,21 +39,7 @@ public class GameDAO implements GameDAOinterface{
     }
 
 
-
-    public void updateGameDataWhite (GameData gameData){
-        int i=0;
-        for (GameData g : games){
-
-            if (g.gameID() == gameData.gameID()){
-                games.set(i, gameData);
-                break;
-           }
-            i++;
-        }
-    }
-
-
-    public void updateGameDataBlack (GameData gameData){
+    public void updateGameData(GameData gameData){
         int i=0;
         for (GameData g : games){
             if (g.gameID() == gameData.gameID()){
@@ -63,7 +49,6 @@ public class GameDAO implements GameDAOinterface{
             i++;
         }
     }
-    
     
 
 }
