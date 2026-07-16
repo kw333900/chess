@@ -1,8 +1,7 @@
-package UnitTests;
+package service;
 
 import dataaccess.*;
 import org.junit.jupiter.api.*;
-import service.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
