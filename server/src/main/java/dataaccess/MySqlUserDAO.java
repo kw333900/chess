@@ -27,8 +27,20 @@ public class MySqlUserDAO implements UserDAOinterface {
     }
 
     public void clear() {
-        var statement = "TRUNCATE Users";
+//        var statement = "TRUNCATE Users";
 //        executeUpdate(statement);
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("TRUNCATE Users")) {
+                var rs = preparedStatement.executeQuery();
+                rs.next();
+                System.out.println(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

@@ -12,10 +12,10 @@ import java.util.Objects;
 public class UserService {
 
 
-    private UserDAO userDAO;
-    private AuthDAO authDAO;
-    private GameDAO gameDAO;
-    public UserService (UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO){
+    private UserDAOinterface userDAO;
+    private AuthDAOinterface authDAO;
+    private GameDAOinterface gameDAO;
+    public UserService (UserDAOinterface userDAO, AuthDAOinterface authDAO, GameDAOinterface gameDAO){
         this.userDAO = userDAO;
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;

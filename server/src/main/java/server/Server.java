@@ -1,8 +1,6 @@
 package server;
 
-import dataaccess.AuthDAO;
-import dataaccess.GameDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import handler.UserHandler;
 import io.javalin.*;
 
@@ -14,6 +12,10 @@ public class Server {
         httpHandler = Javalin.create(config -> config.staticFiles.add("web"));
         // Register your endpoints and exception handlers here.
 
+//        UserDAOinterface userDAO = new MySqlUserDAO();
+//        AuthDAOinterface authDAO = new MySqlAuthDAO();
+//        GameDAOinterface gameDAO = new MySqlGameDAO();
+//        UserHandler u = new UserHandler(userDAO, authDAO, gameDAO);
 
         UserDAO userDAO = new UserDAO();
         AuthDAO authDAO = new AuthDAO();

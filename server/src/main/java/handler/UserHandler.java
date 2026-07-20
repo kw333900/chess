@@ -10,11 +10,11 @@ import java.util.Map;
 
 public class UserHandler {
 
-    private UserDAO userDAO;
-    private AuthDAO authDAO;
-    private GameDAO gameDAO;
+    private UserDAOinterface userDAO;
+    private AuthDAOinterface authDAO;
+    private GameDAOinterface gameDAO;
     private UserService userService;
-    public UserHandler (UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO){
+    public UserHandler (UserDAOinterface userDAO, AuthDAOinterface authDAO, GameDAOinterface gameDAO){
         this.userDAO = userDAO;
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
