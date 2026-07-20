@@ -19,7 +19,25 @@ public class MySqlUserDAO implements UserDAOinterface {
     
     
     public void addUser(UserData u) {
-        
+
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO Users (username, password, email) VALUES (?, ?, ?)")) {
+
+                preparedStatement.setString(1, u.username());
+                preparedStatement.setString(2, u.password());
+                preparedStatement.setString(3, u.email());
+
+                var rs = preparedStatement.executeQuery();
+                rs.next();
+                System.out.println(rs.getInt(1));
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+
     }
 
     public UserData getUser(String username) {
@@ -27,17 +45,13 @@ public class MySqlUserDAO implements UserDAOinterface {
     }
 
     public void clear() {
-//        var statement = "TRUNCATE Users";
-//        executeUpdate(statement);
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("TRUNCATE Users")) {
                 var rs = preparedStatement.executeQuery();
                 rs.next();
                 System.out.println(rs.getInt(1));
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
 
