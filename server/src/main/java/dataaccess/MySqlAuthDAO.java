@@ -2,9 +2,14 @@ package dataaccess;
 
 import model.AuthData;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class MySqlAuthDAO implements AuthDAOinterface{
+    public MySqlAuthDAO (){
+        configureDatabase();
+    }
+
 
     public String generateAuthToken() {
         return null;
@@ -34,5 +39,40 @@ public class MySqlAuthDAO implements AuthDAOinterface{
         }
 
     }
+
+
+
+    private final String[] createStatements = {"""
+                CREATE TABLE IF NOT EXISTS  Auth (
+               username varchar(256),
+               authToken varchar(256)
+               )
+    """};
+
+
+    private void configureDatabase() {
+        try {
+            DatabaseManager.createDatabase();
+
+            try (Connection conn = DatabaseManager.getConnection()) {
+                for (String statement : createStatements) {
+                    try (var preparedStatement = conn.prepareStatement(statement)) {
+                        preparedStatement.executeUpdate();
+                    }
+                }
+            }
+
+        }catch (DataAccessException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
+
+
+
+
 
 }

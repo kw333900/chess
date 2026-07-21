@@ -125,15 +125,10 @@ public class MySqlUserDAO implements UserDAOinterface {
                email varchar(256),
                PRIMARY KEY (username)
                )
-"""};
-//
-//
+    """};
+
+
     private void configureDatabase() {
-//        try {
-//            DatabaseManager.createDatabase();
-//        } finally {
-//
-//        }
         try {
             DatabaseManager.createDatabase();
 
@@ -149,4 +144,8 @@ public class MySqlUserDAO implements UserDAOinterface {
             throw new RuntimeException(e);
         }
     }
+
+
+
+
 }
