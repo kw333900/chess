@@ -99,7 +99,7 @@ public class UserService {
 
 
 
-    public CreateGameResult createGame (CreateGameRequest createGameRequest) throws InvalidLoginException{
+    public CreateGameResult createGame (CreateGameRequest createGameRequest) throws InvalidLoginException, DataAccessException {
         AuthData authData = authDAO.getAuthDataByToken(createGameRequest.authToken());
 
         // if BadRequest: throw exception
@@ -121,7 +121,7 @@ public class UserService {
 
 
 
-    public ListGamesResult listGames (ListGamesRequest listGamesRequest) throws InvalidGameIDException{
+    public ListGamesResult listGames (ListGamesRequest listGamesRequest) throws InvalidGameIDException, DataAccessException {
         AuthData authData = authDAO.getAuthDataByToken(listGamesRequest.authToken());
 
 
@@ -137,7 +137,7 @@ public class UserService {
 
 
 
-    public void joinGame (JoinGameRequest joinGameRequest) throws BadRequestException, InvalidGameIDException, GameAlreadyTakenException{
+    public void joinGame (JoinGameRequest joinGameRequest) throws BadRequestException, InvalidGameIDException, GameAlreadyTakenException, DataAccessException {
 
         AuthData authData = authDAO.getAuthDataByToken(joinGameRequest.authToken());
 

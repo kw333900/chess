@@ -6,15 +6,15 @@ public interface AuthDAOinterface {
 
 
 
-    String generateAuthToken();
+    String generateAuthToken() throws DataAccessException;
 
-    void addAuthData (AuthData a);
+    void addAuthData (AuthData a) throws DataAccessException;
 
-    void deleteAuthData (AuthData a);
+    void deleteAuthData (AuthData a) throws DataAccessException;
 
-    AuthData getAuthDataByToken(String token);
+    AuthData getAuthDataByToken(String token) throws DataAccessException;
 
-    void clear();
+    void clear() throws DataAccessException;
 
 
 

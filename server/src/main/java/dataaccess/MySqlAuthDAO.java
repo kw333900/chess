@@ -1,9 +1,12 @@
 package dataaccess;
 
 import model.AuthData;
+import model.UserData;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class MySqlAuthDAO implements AuthDAOinterface{
     public MySqlAuthDAO (){
@@ -12,7 +15,7 @@ public class MySqlAuthDAO implements AuthDAOinterface{
 
 
     public String generateAuthToken() {
-        return null;
+        return UUID.randomUUID().toString();
     }
 
     public void addAuthData(AuthData a) {
@@ -23,11 +26,34 @@ public class MySqlAuthDAO implements AuthDAOinterface{
 
     }
 
-    public AuthData getAuthDataByToken(String token) {
+    public AuthData getAuthDataByToken(String token) throws DataAccessException {
+
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM Auth WHERE authToken=?")) {
+                preparedStatement.setString(1, token);
+                try (ResultSet rs = preparedStatement.executeQuery()){
+
+                    if (rs.next()){
+                        // return AuthData
+                        var username1 = rs.getString("username");
+                        var authToken = rs.getString("authToken");
+                        return new AuthData(username1, authToken);
+                    }
+
+                }
+
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("Error: authdata could not be retrieved", e);
+        }
+
         return null;
     }
 
-    public void clear() {
+
+
+
+    public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE Auth")) {
                 var rs = preparedStatement.executeQuery();
@@ -35,7 +61,7 @@ public class MySqlAuthDAO implements AuthDAOinterface{
                 System.out.println(rs.getInt(1));
             }
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("Error: failed to get connection");
         }
 
     }

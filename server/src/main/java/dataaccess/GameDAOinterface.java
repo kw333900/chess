@@ -6,15 +6,15 @@ import java.util.Collection;
 
 public interface GameDAOinterface {
 
-    void clear();
+    void clear() throws DataAccessException;
 
-    int createGame (String gameName);
+    int createGame (String gameName) throws DataAccessException;
 
-    Collection<GameData> getGames();
+    Collection<GameData> getGames() throws DataAccessException;
 
-    GameData getGameData (int gameID);
+    GameData getGameData (int gameID) throws DataAccessException;
 
-    void updateGameData(GameData gameData);
+    void updateGameData(GameData gameData) throws DataAccessException;
 
 
 

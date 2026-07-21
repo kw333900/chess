@@ -15,7 +15,7 @@ public class MySqlGameDAO implements GameDAOinterface{
 
 
 
-    public void clear() {
+    public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE Games")) {
                 var rs = preparedStatement.executeQuery();
@@ -23,7 +23,7 @@ public class MySqlGameDAO implements GameDAOinterface{
                 System.out.println(rs.getInt(1));
             }
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("Error: failed to get connection");
         }
 
     }

@@ -50,20 +50,10 @@ public class MySqlUserDAO implements UserDAOinterface {
 
     public UserData getUser(String username) throws DataAccessException {
 
-
-
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM Users WHERE username=?")) {
                     preparedStatement.setString(1, username);
-
-
                 try (ResultSet rs = preparedStatement.executeQuery()){
-//                    if (){
-//                        // if verifyUser is false skip to next iteration:
-//                        var password = rs.getString("password");
-//String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-//                    }
-
 
                     if (rs.next()){
                         // return UserData
@@ -73,8 +63,6 @@ public class MySqlUserDAO implements UserDAOinterface {
                         return new UserData(username1, password, email);
                     }
 
-
-
                 }
 
             }
@@ -82,29 +70,20 @@ public class MySqlUserDAO implements UserDAOinterface {
             throw new DataAccessException("Error: user could not be retrieved", e);
         }
 
-
-
-
-
-
-
-
-
-
         return null;
     }
 
 
 
 
-    public void clear() {
+    public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE Users")) {
                 preparedStatement.executeUpdate();
 
             }
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("Error: failed to get connection");
         }
 
     }
