@@ -13,7 +13,7 @@ import static java.sql.Types.NULL;
 public class MySqlUserDAO implements UserDAOinterface {
 
     public MySqlUserDAO() {
-//        configureDatabase();
+        configureDatabase();
     }
     
     
@@ -117,25 +117,36 @@ public class MySqlUserDAO implements UserDAOinterface {
 //            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 //            """
 //    };
+
+    private final String[] createStatements = {"""
+                CREATE TABLE IF NOT EXISTS  Users (
+               username varchar(256),
+               password varchar(256),
+               email varchar(256),
+               PRIMARY KEY (username)
+               )
+"""};
 //
 //
-//    private void configureDatabase() throws DataAccessException {
-//        DatabaseManager.createDatabase();
-//        try (Connection conn = DatabaseManager.getConnection()) {
-//            for (String statement : createStatements) {
-//                try (var preparedStatement = conn.prepareStatement(statement)) {
-//                    preparedStatement.executeUpdate();
-//                }
-//            }
-//        } catch (SQLException ex) {
-////            throw new DataAccessException(DataAccessException.Code.ServerError, String.format("Unable to configure database: %s", ex.getMessage()));
+    private void configureDatabase() {
+//        try {
+//            DatabaseManager.createDatabase();
+//        } finally {
+//
 //        }
-//    }
+        try {
+            DatabaseManager.createDatabase();
 
+            try (Connection conn = DatabaseManager.getConnection()) {
+                for (String statement : createStatements) {
+                    try (var preparedStatement = conn.prepareStatement(statement)) {
+                        preparedStatement.executeUpdate();
+                    }
+                }
+            }
 
-
-
-
-
-
+    }catch (DataAccessException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
