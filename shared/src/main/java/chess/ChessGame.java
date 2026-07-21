@@ -16,16 +16,9 @@ public class ChessGame {
     TeamColor currTeamColor = TeamColor.WHITE;
 
 
-
-
     public ChessGame() {
         chessGameBoard.resetBoard();
     }
-
-
-
-
-
 
 
 
@@ -38,7 +31,6 @@ public class ChessGame {
 
 
 
-
     /**
      * Sets which teams turn it is
      *
@@ -48,7 +40,6 @@ public class ChessGame {
         currTeamColor = team;
 
     }
-
 
 
     /**
@@ -69,7 +60,6 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-
         /* pseudocode:
             candidateMoves = pieceMoves(...)
 
@@ -78,10 +68,7 @@ public class ChessGame {
                 make the move on the copy
 
                 if king is NOT in check on copied board
-                    keep move
-
-        */
-
+                    keep move */
         if (startPosition != null){
             ChessPiece curr_piece = chessGameBoard.getPiece(startPosition);
             PieceMovesCalculator piece_moves = new PieceMovesCalculator();
@@ -96,11 +83,6 @@ public class ChessGame {
                 curr_piece = copy_board.getPiece(move.getEndPosition());
 
 
-
-
-
-
-
                 if (!helperIsInCheck(curr_piece.getTeamColor(), copy_board)){
                     final_validMovesList.add(move);
                 }
@@ -111,13 +93,6 @@ public class ChessGame {
         } else {
             return null;
         }
-
-
-
-
-
-
-
 
 
     }
@@ -191,7 +166,6 @@ public class ChessGame {
 
 
 
-
     }
 
     /**
@@ -203,9 +177,6 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
        return helperIsInCheck(teamColor, chessGameBoard);
     }
-
-
-
 
 
 
@@ -257,18 +228,11 @@ public class ChessGame {
                 if (bool){
                     return true;
                 }
-
-
-
-
             }
         }
 
 
         return bool;
-
-
-
 
     }
 
@@ -296,11 +260,6 @@ public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor t
 
         return false;
 }
-
-
-
-
-
 
 
 
@@ -354,7 +313,6 @@ public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor t
                         return false;
                     }
 
-
                 }
             }
 
@@ -401,16 +359,7 @@ public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor t
         }
         return true;
 
-
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -443,8 +392,6 @@ public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor t
 
 
 
-
-
     private ChessBoard makeMoveOnCopy(ChessBoard board,
                                       ChessMove move,
                                       ChessPosition startPosition) {
@@ -458,7 +405,6 @@ public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor t
 
         return copy;
     }
-
 
 
 
@@ -483,8 +429,6 @@ public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor t
 
         return null;
     }
-
-
 
 
 
