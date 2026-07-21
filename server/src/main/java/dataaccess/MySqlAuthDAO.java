@@ -107,7 +107,7 @@ public class MySqlAuthDAO implements AuthDAOinterface{
 
 
 
-    private final String[] createStatements = {"""
+    private final String[] createStatementsAuth = {"""
                 CREATE TABLE IF NOT EXISTS  Auth (
                username varchar(256),
                authToken varchar(256)
@@ -120,7 +120,7 @@ public class MySqlAuthDAO implements AuthDAOinterface{
             DatabaseManager.createDatabase();
 
             try (Connection conn = DatabaseManager.getConnection()) {
-                for (String statement : createStatements) {
+                for (String statement : createStatementsAuth) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }

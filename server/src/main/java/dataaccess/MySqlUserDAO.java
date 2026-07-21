@@ -88,7 +88,7 @@ public class MySqlUserDAO implements UserDAOinterface {
 
 
 
-    private final String[] createStatements = {"""
+    private final String[] createStatementsUser = {"""
                 CREATE TABLE IF NOT EXISTS  Users (
                username varchar(256),
                password varchar(256),
@@ -101,9 +101,8 @@ public class MySqlUserDAO implements UserDAOinterface {
     private void configureDatabase() {
         try {
             DatabaseManager.createDatabase();
-
             try (Connection conn = DatabaseManager.getConnection()) {
-                for (String statement : createStatements) {
+                for (String statement : createStatementsUser) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }

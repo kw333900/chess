@@ -191,7 +191,7 @@ public class MySqlGameDAO implements GameDAOinterface{
 
 
 
-    private final String[] createStatements = {"""
+    private final String[] createStatementsGame = {"""
                 CREATE TABLE IF NOT EXISTS  Games (
                gameID int NOT NULL AUTO_INCREMENT,
                whiteUsername varchar(256),
@@ -208,7 +208,7 @@ public class MySqlGameDAO implements GameDAOinterface{
             DatabaseManager.createDatabase();
 
             try (Connection conn = DatabaseManager.getConnection()) {
-                for (String statement : createStatements) {
+                for (String statement : createStatementsGame) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }
@@ -218,6 +218,9 @@ public class MySqlGameDAO implements GameDAOinterface{
         }catch (DataAccessException | SQLException e) {
             throw new RuntimeException(e);
         }
+
+
+
     }
 
 
