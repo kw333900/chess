@@ -22,15 +22,15 @@ public class MySqlUserDAO implements UserDAOinterface {
     
     
     
-    public void addUser(UserData u) {
+    public void addUser(UserData u) throws DataAccessException{
 
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO Users (username, password, email) VALUES (?, ?, ?)")) {
 
-//                String hashedPassword = BCrypt.hashpw(u.password(), BCrypt.gensalt());
+                String hashedPassword = BCrypt.hashpw(u.password(), BCrypt.gensalt());
 
                 preparedStatement.setString(1, u.username());
-                preparedStatement.setString(2, u.password());
+                preparedStatement.setString(2, hashedPassword);
                 preparedStatement.setString(3, u.email());
 
                 preparedStatement.executeUpdate();     /* IMPORTANT: executeUpdate vs. executeQuery
@@ -40,7 +40,7 @@ public class MySqlUserDAO implements UserDAOinterface {
 
             }
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
 
 
@@ -58,6 +58,13 @@ public class MySqlUserDAO implements UserDAOinterface {
 
 
                 try (ResultSet rs = preparedStatement.executeQuery()){
+//                    if (){
+//                        // if verifyUser is false skip to next iteration:
+//                        var password = rs.getString("password");
+//String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+//                    }
+
+
                     if (rs.next()){
                         // return UserData
                         var username1 = rs.getString("username");
@@ -65,6 +72,9 @@ public class MySqlUserDAO implements UserDAOinterface {
                         var email = rs.getString("email");
                         return new UserData(username1, password, email);
                     }
+
+
+
                 }
 
             }

@@ -3,6 +3,7 @@ import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +59,11 @@ public class UserService {
         // see if login is valid:
         UserData userData = userDAO.getUser(loginRequest.username());
 
-        if (userData == null || !Objects.equals(userData.password(), loginRequest.password())){
+        if (userData == null){
+            throw new InvalidLoginException("Error: unauthorized");
+        }
+
+        if (!Objects.equals(userData.password(), loginRequest.password()) && !BCrypt.checkpw(loginRequest.password(), userData.password())){
             throw new InvalidLoginException("Error: unauthorized");
         }
 
@@ -76,7 +81,7 @@ public class UserService {
     }
 
 
-    public void logout(LogoutRequest logoutRequest) throws InvalidLogoutException {
+    public void logout(LogoutRequest logoutRequest) throws InvalidLogoutException, DataAccessException{
 
         // see if logout is valid:
 
@@ -184,7 +189,7 @@ public class UserService {
 
 
 
-    public void clear (){
+    public void clear () throws DataAccessException{
 
 
         userDAO.clear();

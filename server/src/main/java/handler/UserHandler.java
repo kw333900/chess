@@ -52,9 +52,19 @@ public class UserHandler {
 
     }
 
-    public void handleClear(@NotNull Context context){
+    public void handleClear(@NotNull Context context) {
 
-        userService.clear();
+        var serializer = new Gson();
+
+        try {
+            userService.clear();
+        } catch (DataAccessException e) {
+            context.status(500);
+            var json = serializer.toJson(Map.of("message", e.getMessage()));
+            context.result(json);
+        }
+
+
 
 
     }
@@ -104,12 +114,16 @@ public class UserHandler {
         String authToken = context.header("authorization");
         LogoutRequest logoutRequest = new LogoutRequest(authToken);
 
+        var serializer = new Gson();
 
         try {
             userService.logout(logoutRequest);
         } catch (InvalidLogoutException e){
             context.status(401);
-            var serializer = new Gson();
+            var json = serializer.toJson(Map.of("message", e.getMessage()));
+            context.result(json);
+        }catch (DataAccessException e) {
+            context.status(500);
             var json = serializer.toJson(Map.of("message", e.getMessage()));
             context.result(json);
         }

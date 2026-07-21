@@ -7,11 +7,11 @@ public interface UserDAOinterface {
 put all methods in corresponding DAO in this class
  */
 
-    void addUser (UserData u);
+    void addUser (UserData u) throws DataAccessException;
 
     UserData getUser (String username) throws DataAccessException;
 
-    void clear();
+    void clear() throws  DataAccessException;
 
 
 
