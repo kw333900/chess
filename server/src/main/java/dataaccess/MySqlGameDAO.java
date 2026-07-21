@@ -42,7 +42,7 @@ public class MySqlGameDAO implements GameDAOinterface{
             try (var preparedStatement = conn.prepareStatement("INSERT INTO Games (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)")) {
 
 
-                preparedStatement.setInt(1, 1);
+                preparedStatement.setInt(1, gameIDcounter);
                 preparedStatement.setString(2, null);
                 preparedStatement.setString(3, null);
                 preparedStatement.setString(4, gameName);
@@ -77,12 +77,12 @@ public class MySqlGameDAO implements GameDAOinterface{
 
     public Collection<GameData> getGames() throws DataAccessException{
 
-
+        Collection<GameData> games = new ArrayList<>();
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM Games")) {
                 try (ResultSet rs = preparedStatement.executeQuery()){
 
-                    List<GameData> games = new ArrayList<>();
+
                     while (rs.next()){
                         // create GameData object and add it to list
                         var gameID1 = rs.getInt("gameID");
@@ -97,9 +97,11 @@ public class MySqlGameDAO implements GameDAOinterface{
                         games.add(new GameData(gameID1, whiteUsername, blackUsername, gameName, chessGame));
                     }
 
-                    return games;
+
 
                 }
+
+                return games;
 
             }
         } catch (SQLException | DataAccessException e) {

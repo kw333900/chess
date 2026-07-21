@@ -48,7 +48,7 @@ public class MySqlAuthDAO implements AuthDAOinterface{
 
 
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("DELETE FROM Auth (username, authToken) WHERE authToken=?")) {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM Auth WHERE authToken=?")) {
                 preparedStatement.setString(1, a.authToken());
 
                 preparedStatement.executeUpdate();     /* IMPORTANT: executeUpdate vs. executeQuery
