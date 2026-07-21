@@ -27,10 +27,10 @@ public class MySqlAuthDAO implements AuthDAOinterface{
                 preparedStatement.setString(1, a.username());
                 preparedStatement.setString(2, a.authToken());
 
-                preparedStatement.executeUpdate();     /* IMPORTANT: executeUpdate vs. executeQuery
-                                                                        executeQuery returns a result set
+                preparedStatement.executeUpdate();
+                /* IMPORTANT: executeUpdate vs. executeQuery
+                      executeQuery returns a result set
                 */
-
 
             }
         } catch (SQLException | DataAccessException e) {
@@ -50,10 +50,10 @@ public class MySqlAuthDAO implements AuthDAOinterface{
             try (var preparedStatement = conn.prepareStatement("DELETE FROM Auth WHERE authToken=?")) {
                 preparedStatement.setString(1, a.authToken());
 
-                preparedStatement.executeUpdate();     /* IMPORTANT: executeUpdate vs. executeQuery
-                                                                        executeQuery returns a result set
+                preparedStatement.executeUpdate();
+                /* IMPORTANT: executeUpdate vs. executeQuery
+                     executeQuery returns a result set
                 */
-
 
             }
         } catch (SQLException | DataAccessException e) {

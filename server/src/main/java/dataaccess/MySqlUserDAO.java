@@ -29,8 +29,10 @@ public class MySqlUserDAO implements UserDAOinterface {
                 preparedStatement.setString(2, hashedPassword);
                 preparedStatement.setString(3, u.email());
 
-                preparedStatement.executeUpdate();     /* IMPORTANT: executeUpdate vs. executeQuery
-                                                                        executeQuery returns a result set
+                preparedStatement.executeUpdate();
+
+                /* IMPORTANT: executeUpdate vs. executeQuery
+                     executeQuery returns a result set
                 */
 
 

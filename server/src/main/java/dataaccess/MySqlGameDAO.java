@@ -40,12 +40,10 @@ public class MySqlGameDAO implements GameDAOinterface{
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO Games (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)")) {
 
-
                 preparedStatement.setInt(1, gameIDcounter);
                 preparedStatement.setString(2, null);
                 preparedStatement.setString(3, null);
                 preparedStatement.setString(4, gameName);
-
 
                 // serialize new ChessGame object to Json string:
                 var serializer = new Gson();
@@ -55,9 +53,8 @@ public class MySqlGameDAO implements GameDAOinterface{
                 preparedStatement.executeUpdate();
 
                 /* IMPORTANT: executeUpdate vs. executeQuery
-                                                                        executeQuery returns a result set
+                    executeQuery returns a result set
                 */
-
 
                 return gameIDcounter++;
 
@@ -66,8 +63,6 @@ public class MySqlGameDAO implements GameDAOinterface{
             throw new DataAccessException(e.getMessage());
         }
 
-
-//        return 0;
     }
 
 
@@ -80,7 +75,6 @@ public class MySqlGameDAO implements GameDAOinterface{
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM Games")) {
                 try (ResultSet rs = preparedStatement.executeQuery()){
-
 
                     while (rs.next()){
                         // create GameData object and add it to list
@@ -95,8 +89,6 @@ public class MySqlGameDAO implements GameDAOinterface{
                         ChessGame chessGame = serializer.fromJson(game, ChessGame.class);
                         games.add(new GameData(gameID1, whiteUsername, blackUsername, gameName, chessGame));
                     }
-
-
 
                 }
 
@@ -154,11 +146,6 @@ public class MySqlGameDAO implements GameDAOinterface{
             try (var preparedStatement = conn.prepareStatement("UPDATE games SET gameID=?, whiteUsername=?, blackUsername=?, gameName=?, game=? WHERE gameID=?")) {
                 preparedStatement.setInt(6, gameData.gameID());
 
-
-
-
-
-
                         preparedStatement.setInt(1, gameData.gameID());
                         preparedStatement.setString(2, gameData.whiteUsername());
                         preparedStatement.setString(3, gameData.blackUsername());
@@ -171,17 +158,10 @@ public class MySqlGameDAO implements GameDAOinterface{
 
                         preparedStatement.executeUpdate();
 
-
-
-
-
             }
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException("Error: gamedata could not be retrieved", e);
         }
-
-
-
 
 
 

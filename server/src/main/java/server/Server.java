@@ -13,18 +13,14 @@ public class Server {
         // Register your endpoints and exception handlers here.
 
 
-//                UserDAO userDAO = new UserDAO();
+//        UserDAO userDAO = new UserDAO();
 //        AuthDAO authDAO = new AuthDAO();
 //        GameDAO gameDAO = new GameDAO();
-//        UserHandler u = new UserHandler(userDAO, authDAO, gameDAO);
-
-//
         UserDAOinterface userDAO = new MySqlUserDAO();
         AuthDAOinterface authDAO = new MySqlAuthDAO();
         GameDAOinterface gameDAO = new MySqlGameDAO();
+
         UserHandler u = new UserHandler(userDAO, authDAO, gameDAO);
-
-
 
 
         // Endpoint: Register
@@ -41,9 +37,6 @@ public class Server {
         httpHandler.get("/game", u::handleListGames);
         // Endpoint: Join Game
         httpHandler.put("/game", u::handleJoinGame);
-
-
-
 
 
     }
