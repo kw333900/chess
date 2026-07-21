@@ -151,7 +151,9 @@ public class ChessGame {
         }
 
 
-        if (chess_piece.getPieceType() != ChessPiece.PieceType.KING && (validMoves(move.getStartPosition()).isEmpty() || !validMoves(move.getStartPosition()).contains(move))){
+        boolean a = validMoves(move.getStartPosition()).isEmpty() || !validMoves(move.getStartPosition()).contains(move);
+
+        if (chess_piece.getPieceType() != ChessPiece.PieceType.KING && (a)){
             throw new InvalidMoveException("");
         } else {
             chess_piece = chessGameBoard.getPiece(move.getStartPosition());
@@ -217,7 +219,8 @@ public class ChessGame {
             Otherwise, return false.
 
         My words (critiqued from Chat to be more precise):
-            - To determine if White is in check: First, find and store the white king's position. Iterate through all positions on the board and if that position
+            - To determine if White is in check: First, find and store the white king's position.
+            Iterate through all positions on the board and if that position
             contains an enemy, generate its moves and for each move, compare the move's endPosition to white king's current position.
             If any enemy move ends on king's position, return true.
             Otherwise, return false.
@@ -375,8 +378,9 @@ public class ChessGame {
         ChessPosition curr_team_kings_position =
                 findKingPosition(teamColor, chessGameBoard);
 
+        boolean kingHasNotMoved = (curr_team_kings_position.getRow() != 1 && curr_team_kings_position.getColumn() != 5);
 
-        return !isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty() && (curr_team_kings_position.getRow() != 1 && curr_team_kings_position.getColumn() != 5);
+        return !isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty() && (kingHasNotMoved);
 
 
     }
