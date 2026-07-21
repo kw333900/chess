@@ -253,9 +253,8 @@ public class ChessGame {
             for (int j=1; j<9; j++){
                 ChessPosition curr_position = new ChessPosition(i,j);
                 ChessPiece curr_piece = board.getPiece(curr_position);
-                if (curr_piece != null) {
+                if (curr_piece != null && curr_piece.getTeamColor() != teamColor) {
                     // if position contains enemy piece:
-                    if (curr_piece.getTeamColor() != teamColor) {
                         // generate the piece's moves:
                         PieceMovesCalculator piece_moves = new PieceMovesCalculator();
                         Collection<ChessMove> curr_piece_moves = piece_moves.calculatePieceMoves(board, curr_position);
@@ -266,7 +265,6 @@ public class ChessGame {
                                 return true;
                             }
                         }
-                    }
                 }
             }
         }
