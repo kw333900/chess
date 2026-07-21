@@ -2,6 +2,7 @@ package dataaccess;
 
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -18,11 +19,51 @@ public class MySqlAuthDAO implements AuthDAOinterface{
         return UUID.randomUUID().toString();
     }
 
-    public void addAuthData(AuthData a) {
+    public void addAuthData(AuthData a) throws DataAccessException {
+
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO Auth (username, authToken) VALUES (?, ?)")) {
+
+
+                preparedStatement.setString(1, a.username());
+                preparedStatement.setString(2, a.authToken());
+
+                preparedStatement.executeUpdate();     /* IMPORTANT: executeUpdate vs. executeQuery
+                                                                        executeQuery returns a result set
+                */
+
+
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+
+
+
+
 
     }
 
-    public void deleteAuthData(AuthData a) {
+    public void deleteAuthData(AuthData a) throws DataAccessException{
+
+
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM Auth (username, authToken) WHERE authToken=?")) {
+                preparedStatement.setString(1, a.authToken());
+
+                preparedStatement.executeUpdate();     /* IMPORTANT: executeUpdate vs. executeQuery
+                                                                        executeQuery returns a result set
+                */
+
+
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+
+
+
+
 
     }
 
@@ -37,7 +78,7 @@ public class MySqlAuthDAO implements AuthDAOinterface{
                         // return AuthData
                         var username1 = rs.getString("username");
                         var authToken = rs.getString("authToken");
-                        return new AuthData(username1, authToken);
+                        return new AuthData(authToken, username1);
                     }
 
                 }
@@ -56,9 +97,8 @@ public class MySqlAuthDAO implements AuthDAOinterface{
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE Auth")) {
-                var rs = preparedStatement.executeQuery();
-                rs.next();
-                System.out.println(rs.getInt(1));
+
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException("Error: failed to get connection");

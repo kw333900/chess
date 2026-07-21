@@ -15,13 +15,13 @@ public class Server {
 
 //                UserDAO userDAO = new UserDAO();
 //        AuthDAO authDAO = new AuthDAO();
-        GameDAO gameDAO = new GameDAO();
+//        GameDAO gameDAO = new GameDAO();
 //        UserHandler u = new UserHandler(userDAO, authDAO, gameDAO);
 
 //
         UserDAOinterface userDAO = new MySqlUserDAO();
         AuthDAOinterface authDAO = new MySqlAuthDAO();
-//        GameDAOinterface gameDAO = new MySqlGameDAO();
+        GameDAOinterface gameDAO = new MySqlGameDAO();
         UserHandler u = new UserHandler(userDAO, authDAO, gameDAO);
 
 
