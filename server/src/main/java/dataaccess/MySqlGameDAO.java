@@ -2,7 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
+import dataaccess.exceptions.DataAccessException;
 import model.GameData;
 
 import java.sql.Connection;
@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class MySqlGameDAO implements GameDAOinterface{
     int gameIDcounter=1;

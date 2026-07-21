@@ -1,4 +1,4 @@
-package dataaccess;
+package dataaccess.exceptions;
 
 public class InvalidLoginException extends RuntimeException {
     public InvalidLoginException(String message) {

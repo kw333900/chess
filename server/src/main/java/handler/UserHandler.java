@@ -2,6 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import dataaccess.exceptions.*;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 import service.*;

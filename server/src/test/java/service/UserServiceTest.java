@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.*;
+import dataaccess.exceptions.*;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +27,7 @@ class UserServiceTest {
     }
 
     @Test
-    void registerPositive() throws DataAccessException{
+    void registerPositive() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest("username", "password", "email");
         assertNotNull(userService.register(registerRequest));
 
