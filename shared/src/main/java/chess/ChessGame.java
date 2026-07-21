@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -85,7 +86,7 @@ public class ChessGame {
             ChessPiece curr_piece = chessGameBoard.getPiece(startPosition);
             PieceMovesCalculator piece_moves = new PieceMovesCalculator();
             Collection<ChessMove> potential_validMovesList = piece_moves.calculatePieceMoves(chessGameBoard, startPosition);
-            Collection<ChessMove> final_validMovesList = new java.util.ArrayList<>(List.of());
+            Collection<ChessMove> final_validMovesList = new ArrayList<>(List.of());
             // iterate through list and remove moves that cause are in check (or cause check?):
             for (ChessMove move : potential_validMovesList){
 
@@ -247,35 +248,58 @@ public class ChessGame {
             }
         }
 
-
+        boolean bool = false;
         // iterate through all positions on board:
         for (int i=1; i<9; i++){
             for (int j=1; j<9; j++){
-                ChessPosition curr_position = new ChessPosition(i,j);
-                ChessPiece curr_piece = board.getPiece(curr_position);
-                if (curr_piece != null && curr_piece.getTeamColor() != teamColor) {
-                    // if position contains enemy piece:
-                        // generate the piece's moves:
-                        PieceMovesCalculator piece_moves = new PieceMovesCalculator();
-                        Collection<ChessMove> curr_piece_moves = piece_moves.calculatePieceMoves(board, curr_position);
-                        // for each move:
-                        for (ChessMove m : curr_piece_moves) {
-                            // if m lands on kings_position:
-                            if (m.getEndPosition().equals(curr_team_kings_position)) {
-                                return true;
-                            }
-                        }
+
+                 bool = helperHelperIsInCheck(i, j, board, teamColor, curr_team_kings_position);
+                if (bool){
+                    return true;
                 }
+
+
+
+
             }
         }
 
 
-        return false;
+        return bool;
 
 
 
 
     }
+
+
+public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor teamColor, ChessPosition curr_team_kings_position){
+
+    ChessPosition curr_position = new ChessPosition(i,j);
+    ChessPiece curr_piece = board.getPiece(curr_position);
+
+
+    if (curr_piece != null && curr_piece.getTeamColor() != teamColor) {
+        // if position contains enemy piece:
+        // generate the piece's moves:
+        PieceMovesCalculator piece_moves = new PieceMovesCalculator();
+        Collection<ChessMove> curr_piece_moves = piece_moves.calculatePieceMoves(board, curr_position);
+
+        // for each move:
+        for (ChessMove m : curr_piece_moves) {
+            // if m lands on kings_position:
+            if (m.getEndPosition().equals(curr_team_kings_position)) {
+                return true;
+            }
+        }
+    }
+
+        return false;
+}
+
+
+
+
 
 
 
@@ -326,9 +350,10 @@ public class ChessGame {
                 for (int j = 1; j < 9; j++) {
                     ChessPosition curr_position = new ChessPosition(i, j);
                     ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
-                    if (curr_piece != null) {
+
+
+                    if (curr_piece != null && curr_piece.getTeamColor() == teamColor) {
                         // if position contains friendly piece:
-                        if (curr_piece.getTeamColor() == teamColor) {
                             // generate the piece's moves:
                             PieceMovesCalculator piece_moves = new PieceMovesCalculator();
                             Collection<ChessMove> curr_piece_moves = piece_moves.calculatePieceMoves(chessGameBoard, curr_position);
@@ -347,8 +372,9 @@ public class ChessGame {
 
 
                             }
-                        }
                     }
+
+
                 }
             }
 
