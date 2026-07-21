@@ -12,10 +12,6 @@ public class Server {
         httpHandler = Javalin.create(config -> config.staticFiles.add("web"));
         // Register your endpoints and exception handlers here.
 
-
-//        UserDAO userDAO = new UserDAO();
-//        AuthDAO authDAO = new AuthDAO();
-//        GameDAO gameDAO = new GameDAO();
         UserDAOinterface userDAO = new MySqlUserDAO();
         AuthDAOinterface authDAO = new MySqlAuthDAO();
         GameDAOinterface gameDAO = new MySqlGameDAO();

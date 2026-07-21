@@ -136,7 +136,8 @@ public class UserService {
 
 
 
-    public void joinGame (JoinGameRequest joinGameRequest) throws BadRequestException, InvalidGameIDException, GameAlreadyTakenException, DataAccessException {
+    public void joinGame(JoinGameRequest joinGameRequest)
+            throws BadRequestException,InvalidGameIDException,GameAlreadyTakenException,DataAccessException{
 
         AuthData authData = authDAO.getAuthDataByToken(joinGameRequest.authToken());
 
