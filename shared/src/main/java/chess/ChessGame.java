@@ -233,7 +233,7 @@ public class ChessGame {
 
 
         // iterate through board to find and store team's king (2d array):
-        ChessPosition curr_team_kings_position = null;
+        ChessPosition currTeamKingsPosition = null;
         for (int i=1; i<9; i++){
             for (int j=1; j<9; j++){
                 // check piece type and teamColor:
@@ -241,7 +241,7 @@ public class ChessGame {
                 ChessPiece curr_piece = board.getPiece(curr_position);
                 if (curr_piece != null) {
                     if (curr_piece.getPieceType() == ChessPiece.PieceType.KING && curr_piece.getTeamColor() == teamColor) {
-                        curr_team_kings_position = new ChessPosition(i, j);
+                        currTeamKingsPosition = new ChessPosition(i, j);
                         break;
                     }
                 }
@@ -253,7 +253,7 @@ public class ChessGame {
         for (int i=1; i<9; i++){
             for (int j=1; j<9; j++){
 
-                 bool = helperHelperIsInCheck(i, j, board, teamColor, curr_team_kings_position);
+                 bool = helperHelperIsInCheck(i, j, board, teamColor, currTeamKingsPosition);
                 if (bool){
                     return true;
                 }
@@ -273,7 +273,7 @@ public class ChessGame {
     }
 
 
-public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor teamColor, ChessPosition curr_team_kings_position){
+public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor teamColor, ChessPosition currTeamKingsPosition){
 
     ChessPosition curr_position = new ChessPosition(i,j);
     ChessPiece curr_piece = board.getPiece(curr_position);
@@ -288,7 +288,7 @@ public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor t
         // for each move:
         for (ChessMove m : curr_piece_moves) {
             // if m lands on kings_position:
-            if (m.getEndPosition().equals(curr_team_kings_position)) {
+            if (m.getEndPosition().equals(currTeamKingsPosition)) {
                 return true;
             }
         }
@@ -340,38 +340,18 @@ public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor t
                 findKingPosition(teamColor, chessGameBoard);
 
 
-        ChessBoard copy_board = null;
+        ChessBoard copyBoard = null;
         if (isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty()) {
             // iterate through all friendly pieces and see if their moves will change check:
 
 
+            boolean bool = false;
             // iterate through all positions on board:
             for (int i = 1; i < 9; i++) {
                 for (int j = 1; j < 9; j++) {
-                    ChessPosition curr_position = new ChessPosition(i, j);
-                    ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
-
-
-                    if (curr_piece != null && curr_piece.getTeamColor() == teamColor) {
-                        // if position contains friendly piece:
-                            // generate the piece's moves:
-                            PieceMovesCalculator piece_moves = new PieceMovesCalculator();
-                            Collection<ChessMove> curr_piece_moves = piece_moves.calculatePieceMoves(chessGameBoard, curr_position);
-                            // for each move:
-                            for (ChessMove m : curr_piece_moves) {
-                                // if move makes isincheck be false:
-
-                                copy_board = makeMoveOnCopy(chessGameBoard, m, curr_position);
-
-                                curr_piece = copy_board.getPiece(m.getEndPosition());
-
-
-                                if (!helperIsInCheck(curr_piece.getTeamColor(), copy_board)) {
-                                    return false;
-                                }
-
-
-                            }
+                    bool = helperIsInCheckmate(i, j, teamColor, copyBoard);
+                    if (!bool){
+                        return false;
                     }
 
 
@@ -381,13 +361,61 @@ public boolean helperHelperIsInCheck(int i, int j, ChessBoard board, TeamColor t
 
         }
 
-        System.out.println(copy_board);
+        System.out.println(copyBoard);
 
 
         return isInCheck(teamColor) && validMoves(curr_team_kings_position).isEmpty();
 
 
     }
+
+
+
+
+    public boolean helperIsInCheckmate (int i, int j, TeamColor teamColor, ChessBoard copyBoard){
+
+        ChessPosition curr_position = new ChessPosition(i, j);
+        ChessPiece curr_piece = chessGameBoard.getPiece(curr_position);
+
+
+        if (curr_piece != null && curr_piece.getTeamColor() == teamColor) {
+            // if position contains friendly piece:
+            // generate the piece's moves:
+            PieceMovesCalculator piece_moves = new PieceMovesCalculator();
+            Collection<ChessMove> curr_piece_moves = piece_moves.calculatePieceMoves(chessGameBoard, curr_position);
+            // for each move:
+            for (ChessMove m : curr_piece_moves) {
+                // if move makes isincheck be false:
+
+                copyBoard = makeMoveOnCopy(chessGameBoard, m, curr_position);
+
+                curr_piece = copyBoard.getPiece(m.getEndPosition());
+
+
+                if (!helperIsInCheck(curr_piece.getTeamColor(), copyBoard)) {
+                    return false;
+                }
+
+
+            }
+        }
+        return true;
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Determines if the given team is in stalemate, which here is defined as having
