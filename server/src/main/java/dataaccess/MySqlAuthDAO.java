@@ -29,7 +29,7 @@ public class MySqlAuthDAO implements AuthDAOinterface{
 
     public void clear() {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("TRUNCATE Auth")) {
+            try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE Auth")) {
                 var rs = preparedStatement.executeQuery();
                 rs.next();
                 System.out.println(rs.getInt(1));

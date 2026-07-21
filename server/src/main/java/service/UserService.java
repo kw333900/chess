@@ -22,7 +22,7 @@ public class UserService {
     }
 
 
-    public RegisterResult register(RegisterRequest registerRequest) throws AlreadyTakenException, BadRequestException {
+    public RegisterResult register(RegisterRequest registerRequest) throws AlreadyTakenException, BadRequestException, DataAccessException {
         // call DAO method here
 
         // if BadRequest: throw exception
@@ -48,7 +48,7 @@ public class UserService {
 
 
 
-    public LoginResult login(LoginRequest loginRequest) throws InvalidLoginException, BadRequestException {
+    public LoginResult login(LoginRequest loginRequest) throws InvalidLoginException, BadRequestException, DataAccessException {
         // if BadRequest: throw exception
         if (loginRequest.username() == null || loginRequest.password() == null){
             throw new BadRequestException("Error: bad request");

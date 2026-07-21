@@ -17,7 +17,7 @@ public class MySqlGameDAO implements GameDAOinterface{
 
     public void clear() {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("TRUNCATE Games")) {
+            try (var preparedStatement = conn.prepareStatement("TRUNCATE TABLE Games")) {
                 var rs = preparedStatement.executeQuery();
                 rs.next();
                 System.out.println(rs.getInt(1));
@@ -53,6 +53,7 @@ public class MySqlGameDAO implements GameDAOinterface{
                whiteUsername varchar(256),
                blackUsername varchar(256),
                gameName varchar(256),
+               game varchar(256),
                PRIMARY KEY (gameID)
                )
     """};

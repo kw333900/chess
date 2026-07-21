@@ -26,7 +26,7 @@ class UserServiceTest {
     }
 
     @Test
-    void registerPositive() {
+    void registerPositive() throws DataAccessException{
         RegisterRequest registerRequest = new RegisterRequest("username", "password", "email");
         assertNotNull(userService.register(registerRequest));
 
