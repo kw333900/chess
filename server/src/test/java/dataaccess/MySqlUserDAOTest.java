@@ -63,12 +63,12 @@ class MySqlUserDAOTest {
     void getUserPositive() throws DataAccessException{
 
         //        - Arrange
-        UserData expectedUser = new UserData("testusername", "testpass", "testemail");
+        UserData newUser = new UserData("blobtestusername", "blobtestpass", "blobtestemail");
 //        - Act
-        userDAO.addUser(expectedUser);
-        UserData actualUser = userDAO.getUser(expectedUser.username());
+        userDAO.addUser(newUser);
+        UserData actualU = userDAO.getUser(newUser.username());
 //        - Assert
-        assertEquals(expectedUser.username(), actualUser.username());
+        assertEquals(newUser.username(), actualU.username());
 
     }
 
