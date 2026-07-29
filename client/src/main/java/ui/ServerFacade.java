@@ -10,7 +10,7 @@ public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
     private final String serverUrl;
 
-    public ServerFacade(int port, String serverUrl) {
+    public ServerFacade(String serverUrl) {
 
 
         this.serverUrl = serverUrl;
@@ -18,27 +18,54 @@ public class ServerFacade {
 
 // include a method in this class for each server endpoint
 
-    public RegisterResult register (RegisterRequest request){
-        request
+    public RegisterResult register (RegisterRequest request) throws exception.ResponseException {
+        var httpRequest = buildRequest("POST", "/user", request);
+        var response = sendRequest(httpRequest);
+        return handleResponse(response, RegisterResult.class);
+
     }
 
 
-    public void clear (){}
+    public void clear () throws exception.ResponseException {
+        var httpRequest = buildRequest("DELETE", "/db", null);
+        var response = sendRequest(httpRequest);
+//        return handleResponse(response, null);
+    }
 
 
-    public LoginResult login (LoginRequest request){}
+    public LoginResult login (LoginRequest request) throws exception.ResponseException {
+        var httpRequest = buildRequest("POST", "/session", request);
+        var response = sendRequest(httpRequest);
+        return handleResponse(response, LoginResult.class);
+    }
 
 
-    public LogoutResult logout (LogoutRequest request){}
+    public LogoutResult logout (LogoutRequest request) throws exception.ResponseException {
+        var httpRequest = buildRequest("DELETE", "/session", request);
+        var response = sendRequest(httpRequest);
+        return handleResponse(response, LogoutResult.class);
+    }
 
 
-    public CreateGameResult createGame (CreateGameRequest request){}
+    public CreateGameResult createGame (CreateGameRequest request) throws exception.ResponseException {
+        var httpRequest = buildRequest("POST", "/game", request);
+        var response = sendRequest(httpRequest);
+        return handleResponse(response, CreateGameResult.class);
+    }
 
 
-    public ListGamesResult listGames (ListGamesRequest request){}
+    public ListGamesResult listGames (ListGamesRequest request) throws exception.ResponseException {
+        var httpRequest = buildRequest("GET", "/game", request);
+        var response = sendRequest(httpRequest);
+        return handleResponse(response, ListGamesResult.class);
+    }
 
 
-    public void joinGame (JoinGameRequest request){}
+    public void joinGame (JoinGameRequest request) throws exception.ResponseException {
+        var httpRequest = buildRequest("PUT", "/game", request);
+        var response = sendRequest(httpRequest);
+//        return handleResponse(response, null);
+    }
 
 
 
