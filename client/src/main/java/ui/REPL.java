@@ -25,12 +25,12 @@ public class REPL {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
-            printPrompt();
+//            printPrompt();
             String line = scanner.nextLine();
 
             try {
                 result = eval(line);
-                System.out.print(BLUE + result);
+//                System.out.print(BLUE + result);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -52,12 +52,13 @@ public class REPL {
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
             String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "signin" -> signIn(params);
-                case "rescue" -> rescuePet(params);
-                case "list" -> listPets();
-                case "signout" -> signOut();
-                case "adopt" -> adoptPet(params);
-                case "adoptall" -> adoptAllPets();
+                case "register" -> register(params);
+//                case "login" -> login(params);
+//                case "create" -> createGame(params);
+//                case "list" -> listGames;
+//                case "join" -> joinGame(params);
+//                case "observe" -> observeGame(params);
+//                case "logout" -> logout();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -66,6 +67,13 @@ public class REPL {
         }
     }
 
+/* Prompts the user to input registration information. Calls the server register API to register and login the user.
+If successfully registered, the client should be logged in and transition to the Postlogin UI. */
+    public String register(String... params) throws exception.ResponseException{
+
+
+        return "";
+    }
 
 
 
@@ -73,7 +81,7 @@ public class REPL {
 
 
 
-
+/* Displays text informing the user what actions they can take.*/
     public String help() {
         if (state == State.LOGGED_OUT) {
             return """
