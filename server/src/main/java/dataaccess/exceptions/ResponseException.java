@@ -25,7 +25,7 @@ public class ResponseException extends Exception {
 
     public static ResponseException fromJson(String json) {
         var map = new Gson().fromJson(json, HashMap.class);
-        var status = Code.valueOf(map.get("status").toString());
+        var status = Code.ServerError;
         String message = map.get("message").toString();
         return new ResponseException(status, message);
     }

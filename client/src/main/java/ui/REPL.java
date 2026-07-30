@@ -1,6 +1,8 @@
 package ui;
 
 import client.State;
+import service.RegisterRequest;
+import service.RegisterResult;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -25,12 +27,12 @@ public class REPL {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
-//            printPrompt();
+            printPrompt();
             String line = scanner.nextLine();
 
             try {
                 result = eval(line);
-//                System.out.print(BLUE + result);
+                System.out.print(result);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -43,7 +45,9 @@ public class REPL {
 
     }
 
-
+    private void printPrompt() {
+        System.out.printf(" [%s] >>> ", state);
+    }
 
 
     public String eval(String input) {
@@ -70,9 +74,16 @@ public class REPL {
 /* Prompts the user to input registration information. Calls the server register API to register and login the user.
 If successfully registered, the client should be logged in and transition to the Postlogin UI. */
     public String register(String... params) throws exception.ResponseException{
+        if (params.length == 3) {
+            RegisterResult result = server.register(new RegisterRequest(params[0], params[1], params[2]));
+            if (result == null){
+                return "failed to register";
+            }
+            state = State.LOGGED_IN;
+            return String.format("You signed in as %s.\n", params[0]);
+        }
+        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
 
-
-        return "";
     }
 
 
