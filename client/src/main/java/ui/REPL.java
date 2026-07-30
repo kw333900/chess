@@ -156,30 +156,66 @@ After logging out with the server, the client should transition to the Prelogin 
             board.resetBoard();
 
             // FOR PHASE 6?:
-//            int gameID = Integer.parseInt(params[0]);
-//            server.joinGame(new JoinGameRequest(activeAuthToken, params[1], gameID));
+            int gameID = Integer.parseInt(params[0]);
+
+            // match gameid from user with list of games
+
+                                                                //  v put matched gameid here
+            server.joinGame(new JoinGameRequest(activeAuthToken, params[1], gameID));
 
             if (Objects.equals(params[1], "white") || Objects.equals(params[1], "WHITE")){
                 return printGameWhite(board);
             }
-            else if (Objects.equals(params[1], "black") || Objects.equals(params[1], "BLACK"){
+            else if (Objects.equals(params[1], "black") || Objects.equals(params[1], "BLACK")){
                 return printGameBlack(board);
             }
-            return "";
         }
         throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <ID> [WHITE|BLACK]\n");
 
     }
+// uppercase = white, lowercase = black
 
-    private String printGameBlack(ChessBoard board) {
-
-
-    }
 
     public String printGameWhite(ChessBoard board) {
+        // loop through board and print out pieces
 
+        return ("""
+                uppercase = white
+                lowercase = black
+                   a b c d e f g h
+                8 |r|n|b|q|k|b|n|r| 8
+                7 |p|p|p|p|p|p|p|p| 7
+                6 | | | | | | | | | 6
+                5 | | | | | | | | | 5
+                4 | | | | | | | | | 4
+                3 | | | | | | | | | 3
+                2 |P|P|P|P|P|P|P|P| 2
+                1 |R|N|B|Q|K|B|N|R| 1
+                   a b c d e f g h
+                """);
+    }
+
+
+
+
+    private String printGameBlack(ChessBoard board) {
+        return ("""
+                uppercase = white
+                lowercase = black
+                   h g f e d c b a
+                1 |R|N|B|K|Q|B|N|R| 1
+                2 |P|P|P|P|P|P|P|P| 2
+                3 | | | | | | | | | 3
+                4 | | | | | | | | | 4
+                5 | | | | | | | | | 5
+                6 | | | | | | | | | 6
+                7 |p|p|p|p|p|p|p|p| 7
+                8 |r|n|b|k|q|b|n|r| 8
+                   h g f e d c b a
+                """);
 
     }
+
 
 
     public String listGames() throws exception.ResponseException{

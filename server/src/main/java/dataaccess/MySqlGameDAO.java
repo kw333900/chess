@@ -14,8 +14,15 @@ import java.util.Collection;
 public class MySqlGameDAO implements GameDAOinterface{
     int gameIDcounter=1;
 
-    public MySqlGameDAO(){
+    public MySqlGameDAO() {
         configureDatabase();
+        try {
+            Collection<GameData> listGames = getGames();
+            gameIDcounter = listGames.size()+1;
+        } catch (DataAccessException e){
+             gameIDcounter=1;
+        }
+
     }
 
 
