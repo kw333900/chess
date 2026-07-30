@@ -5,6 +5,7 @@ import client.State;
 import service.*;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class REPL {
@@ -61,7 +62,7 @@ public class REPL {
                 case "login" -> login(params);
                 case "create" -> createGame(params);
                 case "list" -> listGames();
-//                case "join" -> joinGame(params);
+                case "join" -> joinGame(params);
 //                case "observe" -> observeGame(params);
                 case "logout" -> logout();
                 case "quit" -> "quit";
@@ -112,9 +113,9 @@ login the user. When successfully logged in, the client should transition to the
 After logging out with the server, the client should transition to the Prelogin UI. */
     public String logout() throws exception.ResponseException{
             LogoutResult result = server.logout(new LogoutRequest(activeAuthToken));
-            if (result == null){
-                return "failed to login";
-            }
+//            if (result == null){
+//                return "failed to logout";
+//            }
             if (state == State.LOGGED_IN){
                 activeAuthToken = null;
                 state = State.LOGGED_OUT;
@@ -134,7 +135,7 @@ After logging out with the server, the client should transition to the Prelogin 
             if (result == null){
                 return "failed to create game";
             }
-            return String.format("You logged in as %s.\n", params[0]);
+            return String.format("You created a new game called: %s.\n", params[0]);
         }
         throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <NAME>\n");
 
@@ -142,25 +143,43 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
-//
-//    public String joinGame(String... params) throws exception.ResponseException{
-//        // based on player color, print white or blacks perspective (create a method for each)
-//
-//        if (params.length == 2) {
-//            ChessBoard board = new ChessBoard();
-//            board.resetBoard();
+
+    public String joinGame(String... params) throws exception.ResponseException{
+        // based on player color, print white or blacks perspective (create a method for each)
+
+        if (state != State.LOGGED_IN){
+            throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Not logged in\n");
+        }
+
+        if (params.length == 2) {
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+
+            // FOR PHASE 6?:
 //            int gameID = Integer.parseInt(params[0]);
 //            server.joinGame(new JoinGameRequest(activeAuthToken, params[1], gameID));
-//            if (result == null){
-//                return "failed to login";
-//            }
-//            state = State.LOGGED_IN;
-//            return String.format("You logged in as %s.\n", params[0]);
-//        }
-//        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <USERNAME> <PASSWORD>\n");
-//
-//    }
 
+            if (Objects.equals(params[1], "white") || Objects.equals(params[1], "WHITE")){
+                return printGameWhite(board);
+            }
+            else if (Objects.equals(params[1], "black") || Objects.equals(params[1], "BLACK"){
+                return printGameBlack(board);
+            }
+            return "";
+        }
+        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <ID> [WHITE|BLACK]\n");
+
+    }
+
+    private String printGameBlack(ChessBoard board) {
+
+
+    }
+
+    public String printGameWhite(ChessBoard board) {
+
+
+    }
 
 
     public String listGames() throws exception.ResponseException{
@@ -170,7 +189,7 @@ After logging out with the server, the client should transition to the Prelogin 
                 return "failed to list games";
             }
 
-            return result.toString(); // <-------does this work? create a method to loop through and list the games?
+            return printGames(result); // <-------does this work? create a method to loop through and list the games?
         }
 
 
@@ -179,6 +198,18 @@ After logging out with the server, the client should transition to the Prelogin 
     }
 
 
+
+    public String printGames (ListGamesResult result){
+        StringBuilder gamesString = new StringBuilder();
+        int gameCounter = 1;
+        for (var game : result.games()){
+            gamesString.append(String.format("%s) Game name: %s, White user: %s, Black user: %s\n", gameCounter, game.gameName(), game.whiteUsername(), game.blackUsername()));
+            gameCounter++;
+        }
+
+        return gamesString.toString();
+
+    }
 
 
 

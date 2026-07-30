@@ -19,62 +19,66 @@ public class ServerFacade {
 // include a method in this class for each server endpoint
 
     public RegisterResult register (RegisterRequest request) throws exception.ResponseException {
-        var httpRequest = buildRequest("POST", "/user", request);
+        var httpRequest = buildRequest("POST", "/user", request, null);
         var response = sendRequest(httpRequest);
         return handleResponse(response, RegisterResult.class);
 
     }
 
-
-    public void clear () throws exception.ResponseException {
-        var httpRequest = buildRequest("DELETE", "/db", null);
-        var response = sendRequest(httpRequest);
-//        return handleResponse(response, null);
-    }
+//
+//    public void clear () throws exception.ResponseException {
+//        var httpRequest = buildRequest("DELETE", "/db", null);
+//        var response = sendRequest(httpRequest);
+////        return handleResponse(response, null);
+//    }
 
 
     public LoginResult login (LoginRequest request) throws exception.ResponseException {
-        var httpRequest = buildRequest("POST", "/session", request);
+        var httpRequest = buildRequest("POST", "/session", request, null);
         var response = sendRequest(httpRequest);
         return handleResponse(response, LoginResult.class);
     }
 
 
     public LogoutResult logout (LogoutRequest request) throws exception.ResponseException {
-        var httpRequest = buildRequest("DELETE", "/session", request);
+
+        var httpRequest = buildRequest("DELETE", "/session", request, request.authToken());
         var response = sendRequest(httpRequest);
         return handleResponse(response, LogoutResult.class);
     }
 
 
     public CreateGameResult createGame (CreateGameRequest request) throws exception.ResponseException {
-        var httpRequest = buildRequest("POST", "/game", request);
+        var httpRequest = buildRequest("POST", "/game", request, request.authToken());
         var response = sendRequest(httpRequest);
         return handleResponse(response, CreateGameResult.class);
     }
 
 
     public ListGamesResult listGames (ListGamesRequest request) throws exception.ResponseException {
-        var httpRequest = buildRequest("GET", "/game", request);
+        var httpRequest = buildRequest("GET", "/game", request, request.authToken());
         var response = sendRequest(httpRequest);
         return handleResponse(response, ListGamesResult.class);
     }
 
 
     public void joinGame (JoinGameRequest request) throws exception.ResponseException {
-        var httpRequest = buildRequest("PUT", "/game", request);
+        var httpRequest = buildRequest("PUT", "/game", request, request.authToken());
         var response = sendRequest(httpRequest);
 //        return handleResponse(response, null);
     }
 
 
 
-    private HttpRequest buildRequest(String method, String path, Object body) {
+    private HttpRequest buildRequest(String method, String path, Object body, String header) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))
                 .method(method, makeRequestBody(body));
         if (body != null) {
             request.setHeader("Content-Type", "application/json");
+        }
+        if (header != null) {
+            request.setHeader("authorization", header);
         }
         return request.build();
     }
