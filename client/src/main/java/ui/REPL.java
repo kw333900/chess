@@ -113,9 +113,7 @@ login the user. When successfully logged in, the client should transition to the
 After logging out with the server, the client should transition to the Prelogin UI. */
     public String logout() throws exception.ResponseException{
             LogoutResult result = server.logout(new LogoutRequest(activeAuthToken));
-//            if (result == null){
-//                return "failed to logout";
-//            }
+
             if (state == State.LOGGED_IN){
                 activeAuthToken = null;
                 state = State.LOGGED_OUT;
@@ -179,6 +177,15 @@ After logging out with the server, the client should transition to the Prelogin 
     public String printGameWhite(ChessBoard board) {
         // loop through board and print out pieces
 
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+
+            }
+        }
+
+
+
+
         return ("""
                 uppercase = white
                 lowercase = black
@@ -225,7 +232,7 @@ After logging out with the server, the client should transition to the Prelogin 
                 return "failed to list games";
             }
 
-            return printGames(result); // <-------does this work? create a method to loop through and list the games?
+            return printGames(result);
         }
 
 
