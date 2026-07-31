@@ -229,11 +229,13 @@ public class UserHandler {
             context.status(400);
             var json = serializer.toJson(Map.of("message", e.getMessage()));
             context.result(json);
-        } catch (GameAlreadyTakenException e){
+        }
+        catch (GameAlreadyTakenException e){
             context.status(403);
             var json = serializer.toJson(Map.of("message", e.getMessage()));
             context.result(json);
-        }catch (DataAccessException e) {
+        }
+        catch (DataAccessException e) {
             context.status(500);
             var json = serializer.toJson(Map.of("message", e.getMessage()));
             context.result(json);

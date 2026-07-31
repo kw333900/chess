@@ -5,6 +5,7 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import client.State;
+import dataaccess.exceptions.GameAlreadyTakenException;
 import model.GameData;
 import service.*;
 
@@ -148,8 +149,13 @@ After logging out with the server, the client should transition to the Prelogin 
             throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
         }
         if (params.length == 1) {
-            int gameID = Integer.parseInt(params[0]);
-            if (gameID <= getGamesListSize()){
+            int gameID;
+            try {
+                gameID = Integer.parseInt(params[0]);
+            } catch (NumberFormatException e) {
+                throw new ResponseException(ResponseException.Code.ClientError, "<ID> must be an integer (e.g. two is invalid)\n");
+            }
+            if (gameID <= getGamesListSize() && gameID>0){
                 ChessBoard board = new ChessBoard();
                 board.resetBoard();
 
@@ -173,7 +179,7 @@ After logging out with the server, the client should transition to the Prelogin 
             ListGamesResult result = server.listGames(new ListGamesRequest(activeAuthToken));
             Collection<GameData> list = result.games();
             ArrayList<GameData> arrayList = new ArrayList<>(list);
-            GameData gameData = arrayList.get(userNum);
+            GameData gameData = arrayList.get(userNum-1);
             return gameData.gameID();
         }
 
@@ -194,21 +200,39 @@ After logging out with the server, the client should transition to the Prelogin 
         }
 
         if (params.length == 2) {
+//            int gameID2 = Integer.parseInt(params[0]);
+
+
+
             ChessBoard board = new ChessBoard();
             board.resetBoard();
 
             // FOR PHASE 6?:
-            int userNum = Integer.parseInt(params[0]);
-
+            int userNum;
+            try {
+                userNum = Integer.parseInt(params[0]);
+            } catch (NumberFormatException e) {
+                throw new ResponseException(ResponseException.Code.ClientError, "<ID> must be an integer (e.g. two is invalid)\n");
+            }
+//            int userNum = Integer.parseInt(params[0]);
             // match gameid from user with list of games
             int gameID = getidFromUserNum(userNum);
-                                                                //  v put matched gameid here
-            server.joinGame(new JoinGameRequest(activeAuthToken, params[1], gameID));
 
-            if (Objects.equals(params[1], "white") || Objects.equals(params[1], "WHITE")){
-                return printGameWhite(board);
+            if (!(gameID <= getGamesListSize() && gameID > 0)) {
+
+                throw new ResponseException(ResponseException.Code.ClientError, "Game does not exist.\n");
             }
-            else if (Objects.equals(params[1], "black") || Objects.equals(params[1], "BLACK")){
+
+            try {
+                server.joinGame(new JoinGameRequest(activeAuthToken, params[1], gameID));
+            } catch (GameAlreadyTakenException e) {
+                throw new ResponseException(ResponseException.Code.ClientError, "Color already taken in that game\n");
+            }
+
+
+            if (Objects.equals(params[1], "white") || Objects.equals(params[1], "WHITE")) {
+                return printGameWhite(board);
+            } else if (Objects.equals(params[1], "black") || Objects.equals(params[1], "BLACK")) {
                 return printGameBlack(board);
             }
         }

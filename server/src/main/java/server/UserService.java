@@ -146,7 +146,7 @@ public class UserService {
         if (joinGameRequest.gameID() <1 || joinGameRequest.gameID() >100 || joinGameRequest.playerColor() == null){
             throw new BadRequestException("Error: bad request");
         }
-        if (!joinGameRequest.playerColor().equals("WHITE") && !joinGameRequest.playerColor().equals("BLACK")){
+        if (!joinGameRequest.playerColor().equals("WHITE") && !joinGameRequest.playerColor().equals("BLACK") && !joinGameRequest.playerColor().equals("white") && !joinGameRequest.playerColor().equals("black")){
             throw new BadRequestException("Error: bad request");
         }
 
@@ -159,23 +159,23 @@ public class UserService {
         GameData gameData = gameDAO.getGameData(joinGameRequest.gameID());
 
         // if color already taken in gamedata: throw gamealreadytaken exception
-        if (Objects.equals(joinGameRequest.playerColor(), "WHITE") && gameData.whiteUsername() != null){
+        if ((Objects.equals(joinGameRequest.playerColor(), "WHITE") || Objects.equals(joinGameRequest.playerColor(), "white")) && gameData.whiteUsername() != null){
             throw new GameAlreadyTakenException("Error: already taken");
         }
-        else if (Objects.equals(joinGameRequest.playerColor(), "BLACK") && gameData.blackUsername() != null){
+        else if ((Objects.equals(joinGameRequest.playerColor(), "BLACK") || Objects.equals(joinGameRequest.playerColor(), "black")) && gameData.blackUsername() != null){
             throw new GameAlreadyTakenException("Error: already taken");
         }
 
 
 
         // join and update game depending on color:
-        if (Objects.equals(joinGameRequest.playerColor(), "WHITE")){
+        if (Objects.equals(joinGameRequest.playerColor(), "WHITE") || Objects.equals(joinGameRequest.playerColor(), "white")){
             int newID = joinGameRequest.gameID();
             String newUsername = authData.username();
             GameData updatedGameData = new GameData(newID, newUsername, gameData.blackUsername(), gameData.gameName(), gameData.game());
             gameDAO.updateGameData(updatedGameData);
         }
-        else if (Objects.equals(joinGameRequest.playerColor(), "BLACK")){
+        else if (Objects.equals(joinGameRequest.playerColor(), "BLACK") || Objects.equals(joinGameRequest.playerColor(), "black")){
             int newID = joinGameRequest.gameID();
             String newUsername = authData.username();
             GameData updatedGameData = new GameData(newID, gameData.whiteUsername(), newUsername, gameData.gameName(), gameData.game());
