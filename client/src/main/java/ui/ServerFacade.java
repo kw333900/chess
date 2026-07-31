@@ -26,13 +26,6 @@ public class ServerFacade {
 
     }
 
-//
-//    public void clear () throws Exceptions.ResponseException {
-//        var httpRequest = buildRequest("DELETE", "/db", null);
-//        var response = sendRequest(httpRequest);
-////        return handleResponse(response, null);
-//    }
-
 
     public LoginResult login (LoginRequest request) throws ResponseException {
         var httpRequest = buildRequest("POST", "/session", request, null);

@@ -325,21 +325,6 @@ After logging out with the server, the client should transition to the Prelogin 
         return boardString.toString();
 
 
-
-//        return ("""
-//                uppercase = white
-//                lowercase = black
-//                   a b c d e f g h
-//                8 |r|n|b|q|k|b|n|r| 8
-//                7 |p|p|p|p|p|p|p|p| 7
-//                6 | | | | | | | | | 6
-//                5 | | | | | | | | | 5
-//                4 | | | | | | | | | 4
-//                3 | | | | | | | | | 3
-//                2 |P|P|P|P|P|P|P|P| 2
-//                1 |R|N|B|Q|K|B|N|R| 1
-//                   a b c d e f g h
-//                """);
     }
 
 
@@ -430,32 +415,6 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-//        return ("""
-//                uppercase = white
-//                lowercase = black
-//                   h g f e d c b a
-//                1 |R|N|B|K|Q|B|N|R| 1
-//                2 |P|P|P|P|P|P|P|P| 2
-//                3 | | | | | | | | | 3
-//                4 | | | | | | | | | 4
-//                5 | | | | | | | | | 5
-//                6 | | | | | | | | | 6
-//                7 |p|p|p|p|p|p|p|p| 7
-//                8 |r|n|b|k|q|b|n|r| 8
-//                   h g f e d c b a
-//                """);
-
     }
 
 
@@ -470,13 +429,6 @@ After logging out with the server, the client should transition to the Prelogin 
 
         throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
     }
-
-
-
-
-
-
-
 
 
 
@@ -502,15 +454,14 @@ After logging out with the server, the client should transition to the Prelogin 
         StringBuilder gamesString = new StringBuilder();
         int gameCounter = 1;
         for (var game : result.games()){
-            gamesString.append(String.format("%s) Game name: %s, White user: %s, Black user: %s\n", gameCounter, game.gameName(), game.whiteUsername(), game.blackUsername()));
+            gamesString.append(String.format("%s) Game name: %s, White user: %s, ", gameCounter, game.gameName(), game.whiteUsername()));
+            gamesString.append(String.format("Black user: %s\n", game.blackUsername()));
             gameCounter++;
         }
 
         return gamesString.toString();
 
     }
-
-
 
 
 
@@ -538,8 +489,6 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
     }
-
-
 
 
 }

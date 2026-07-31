@@ -32,19 +32,6 @@ public class ServerFacadeTests {
         // IDK if this is correct^
     }
 
-//    @Test
-//    public void sampleTest() {
-//        Assertions.assertTrue(true);
-//    }
-
-
-
-    // FROM SPEC:
-//    @Test
-//    void register() throws Exception {
-//        var authData = facade.register("player1", "password", "p1@email.com");
-//        assertTrue(authData.authToken().length() > 10);
-//    }
 
 
 

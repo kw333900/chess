@@ -50,3 +50,23 @@ java -jar client/target/client-jar-with-dependencies.jar
 
 ♕ 240 Chess Client: chess.ChessPiece@7852e922
 ```
+
+
+
+
+Notes for phase5:
+
+//    @Test
+//    public void sampleTest() {
+//        Assertions.assertTrue(true);
+//    }
+
+
+
+    // FROM SPEC:
+//    @Test
+//    void register() throws Exception {
+//        var authData = facade.register("player1", "password", "p1@email.com");
+//        assertTrue(authData.authToken().length() > 10);
+//    }
+

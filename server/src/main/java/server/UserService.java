@@ -147,7 +147,8 @@ public class UserService {
         if (joinGameRequest.gameID() <1 || joinGameRequest.gameID() >100 || joinGameRequest.playerColor() == null){
             throw new BadRequestException("Error: bad request");
         }
-        if (!joinGameRequest.playerColor().equals("WHITE") && !joinGameRequest.playerColor().equals("BLACK") && !joinGameRequest.playerColor().equals("white") && !joinGameRequest.playerColor().equals("black")){
+        boolean cond0 = !joinGameRequest.playerColor().equals("white") && !joinGameRequest.playerColor().equals("black");
+        if (!joinGameRequest.playerColor().equals("WHITE") && !joinGameRequest.playerColor().equals("BLACK") && cond0){
             throw new BadRequestException("Error: bad request");
         }
 
@@ -160,10 +161,13 @@ public class UserService {
         GameData gameData = gameDAO.getGameData(joinGameRequest.gameID());
 
         // if color already taken in gamedata: throw gamealreadytaken exception
-        if ((Objects.equals(joinGameRequest.playerColor(), "WHITE") || Objects.equals(joinGameRequest.playerColor(), "white")) && gameData.whiteUsername() != null){
+        boolean cond1 = (Objects.equals(joinGameRequest.playerColor(), "WHITE") || Objects.equals(joinGameRequest.playerColor(), "white"));
+        boolean cond2 = (Objects.equals(joinGameRequest.playerColor(), "BLACK") || Objects.equals(joinGameRequest.playerColor(), "black"));
+        if (cond1 && gameData.whiteUsername() != null){
             throw new GameAlreadyTakenException("Error: already taken");
         }
-        else if ((Objects.equals(joinGameRequest.playerColor(), "BLACK") || Objects.equals(joinGameRequest.playerColor(), "black")) && gameData.blackUsername() != null){
+
+        else if (cond2 && gameData.blackUsername() != null){
             throw new GameAlreadyTakenException("Error: already taken");
         }
 
