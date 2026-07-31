@@ -3,6 +3,7 @@ package service;
 import dataaccess.*;
 import dataaccess.exceptions.*;
 import org.junit.jupiter.api.*;
+import server.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 

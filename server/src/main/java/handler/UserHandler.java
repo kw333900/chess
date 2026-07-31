@@ -5,6 +5,7 @@ import dataaccess.*;
 import dataaccess.exceptions.*;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
+import server.UserService;
 import service.*;
 
 import java.util.Map;

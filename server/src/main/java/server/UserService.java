@@ -1,10 +1,11 @@
-package service;
+package server;
 import dataaccess.*;
 import dataaccess.exceptions.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
+import service.*;
 
 import java.util.Collection;
 import java.util.Objects;
