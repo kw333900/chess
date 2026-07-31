@@ -1,12 +1,14 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import client.State;
+import model.GameData;
 import service.*;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class REPL {
     private final ServerFacade server;
@@ -63,7 +65,7 @@ public class REPL {
                 case "create" -> createGame(params);
                 case "list" -> listGames();
                 case "join" -> joinGame(params);
-//                case "observe" -> observeGame(params);
+                case "observe" -> observeGame(params);
                 case "logout" -> logout();
                 case "quit" -> "quit";
                 default -> help();
@@ -141,6 +143,48 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
+    public String observeGame(String... params) throws exception.ResponseException{
+        if (state != State.LOGGED_IN){
+            throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Not logged in\n");
+        }
+        if (params.length == 1) {
+            int gameID = Integer.parseInt(params[0]);
+            if (gameID <= getGamesListSize()){
+                ChessBoard board = new ChessBoard();
+                board.resetBoard();
+
+                return printGameWhite(board);
+            } else {
+                throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Game does not exist.\n");
+            }
+
+        }
+
+        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <ID>\n");
+    }
+
+
+
+
+
+
+    public int getidFromUserNum (int userNum) throws exception.ResponseException {
+        if (state == State.LOGGED_IN){
+            ListGamesResult result = server.listGames(new ListGamesRequest(activeAuthToken));
+            Collection<GameData> list = result.games();
+            ArrayList<GameData> arrayList = new ArrayList<>(list);
+            GameData gameData = arrayList.get(userNum);
+            return gameData.gameID();
+        }
+
+
+
+        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Not logged in\n");
+    }
+
+
+
+
 
     public String joinGame(String... params) throws exception.ResponseException{
         // based on player color, print white or blacks perspective (create a method for each)
@@ -154,10 +198,10 @@ After logging out with the server, the client should transition to the Prelogin 
             board.resetBoard();
 
             // FOR PHASE 6?:
-            int gameID = Integer.parseInt(params[0]);
+            int userNum = Integer.parseInt(params[0]);
 
             // match gameid from user with list of games
-
+            int gameID = getidFromUserNum(userNum);
                                                                 //  v put matched gameid here
             server.joinGame(new JoinGameRequest(activeAuthToken, params[1], gameID));
 
@@ -176,52 +220,240 @@ After logging out with the server, the client should transition to the Prelogin 
 
     public String printGameWhite(ChessBoard board) {
         // loop through board and print out pieces
-
+        StringBuilder boardString = new StringBuilder();
+        int k = 8;
         for (int i = 1; i < 9; i++) {
+            boardString.append(String.format("%s", k));
+
             for (int j = 1; j < 9; j++) {
 
+                ChessPiece piece = board.getPiece(new ChessPosition(i,j));
+                if ((i+j)%2 == 0){
+                    boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_WHITE));
+                } else {
+                    boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_BLACK));
+                }
+
+
+                if (piece != null){
+                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_PAWN));
+
+
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_ROOK));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_BISHOP));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_KING));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_KNIGHT));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_QUEEN));
+                    }
+
+
+                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_PAWN));
+
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_ROOK));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_BISHOP));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_KING));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_KNIGHT));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_QUEEN));
+                    }
+
+
+
+                } else {
+                    boardString.append(String.format("%s", EscapeSequences.EMPTY));
+                }
+                boardString.append(String.format("%s", EscapeSequences.RESET_BG_COLOR));
+
+
+
+                if (j==8){
+//                    boardString.append(String.format("%s\n", k));
+                    boardString.append("\n");
+                }
+
             }
+            k--;
+
         }
+        boardString.append("  a   b   c  d   e  f   g   h\n");
+
+        return boardString.toString();
 
 
 
-
-        return ("""
-                uppercase = white
-                lowercase = black
-                   a b c d e f g h
-                8 |r|n|b|q|k|b|n|r| 8
-                7 |p|p|p|p|p|p|p|p| 7
-                6 | | | | | | | | | 6
-                5 | | | | | | | | | 5
-                4 | | | | | | | | | 4
-                3 | | | | | | | | | 3
-                2 |P|P|P|P|P|P|P|P| 2
-                1 |R|N|B|Q|K|B|N|R| 1
-                   a b c d e f g h
-                """);
+//        return ("""
+//                uppercase = white
+//                lowercase = black
+//                   a b c d e f g h
+//                8 |r|n|b|q|k|b|n|r| 8
+//                7 |p|p|p|p|p|p|p|p| 7
+//                6 | | | | | | | | | 6
+//                5 | | | | | | | | | 5
+//                4 | | | | | | | | | 4
+//                3 | | | | | | | | | 3
+//                2 |P|P|P|P|P|P|P|P| 2
+//                1 |R|N|B|Q|K|B|N|R| 1
+//                   a b c d e f g h
+//                """);
     }
 
 
 
 
     private String printGameBlack(ChessBoard board) {
-        return ("""
-                uppercase = white
-                lowercase = black
-                   h g f e d c b a
-                1 |R|N|B|K|Q|B|N|R| 1
-                2 |P|P|P|P|P|P|P|P| 2
-                3 | | | | | | | | | 3
-                4 | | | | | | | | | 4
-                5 | | | | | | | | | 5
-                6 | | | | | | | | | 6
-                7 |p|p|p|p|p|p|p|p| 7
-                8 |r|n|b|k|q|b|n|r| 8
-                   h g f e d c b a
-                """);
+
+
+        StringBuilder boardString = new StringBuilder();
+        int k=1;
+        for (int i = 8; i > 0; i--) {
+            boardString.append(String.format("%s", k));
+            for (int j = 8; j > 0; j--) {
+
+                ChessPiece piece = board.getPiece(new ChessPosition(i,j));
+
+                if ((i+j)%2 == 0){
+                    boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_WHITE));
+                } else {
+                    boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_BLACK));
+                }
+
+
+                if (piece != null){
+                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_PAWN));
+
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_ROOK));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_BISHOP));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_KING));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_KNIGHT));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                        boardString.append(String.format("%s", EscapeSequences.WHITE_QUEEN));
+                    }
+
+
+                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_PAWN));
+
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_ROOK));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_BISHOP));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_KING));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_KNIGHT));
+                    }
+                    else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        boardString.append(String.format("%s", EscapeSequences.BLACK_QUEEN));
+                    }
+
+
+
+                } else {
+                    boardString.append(String.format("%s", EscapeSequences.EMPTY));
+                }
+                boardString.append(String.format("%s", EscapeSequences.RESET_BG_COLOR));
+
+
+                if (j==1){
+                    boardString.append("\n");
+                }
+
+            }
+            k++;
+
+        }
+
+        boardString.append("  h   g   f  e   d  c   b   a\n");
+
+        return boardString.toString();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        return ("""
+//                uppercase = white
+//                lowercase = black
+//                   h g f e d c b a
+//                1 |R|N|B|K|Q|B|N|R| 1
+//                2 |P|P|P|P|P|P|P|P| 2
+//                3 | | | | | | | | | 3
+//                4 | | | | | | | | | 4
+//                5 | | | | | | | | | 5
+//                6 | | | | | | | | | 6
+//                7 |p|p|p|p|p|p|p|p| 7
+//                8 |r|n|b|k|q|b|n|r| 8
+//                   h g f e d c b a
+//                """);
 
     }
+
+
+    public int getGamesListSize () throws exception.ResponseException {
+        if (state == State.LOGGED_IN){
+            ListGamesResult result = server.listGames(new ListGamesRequest(activeAuthToken));
+            return result.games().size();
+
+        }
+
+
+
+        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Not logged in\n");
+    }
+
+
+
+
+
+
+
+
 
 
 
