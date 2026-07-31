@@ -5,7 +5,7 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import client.State;
-import dataaccess.exceptions.GameAlreadyTakenException;
+import Exceptions.GameAlreadyTakenException;
 import model.GameData;
 import service.*;
 

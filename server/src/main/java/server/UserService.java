@@ -1,4 +1,5 @@
 package server;
+import Exceptions.GameAlreadyTakenException;
 import dataaccess.*;
 import dataaccess.exceptions.*;
 import model.AuthData;
@@ -138,7 +139,7 @@ public class UserService {
 
 
     public void joinGame(JoinGameRequest joinGameRequest)
-            throws BadRequestException,InvalidGameIDException,GameAlreadyTakenException,DataAccessException{
+            throws BadRequestException,InvalidGameIDException, GameAlreadyTakenException,DataAccessException{
 
         AuthData authData = authDAO.getAuthDataByToken(joinGameRequest.authToken());
 

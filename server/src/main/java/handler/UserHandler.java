@@ -1,5 +1,6 @@
 package handler;
 
+import Exceptions.GameAlreadyTakenException;
 import com.google.gson.Gson;
 import dataaccess.*;
 import dataaccess.exceptions.*;
