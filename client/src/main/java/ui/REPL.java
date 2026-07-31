@@ -1,5 +1,5 @@
 package ui;
-
+import Exceptions.ResponseException;
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
@@ -16,7 +16,7 @@ public class REPL {
     private String activeAuthToken = null;
 
 
-    public REPL (String serverURL) throws exception.ResponseException {
+    public REPL (String serverURL) throws ResponseException {
         server = new ServerFacade(serverURL);
 
     }
@@ -70,14 +70,14 @@ public class REPL {
                 case "quit" -> "quit";
                 default -> help();
             };
-        } catch (exception.ResponseException ex) {
+        } catch (ResponseException ex) {
             return ex.getMessage();
         }
     }
 
 /* Prompts the user to input registration information. Calls the server register API to register and login the user.
 If successfully registered, the client should be logged in and transition to the Postlogin UI. */
-    public String register(String... params) throws exception.ResponseException{
+    public String register(String... params) throws ResponseException {
         if (params.length == 3) {
             RegisterResult result = server.register(new RegisterRequest(params[0], params[1], params[2]));
             if (result == null){
@@ -87,7 +87,7 @@ If successfully registered, the client should be logged in and transition to the
             state = State.LOGGED_IN;
             return String.format("You signed in as %s.\n", params[0]);
         }
-        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <USERNAME> <PASSWORD> <EMAIL>\n");
+        throw new ResponseException(ResponseException.Code.ClientError, "Expected: <USERNAME> <PASSWORD> <EMAIL>\n");
 
     }
 
@@ -95,7 +95,7 @@ If successfully registered, the client should be logged in and transition to the
 
 /* Prompts the user to input login information. Calls the server login API to
 login the user. When successfully logged in, the client should transition to the Postlogin UI. */
-    public String login(String... params) throws exception.ResponseException{
+    public String login(String... params) throws ResponseException {
         if (params.length == 2) {
             LoginResult result = server.login(new LoginRequest(params[0], params[1]));
             if (result == null){
@@ -105,7 +105,7 @@ login the user. When successfully logged in, the client should transition to the
             state = State.LOGGED_IN;
             return String.format("You logged in as %s.\n", params[0]);
         }
-        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <USERNAME> <PASSWORD>\n");
+        throw new ResponseException(ResponseException.Code.ClientError, "Expected: <USERNAME> <PASSWORD>\n");
 
     }
 
@@ -113,7 +113,7 @@ login the user. When successfully logged in, the client should transition to the
 
 /* Logs out the user. Calls the server logout API to logout the user.
 After logging out with the server, the client should transition to the Prelogin UI. */
-    public String logout() throws exception.ResponseException{
+    public String logout() throws ResponseException {
             LogoutResult result = server.logout(new LogoutRequest(activeAuthToken));
 
             if (state == State.LOGGED_IN){
@@ -123,13 +123,13 @@ After logging out with the server, the client should transition to the Prelogin 
             }
 
 
-        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Not logged in\n");
+        throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
 
     }
 
 
 
-    public String createGame(String... params) throws exception.ResponseException{
+    public String createGame(String... params) throws ResponseException {
         if (params.length == 1 && state == State.LOGGED_IN) {
             CreateGameResult result = server.createGame(new CreateGameRequest(activeAuthToken, params[0]));
             if (result == null){
@@ -137,15 +137,15 @@ After logging out with the server, the client should transition to the Prelogin 
             }
             return String.format("You created a new game called: %s.\n", params[0]);
         }
-        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <NAME>\n");
+        throw new ResponseException(ResponseException.Code.ClientError, "Expected: <NAME>\n");
 
     }
 
 
 
-    public String observeGame(String... params) throws exception.ResponseException{
+    public String observeGame(String... params) throws ResponseException {
         if (state != State.LOGGED_IN){
-            throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Not logged in\n");
+            throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
         }
         if (params.length == 1) {
             int gameID = Integer.parseInt(params[0]);
@@ -155,12 +155,12 @@ After logging out with the server, the client should transition to the Prelogin 
 
                 return printGameWhite(board);
             } else {
-                throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Game does not exist.\n");
+                throw new ResponseException(ResponseException.Code.ClientError, "Game does not exist.\n");
             }
 
         }
 
-        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <ID>\n");
+        throw new ResponseException(ResponseException.Code.ClientError, "Expected: <ID>\n");
     }
 
 
@@ -168,7 +168,7 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
-    public int getidFromUserNum (int userNum) throws exception.ResponseException {
+    public int getidFromUserNum (int userNum) throws ResponseException {
         if (state == State.LOGGED_IN){
             ListGamesResult result = server.listGames(new ListGamesRequest(activeAuthToken));
             Collection<GameData> list = result.games();
@@ -179,18 +179,18 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
-        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Not logged in\n");
+        throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
     }
 
 
 
 
 
-    public String joinGame(String... params) throws exception.ResponseException{
+    public String joinGame(String... params) throws ResponseException {
         // based on player color, print white or blacks perspective (create a method for each)
 
         if (state != State.LOGGED_IN){
-            throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Not logged in\n");
+            throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
         }
 
         if (params.length == 2) {
@@ -212,7 +212,7 @@ After logging out with the server, the client should transition to the Prelogin 
                 return printGameBlack(board);
             }
         }
-        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Expected: <ID> [WHITE|BLACK]\n");
+        throw new ResponseException(ResponseException.Code.ClientError, "Expected: <ID> [WHITE|BLACK]\n");
 
     }
 // uppercase = white, lowercase = black
@@ -435,7 +435,7 @@ After logging out with the server, the client should transition to the Prelogin 
     }
 
 
-    public int getGamesListSize () throws exception.ResponseException {
+    public int getGamesListSize () throws ResponseException {
         if (state == State.LOGGED_IN){
             ListGamesResult result = server.listGames(new ListGamesRequest(activeAuthToken));
             return result.games().size();
@@ -444,7 +444,7 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
-        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Not logged in\n");
+        throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
     }
 
 
@@ -457,7 +457,7 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
-    public String listGames() throws exception.ResponseException{
+    public String listGames() throws ResponseException {
         if (state == State.LOGGED_IN){
             ListGamesResult result = server.listGames(new ListGamesRequest(activeAuthToken));
             if (result == null){
@@ -468,7 +468,7 @@ After logging out with the server, the client should transition to the Prelogin 
         }
 
 
-        throw new exception.ResponseException(exception.ResponseException.Code.ClientError, "Not logged in\n");
+        throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
 
     }
 

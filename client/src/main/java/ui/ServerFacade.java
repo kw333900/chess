@@ -18,7 +18,7 @@ public class ServerFacade {
 
 // include a method in this class for each server endpoint
 
-    public RegisterResult register (RegisterRequest request) throws exception.ResponseException {
+    public RegisterResult register (RegisterRequest request) throws ResponseException {
         var httpRequest = buildRequest("POST", "/user", request, null);
         var response = sendRequest(httpRequest);
         return handleResponse(response, RegisterResult.class);
@@ -26,21 +26,21 @@ public class ServerFacade {
     }
 
 //
-//    public void clear () throws exception.ResponseException {
+//    public void clear () throws Exceptions.ResponseException {
 //        var httpRequest = buildRequest("DELETE", "/db", null);
 //        var response = sendRequest(httpRequest);
 ////        return handleResponse(response, null);
 //    }
 
 
-    public LoginResult login (LoginRequest request) throws exception.ResponseException {
+    public LoginResult login (LoginRequest request) throws ResponseException {
         var httpRequest = buildRequest("POST", "/session", request, null);
         var response = sendRequest(httpRequest);
         return handleResponse(response, LoginResult.class);
     }
 
 
-    public LogoutResult logout (LogoutRequest request) throws exception.ResponseException {
+    public LogoutResult logout (LogoutRequest request) throws ResponseException {
 
         var httpRequest = buildRequest("DELETE", "/session", request, request.authToken());
         var response = sendRequest(httpRequest);
@@ -48,21 +48,21 @@ public class ServerFacade {
     }
 
 
-    public CreateGameResult createGame (CreateGameRequest request) throws exception.ResponseException {
+    public CreateGameResult createGame (CreateGameRequest request) throws ResponseException {
         var httpRequest = buildRequest("POST", "/game", request, request.authToken());
         var response = sendRequest(httpRequest);
         return handleResponse(response, CreateGameResult.class);
     }
 
 
-    public ListGamesResult listGames (ListGamesRequest request) throws exception.ResponseException {
+    public ListGamesResult listGames (ListGamesRequest request) throws ResponseException {
         var httpRequest = buildRequest("GET", "/game", request, request.authToken());
         var response = sendRequest(httpRequest);
         return handleResponse(response, ListGamesResult.class);
     }
 
 
-    public void joinGame (JoinGameRequest request) throws exception.ResponseException {
+    public void joinGame (JoinGameRequest request) throws ResponseException {
         var httpRequest = buildRequest("PUT", "/game", request, request.authToken());
         var response = sendRequest(httpRequest);
 //        return handleResponse(response, null);
@@ -91,23 +91,23 @@ public class ServerFacade {
         }
     }
 
-    private HttpResponse<String> sendRequest(HttpRequest request) throws exception.ResponseException {
+    private HttpResponse<String> sendRequest(HttpRequest request) throws ResponseException {
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception ex) {
-            throw new exception.ResponseException(exception.ResponseException.Code.ServerError, ex.getMessage());
+            throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
         }
     }
 
-    private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws exception.ResponseException {
+    private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws ResponseException {
         var status = response.statusCode();
         if (!isSuccessful(status)) {
             var body = response.body();
             if (body != null) {
-                throw exception.ResponseException.fromJson(body);
+                throw ResponseException.fromJson(body);
             }
 
-            throw new exception.ResponseException(exception.ResponseException.fromHttpStatusCode(status), "other failure: " + status);
+            throw new ResponseException(ResponseException.fromHttpStatusCode(status), "other failure: " + status);
         }
 
         if (responseClass != null) {
