@@ -1,11 +1,11 @@
 package ui;
-import Exceptions.ResponseException;
+import exceptions.ResponseException;
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import client.State;
-import Exceptions.GameAlreadyTakenException;
+import exceptions.GameAlreadyTakenException;
 import model.GameData;
 import service.*;
 
@@ -251,63 +251,9 @@ After logging out with the server, the client should transition to the Prelogin 
 
             for (int j = 1; j < 9; j++) {
 
-                ChessPiece piece = board.getPiece(new ChessPosition(i,j));
-                if ((i+j)%2 == 0){
-                    boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_WHITE));
-                } else {
-                    boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_BLACK));
-                }
+                printGameHelper(board, boardString, i, j);
 
 
-                if (piece != null){
-                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_PAWN));
-
-
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_ROOK));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_BISHOP));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_KING));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_KNIGHT));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_QUEEN));
-                    }
-
-
-                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_PAWN));
-
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_ROOK));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_BISHOP));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_KING));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_KNIGHT));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_QUEEN));
-                    }
-
-
-
-                } else {
-                    boardString.append(String.format("%s", EscapeSequences.EMPTY));
-                }
-                boardString.append(String.format("%s", EscapeSequences.RESET_BG_COLOR));
 
 
 
@@ -339,63 +285,9 @@ After logging out with the server, the client should transition to the Prelogin 
             boardString.append(String.format("%s", k));
             for (int j = 8; j > 0; j--) {
 
-                ChessPiece piece = board.getPiece(new ChessPosition(i,j));
 
-                if ((i+j)%2 == 0){
-                    boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_WHITE));
-                } else {
-                    boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_BLACK));
-                }
+                printGameHelper(board, boardString, i, j);
 
-
-                if (piece != null){
-                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_PAWN));
-
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_ROOK));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_BISHOP));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_KING));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_KNIGHT));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                        boardString.append(String.format("%s", EscapeSequences.WHITE_QUEEN));
-                    }
-
-
-                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_PAWN));
-
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_ROOK));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_BISHOP));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_KING));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_KNIGHT));
-                    }
-                    else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        boardString.append(String.format("%s", EscapeSequences.BLACK_QUEEN));
-                    }
-
-
-
-                } else {
-                    boardString.append(String.format("%s", EscapeSequences.EMPTY));
-                }
-                boardString.append(String.format("%s", EscapeSequences.RESET_BG_COLOR));
 
 
                 if (j==1){
@@ -414,6 +306,68 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
+
+    }
+
+    private void printGameHelper(ChessBoard board, StringBuilder boardString, int i, int j) {
+
+        ChessPiece piece = board.getPiece(new ChessPosition(i,j));
+
+        if ((i+j)%2 == 0){
+            boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_WHITE));
+        } else {
+            boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_BLACK));
+        }
+
+
+        if (piece != null){
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                boardString.append(String.format("%s", EscapeSequences.WHITE_PAWN));
+
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                boardString.append(String.format("%s", EscapeSequences.WHITE_ROOK));
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                boardString.append(String.format("%s", EscapeSequences.WHITE_BISHOP));
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                boardString.append(String.format("%s", EscapeSequences.WHITE_KING));
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                boardString.append(String.format("%s", EscapeSequences.WHITE_KNIGHT));
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                boardString.append(String.format("%s", EscapeSequences.WHITE_QUEEN));
+            }
+
+
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                boardString.append(String.format("%s", EscapeSequences.BLACK_PAWN));
+
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                boardString.append(String.format("%s", EscapeSequences.BLACK_ROOK));
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                boardString.append(String.format("%s", EscapeSequences.BLACK_BISHOP));
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                boardString.append(String.format("%s", EscapeSequences.BLACK_KING));
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                boardString.append(String.format("%s", EscapeSequences.BLACK_KNIGHT));
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                boardString.append(String.format("%s", EscapeSequences.BLACK_QUEEN));
+            }
+
+
+
+        } else {
+            boardString.append(String.format("%s", EscapeSequences.EMPTY));
+        }
+        boardString.append(String.format("%s", EscapeSequences.RESET_BG_COLOR));
 
     }
 

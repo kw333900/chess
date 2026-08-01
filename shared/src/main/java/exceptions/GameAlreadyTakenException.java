@@ -1,4 +1,4 @@
-package Exceptions;
+package exceptions;
 
 public class GameAlreadyTakenException extends RuntimeException {
     public GameAlreadyTakenException(String message) {

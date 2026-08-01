@@ -1,5 +1,5 @@
 package server;
-import Exceptions.GameAlreadyTakenException;
+import exceptions.GameAlreadyTakenException;
 import dataaccess.*;
 import dataaccess.exceptions.*;
 import model.AuthData;
