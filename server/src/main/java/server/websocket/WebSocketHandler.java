@@ -1,6 +1,10 @@
 package server.websocket;
 
 import com.google.gson.Gson;
+import dataaccess.GameDAOinterface;
+import dataaccess.MySqlAuthDAO;
+import dataaccess.MySqlGameDAO;
+import dataaccess.exceptions.DataAccessException;
 import exceptions.ResponseException;
 import io.javalin.websocket.WsCloseContext;
 import io.javalin.websocket.WsCloseHandler;
@@ -8,13 +12,17 @@ import io.javalin.websocket.WsConnectContext;
 import io.javalin.websocket.WsConnectHandler;
 import io.javalin.websocket.WsMessageContext;
 import io.javalin.websocket.WsMessageHandler;
+import model.AuthData;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 //import webSocketMessages.Action;
 //import webSocketMessages.Notification;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGame;
 import websocket.messages.Notification;
+import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 
@@ -52,21 +60,25 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 //                case RESIGN -> resign(session, username, command);
             }
 
-        } catch (exceptions.ResponseException ex) {
-            throw new ResponseException(ResponseException.Code.ClientError, "Error: unauthorized");
-//            sendMessage(session, gameId, new ErrorMessage("Error: unauthorized"));
-
-        } catch (Exception ex) {
+        }
+//        catch (exceptions.ResponseException ex) {
+//            throw new ResponseException(ResponseException.Code.ClientError, "Error: unauthorized");
+////            sendMessage(session, gameId, new ErrorMessage("Error: unauthorized"));
+//
+//        }
+        catch (Exception ex) {
             ex.printStackTrace();
             throw new ResponseException(ResponseException.Code.ClientError, "Error: " + ex.getMessage());
 //            sendMessage(session, gameId, new ErrorMessage("Error: " + ex.getMessage()));
         }
     }
 
-    private String getUsername(String authToken) {
+    private String getUsername(String authToken) throws DataAccessException {
         // get username from auth data somehow?
+        MySqlAuthDAO mySqlAuthDAO = new MySqlAuthDAO();
+        AuthData authData = mySqlAuthDAO.getAuthDataByToken(authToken);
+        return authData.username();
 
-        return authToken;
     }
 
     @Override
@@ -75,11 +87,23 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
 
-    public void connect (Session session, String username, UserGameCommand command) throws IOException {
+    public void connect (Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
         connections.add(command.getGameID(), session);
+
+        // Server sends a LOAD_GAME message back to the root client:
+        Gson Serializer = new Gson();
+        MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
+        GameData gameData = mySqlGameDAO.getGameData(command.getGameID());
+        session.getRemote().sendString(Serializer.toJson(new LoadGame(gameData.game())));
+
+        // Server sends a Notification message to all other clients in that game informing them the root client
+        // connected to the game, either as a player (in which case their color must be specified) or as an observer:
         var message = String.format("%s has connected to the game", username);
-        var notification = new Notification(Notification.Type.ALL_BUT_ROOT, message);
+
+        var notification = new Notification(message);
         connections.broadcast(session, notification);
+
+
     }
 
 

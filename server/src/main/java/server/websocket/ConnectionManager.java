@@ -26,6 +26,7 @@ public class ConnectionManager {
     }
 
     // 3 different types of broadcast: ROOT_ONLY, ALL, ALL_BUT_ROOT
+    // null for exclude session = all
 
     public void broadcast(Session excludeSession, Notification notification) throws IOException {
         String msg = notification.toString();
