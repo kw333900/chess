@@ -3,10 +3,12 @@ package server;
 import dataaccess.*;
 import handler.UserHandler;
 import io.javalin.*;
+import server.websocket.WebSocketHandler;
 
 public class Server {
 
     private final Javalin httpHandler;
+    private final WebSocketHandler webSocketHandler;
 
     public Server() {
         httpHandler = Javalin.create(config -> config.staticFiles.add("web"));
@@ -18,6 +20,7 @@ public class Server {
 
         UserHandler u = new UserHandler(userDAO, authDAO, gameDAO);
 
+        webSocketHandler = new WebSocketHandler();
 
         // Endpoint: Register
         httpHandler.post("/user", u::handleRegister);
@@ -34,6 +37,12 @@ public class Server {
         // Endpoint: Join Game
         httpHandler.put("/game", u::handleJoinGame);
 
+        // ws:
+        httpHandler.ws("/ws", ws -> {
+            ws.onConnect(webSocketHandler);
+            ws.onMessage(webSocketHandler);
+            ws.onClose(webSocketHandler);
+        });
 
     }
 

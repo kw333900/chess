@@ -15,11 +15,12 @@ public class REPL {
     private final ServerFacade server;
     private State state = State.LOGGED_OUT;
     private String activeAuthToken = null;
+    // private final WebSocketFacade ws;   // <--- FOR PHASE6?
 
 
     public REPL (String serverURL) throws ResponseException {
         server = new ServerFacade(serverURL);
-
+        // ws = new WebSocketFacade(serverURL, this);   // <---PHASE 6?
     }
 
 
@@ -49,6 +50,25 @@ public class REPL {
 
 
     }
+
+
+// FROM LECTURE VIDEO:
+//    @Override
+//    public void notify(ServerMessage message) {
+//        switch (message.getServerMessageType()) {
+//            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
+//            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
+//            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+//        }
+//    }
+
+
+
+
+
+
+
+
 
     private void printPrompt() {
         System.out.printf(" [%s] >>> ", state);
