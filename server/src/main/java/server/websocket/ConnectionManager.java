@@ -20,9 +20,12 @@ public class ConnectionManager {
         connections.put(gameID, listOfSessions);
     }
 
-    public void remove(int gameID) {
+    public void remove(int gameID, Session session) {
+//        connections.remove(gameID);
+        ArrayList<Session> listOfSessions = connections.get(gameID);
+        listOfSessions.remove(session);
 
-        connections.remove(gameID);
+
     }
 
     // 3 different types of broadcast: ROOT_ONLY, ALL, ALL_BUT_ROOT
@@ -30,18 +33,23 @@ public class ConnectionManager {
 
     public void broadcast(Session excludeSession, Notification notification) throws IOException {
         String msg = notification.toString();
-        for (ArrayList<Session> list : connections.values()) {
 
-            for (Session c : list) {
-                if (c.isOpen()) {
-                    if (!c.equals(excludeSession)) {
-                        c.getRemote().sendString(msg);
+            for (ArrayList<Session> list : connections.values()) {
+
+                for (Session c : list) {
+                    if (c.isOpen()) {
+                        if (!c.equals(excludeSession)) {
+                            c.getRemote().sendString(msg);
+                        }
                     }
                 }
-            }
 
+            }
         }
 
+
+    public boolean isEmpty() {
+        return connections.isEmpty();
     }
 
 

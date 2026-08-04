@@ -25,6 +25,7 @@ import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
 
@@ -56,7 +57,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 case CONNECT -> connect(session, username, command);
 //                case MAKE_MOVE -> makeMove(session, username, Serializer.fromJson(
 //                        wsMessageContext.message(), MakeMoveCommand.class));
-//                case LEAVE -> leaveGame(session, username, command);
+                case LEAVE -> leaveGame(session, username, command);
 //                case RESIGN -> resign(session, username, command);
             }
 
@@ -72,6 +73,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 //            sendMessage(session, gameId, new ErrorMessage("Error: " + ex.getMessage()));
         }
     }
+
+
 
     private String getUsername(String authToken) throws DataAccessException {
         // get username from auth data somehow?
@@ -108,7 +111,31 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
 
 
+    public void leaveGame (Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
+        // If a player is leaving, then the game is updated to remove the root client. Game is updated in the database.
+        connections.remove(command.getGameID(), session);
+        MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
+        GameData gameData = mySqlGameDAO.getGameData(command.getGameID());
+        if (Objects.equals(gameData.whiteUsername(), username)){
+            mySqlGameDAO.updateGameData(new GameData(command.getGameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game()));
+        } else if (Objects.equals(gameData.blackUsername(), username)){
+            mySqlGameDAO.updateGameData(new GameData(command.getGameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game()));
+        }
 
+        // Server sends a Notification message to all other clients in that game informing
+        // them that the root client left. This applies to both players and observers.
+        var message = String.format("%s has left the game", username);
+        var notification = new Notification(message);
+        if (!connections.isEmpty()){
+            connections.broadcast(session, notification);
+        } else {
+            String msg = notification.toString();
+            session.getRemote().sendString(msg);
+        }
+
+
+
+    }
 
 
 
