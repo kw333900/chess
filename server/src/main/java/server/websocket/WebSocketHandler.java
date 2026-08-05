@@ -153,8 +153,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void makeMove(Session session, String username, MakeMoveCommand makeMoveCommand) throws InvalidMoveException, IOException, DataAccessException {
         try{
 
-
-
             // 1. Server verifies the validity of the move.
             MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
             GameData gameData = mySqlGameDAO.getGameData(makeMoveCommand.getGameID());
@@ -234,12 +232,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
 
 
-
-
-
-
-
-
     }
 
 
@@ -247,11 +239,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void resign(Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
         // 1. Server marks the game as over (no more moves can be made). Game is updated in the database.
-        // TODO: find a way to mark the game as closed
-        // Note: I've put a boolean variable inside ChessGame class
-
-
-
         MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
         GameData gameData = mySqlGameDAO.getGameData(command.getGameID());
         ChessGame chessGame = gameData.game();
@@ -268,6 +255,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
         chessGame.markGameAsOver();
         mySqlGameDAO.updateGameData(new GameData(command.getGameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame));
+
 
 
         // 2. Server sends a Notification message to all clients in that game informing them that the root client resigned.
