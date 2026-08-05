@@ -145,68 +145,82 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
 
 
-
     }
 
 
 
     private void makeMove(Session session, String username, MakeMoveCommand makeMoveCommand) throws InvalidMoveException, IOException, DataAccessException {
-        // 1. Server verifies the validity of the move.
-        MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
-        GameData gameData = mySqlGameDAO.getGameData(makeMoveCommand.getGameID());
-        ChessGame chessGame = gameData.game();
-        chessGame.makeMove(makeMoveCommand.getMove());
+        try{
 
-        // 2. Game is updated to represent the move. Game is updated in the database.
-        mySqlGameDAO.updateGameData(gameData);
+            // 1. Server verifies the validity of the move.
+            MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
+            GameData gameData = mySqlGameDAO.getGameData(makeMoveCommand.getGameID());
+            ChessGame chessGame = gameData.game();
+            chessGame.makeMove(makeMoveCommand.getMove());
 
-
-        // 3. Server sends a LOAD_GAME message to all clients in the game (including the root client) with an updated game.
-        connections.broadcast(null, new LoadGame(gameData.game()));
+            // 2. Game is updated to represent the move. Game is updated in the database.
+            mySqlGameDAO.updateGameData(gameData);
 
 
-        // 4. Server sends a Notification message to all other clients in that game informing them what move was made.
-        // TODO: find a way to return piece type and position in message
-        var message = String.format("%s moved ", username);
-        var notification = new Notification(message);
-        if (!connections.isEmpty()){
-            connections.broadcast(session, notification);
-        } else {
-            String msg = notification.toString();
-            session.getRemote().sendString(msg);
+            // 3. Server sends a LOAD_GAME message to all clients in the game (including the root client) with an updated game.
+            connections.broadcast(null, new LoadGame(gameData.game()));
+
+
+            // 4. Server sends a Notification message to all other clients in that game informing them what move was made.
+            // TODO: find a way to return piece type and position in message
+            var message = String.format("%s moved ", username);
+            var notification = new Notification(message);
+            if (!connections.isEmpty()){
+                connections.broadcast(session, notification);
+            } else {
+                String msg = notification.toString();
+                session.getRemote().sendString(msg);
+            }
+
+
+
+            // 5. If the move results in check, checkmate or stalemate the server sends a Notification message to all clients.
+            if (chessGame.isInCheck(chessGame.getTeamTurn())){
+                message = String.format("%s is in check", username);
+                notification = new Notification(message);
+                if (!connections.isEmpty()){
+                    connections.broadcast(null, notification);
+                } else {
+                    String msg = notification.toString();
+                    session.getRemote().sendString(msg);
+                }
+            } else if (chessGame.isInCheckmate(chessGame.getTeamTurn())){
+                message = String.format("%s is in checkmate", username);
+                notification = new Notification(message);
+                if (!connections.isEmpty()){
+                    connections.broadcast(null, notification);
+                } else {
+                    String msg = notification.toString();
+                    session.getRemote().sendString(msg);
+                }
+            } else if (chessGame.isInStalemate(chessGame.getTeamTurn())){
+                message = String.format("%s is in stalemate", username);
+                notification = new Notification(message);
+                if (!connections.isEmpty()){
+                    connections.broadcast(null, notification);
+                } else {
+                    String msg = notification.toString();
+                    session.getRemote().sendString(msg);
+                }
+            }
+
+
+
+        } catch (InvalidMoveException ex){
+            Gson Serializer = new Gson();
+            session.getRemote().sendString(Serializer.toJson(new Error("Error: [insert error here?]")));
         }
 
 
 
-        // 5. If the move results in check, checkmate or stalemate the server sends a Notification message to all clients.
-        if (chessGame.isInCheck(chessGame.getTeamTurn())){
-             message = String.format("%s is in check", username);
-             notification = new Notification(message);
-            if (!connections.isEmpty()){
-                connections.broadcast(null, notification);
-            } else {
-                String msg = notification.toString();
-                session.getRemote().sendString(msg);
-            }
-        } else if (chessGame.isInCheckmate(chessGame.getTeamTurn())){
-             message = String.format("%s is in checkmate", username);
-             notification = new Notification(message);
-            if (!connections.isEmpty()){
-                connections.broadcast(null, notification);
-            } else {
-                String msg = notification.toString();
-                session.getRemote().sendString(msg);
-            }
-        } else if (chessGame.isInStalemate(chessGame.getTeamTurn())){
-             message = String.format("%s is in stalemate", username);
-             notification = new Notification(message);
-            if (!connections.isEmpty()){
-                connections.broadcast(null, notification);
-            } else {
-                String msg = notification.toString();
-                session.getRemote().sendString(msg);
-            }
-        }
+
+
+
 
 
     }
@@ -218,6 +232,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         // 1. Server marks the game as over (no more moves can be made). Game is updated in the database.
         // TODO: find a way to mark the game as closed
         // Note: I've put a boolean variable inside ChessGame class
+
+
 
         // 2. Server sends a Notification message to all clients in that game informing them that the root client resigned.
         // This applies to both players and observers.
