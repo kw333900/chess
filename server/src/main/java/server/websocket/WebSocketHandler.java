@@ -49,41 +49,47 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             UserGameCommand command = Serializer.fromJson(
                     wsMessageContext.message(), UserGameCommand.class);
             gameId = command.getGameID();
-            String username = getUsername(command.getAuthToken());
+
+            MySqlAuthDAO mySqlAuthDAO = new MySqlAuthDAO();
+            AuthData authData = mySqlAuthDAO.getAuthDataByToken(command.getAuthToken());
+            if (authData != null){
+                String username = authData.username();
 
 
-            // connect -> add to connections, leave -> remove from connections
+                // connect -> add to connections, leave -> remove from connections
 
-            switch (command.getCommandType()) {
-                case CONNECT -> connect(session, username, command);
+                switch (command.getCommandType()) {
+                    case CONNECT -> connect(session, username, command);
 //                case MAKE_MOVE -> makeMove(session, username, Serializer.fromJson(
 //                        wsMessageContext.message(), MakeMoveCommand.class));
-                case LEAVE -> leaveGame(session, username, command);
+                    case LEAVE -> leaveGame(session, username, command);
 //                case RESIGN -> resign(session, username, command);
+                }
+            } else {
+                session.getRemote().sendString(Serializer.toJson(new Error("Error: [insert error here?]")));
             }
 
+
         }
-//        catch (exceptions.ResponseException ex) {
-//            throw new ResponseException(ResponseException.Code.ClientError, "Error: unauthorized");
-////            sendMessage(session, gameId, new ErrorMessage("Error: unauthorized"));
-//
-//        }
+
         catch (Exception ex) {
             ex.printStackTrace();
             throw new ResponseException(ResponseException.Code.ClientError, "Error: " + ex.getMessage());
-//            sendMessage(session, gameId, new ErrorMessage("Error: " + ex.getMessage()));
         }
-    }
-
-
-
-    private String getUsername(String authToken) throws DataAccessException {
-        // get username from auth data somehow?
-        MySqlAuthDAO mySqlAuthDAO = new MySqlAuthDAO();
-        AuthData authData = mySqlAuthDAO.getAuthDataByToken(authToken);
-        return authData.username();
 
     }
+
+
+//
+//    private String getUsername(String authToken) throws DataAccessException {
+//        // get username from auth data somehow?
+//        MySqlAuthDAO mySqlAuthDAO = new MySqlAuthDAO();
+//        AuthData authData = mySqlAuthDAO.getAuthDataByToken(authToken);
+//        return authData.username();
+//
+//
+//
+//    }
 
     @Override
     public void handleClose(WsCloseContext ctx) {
