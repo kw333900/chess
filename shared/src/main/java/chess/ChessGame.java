@@ -14,7 +14,7 @@ import java.util.Objects;
 public class ChessGame {
     ChessBoard chessGameBoard = new ChessBoard();
     TeamColor currTeamColor = TeamColor.WHITE;
-
+    boolean open = true;
 
     public ChessGame() {
         chessGameBoard.resetBoard();
@@ -121,6 +121,11 @@ public class ChessGame {
             execute move
             increment turn counter
          */
+
+        if (!open){
+            return;
+        }
+
         ChessPiece chess_piece = chessGameBoard.getPiece(move.getStartPosition());
         if (chess_piece == null){
             throw new InvalidMoveException("");

@@ -2,6 +2,7 @@ package server.websocket;
 
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.Notification;
+import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class ConnectionManager {
     // 3 different types of broadcast: ROOT_ONLY, ALL, ALL_BUT_ROOT
     // null for exclude session = all
 
-    public void broadcast(Session excludeSession, Notification notification) throws IOException {
+    public void broadcast(Session excludeSession, ServerMessage notification) throws IOException {
         String msg = notification.toString();
 
             for (ArrayList<Session> list : connections.values()) {
@@ -43,8 +44,8 @@ public class ConnectionManager {
                         }
                     }
                 }
-
             }
+
         }
 
 
