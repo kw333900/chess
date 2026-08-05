@@ -217,6 +217,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void resign(Session session, String username, UserGameCommand command) throws IOException {
         // 1. Server marks the game as over (no more moves can be made). Game is updated in the database.
         // TODO: find a way to mark the game as closed
+        // Note: I've put a boolean variable inside ChessGame class
 
         // 2. Server sends a Notification message to all clients in that game informing them that the root client resigned.
         // This applies to both players and observers.
