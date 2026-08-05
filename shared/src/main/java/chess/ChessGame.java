@@ -14,12 +14,21 @@ import java.util.Objects;
 public class ChessGame {
     ChessBoard chessGameBoard = new ChessBoard();
     TeamColor currTeamColor = TeamColor.WHITE;
-    boolean open = true;
+    boolean openStatus = true;
 
     public ChessGame() {
         chessGameBoard.resetBoard();
     }
 
+
+
+    public void markGameAsOver (){
+        openStatus = false;
+    }
+
+    public boolean getOpenStatus(){
+        return openStatus;
+    }
 
 
     /**
@@ -122,9 +131,7 @@ public class ChessGame {
             increment turn counter
          */
 
-        if (!open){
-            return;
-        }
+
 
         ChessPiece chess_piece = chessGameBoard.getPiece(move.getStartPosition());
         if (chess_piece == null){

@@ -32,19 +32,19 @@ public class ConnectionManager {
     // 3 different types of broadcast: ROOT_ONLY, ALL, ALL_BUT_ROOT
     // null for exclude session = all
 
-    public void broadcast(Session excludeSession, ServerMessage notification) throws IOException {
+    public void broadcast(Session excludeSession, ServerMessage notification, int gameID) throws IOException {
         String msg = notification.toString();
 
-            for (ArrayList<Session> list : connections.values()) {
+//            for (ArrayList<Session> list : connections.values()) {
 
-                for (Session c : list) {
+                for (Session c : connections.get(gameID)) {
                     if (c.isOpen()) {
                         if (!c.equals(excludeSession)) {
                             c.getRemote().sendString(msg);
                         }
                     }
                 }
-            }
+//            }
 
         }
 
