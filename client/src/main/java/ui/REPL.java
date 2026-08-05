@@ -8,10 +8,12 @@ import client.State;
 import exceptions.GameAlreadyTakenException;
 import model.GameData;
 import service.*;
+import websocket.NotificationHandler;
+import websocket.messages.ServerMessage;
 
 import java.util.*;
 
-public class REPL {
+public class REPL implements NotificationHandler {
     private final ServerFacade server;
     private State state = State.LOGGED_OUT;
     private String activeAuthToken = null;
@@ -53,14 +55,14 @@ public class REPL {
 
 
 // FROM LECTURE VIDEO:
-//    @Override
-//    public void notify(ServerMessage message) {
-//        switch (message.getServerMessageType()) {
+    @Override
+    public void notify(ServerMessage message) {
+        switch (message.getServerMessageType()) {
 //            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
 //            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
 //            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
-//        }
-//    }
+        }
+    }
 
 
 
