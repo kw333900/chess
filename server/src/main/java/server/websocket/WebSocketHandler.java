@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 //import webSocketMessages.Notification;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.Error;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
@@ -97,14 +98,20 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         Gson Serializer = new Gson();
         MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
         GameData gameData = mySqlGameDAO.getGameData(command.getGameID());
-        session.getRemote().sendString(Serializer.toJson(new LoadGame(gameData.game())));
+        if (gameData != null){
+            session.getRemote().sendString(Serializer.toJson(new LoadGame(gameData.game())));
+            // Server sends a Notification message to all other clients in that game informing them the root client
+            // connected to the game, either as a player (in which case their color must be specified) or as an observer:
+            var message = String.format("%s has connected to the game", username);
+            var notification = new Notification(message);
+            connections.broadcast(session, notification);
 
-        // Server sends a Notification message to all other clients in that game informing them the root client
-        // connected to the game, either as a player (in which case their color must be specified) or as an observer:
-        var message = String.format("%s has connected to the game", username);
+        } else {
+            session.getRemote().sendString(Serializer.toJson(new Error("Error: [insert error here?]")));
+        }
 
-        var notification = new Notification(message);
-        connections.broadcast(session, notification);
+
+
 
 
     }
