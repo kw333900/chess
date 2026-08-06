@@ -9,6 +9,8 @@ import exceptions.GameAlreadyTakenException;
 import model.GameData;
 import service.*;
 import websocket.NotificationHandler;
+import websocket.WebSocketFacade;
+import websocket.messages.LoadGame;
 import websocket.messages.ServerMessage;
 
 import java.util.*;
@@ -17,12 +19,14 @@ public class REPL implements NotificationHandler {
     private final ServerFacade server;
     private State state = State.LOGGED_OUT;
     private String activeAuthToken = null;
-    // private final WebSocketFacade ws;   // <--- FOR PHASE6?
+    private ChessBoard activeChessBoard;
+    private String currentUserColor = null;
+     private final WebSocketFacade ws;   // <--- FOR PHASE6?
 
 
     public REPL (String serverURL) throws ResponseException {
         server = new ServerFacade(serverURL);
-        // ws = new WebSocketFacade(serverURL, this);   // <---PHASE 6?
+         ws = new WebSocketFacade(serverURL, this);   // <---PHASE 6?
     }
 
 
@@ -60,11 +64,24 @@ public class REPL implements NotificationHandler {
         switch (message.getServerMessageType()) {
 //            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
 //            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
-//            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+            case LOAD_GAME -> loadGame((LoadGame) message);
         }
     }
 
 
+    public void loadGame(LoadGame message){
+        ChessGame chessGame = message.getGame();
+        activeChessBoard = chessGame.getBoard();
+
+        if (Objects.equals(currentUserColor, "white") || Objects.equals(currentUserColor, "WHTIE")) {
+            String result  = printGameWhite(activeChessBoard);
+            System.out.print(result);
+        } else if (Objects.equals(currentUserColor, "black") || Objects.equals(currentUserColor, "BLACK")) {
+            String result  = printGameBlack(activeChessBoard);
+            System.out.print(result);
+        }
+
+    }
 
 
 
@@ -91,12 +108,32 @@ public class REPL implements NotificationHandler {
                 case "observe" -> observeGame(params);
                 case "logout" -> logout();
                 case "quit" -> "quit";
+//                case "redraw" -> redrawChessBoard();
+                // add new cases for phase6 commands?
                 default -> help();
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
     }
+
+
+//
+//
+//    public String redrawChessBoard() throws ResponseException {
+//        if (state == State.GAMEPLAY) {
+//
+//            if ()
+//        }
+//        throw new ResponseException(ResponseException.Code.ClientError, "Must be playing game to redraw board\n");
+//
+//    }
+
+
+
+
+
+
 
 /* Prompts the user to input registration information. Calls the server register API to register and login the user.
 If successfully registered, the client should be logged in and transition to the Postlogin UI. */
@@ -181,6 +218,9 @@ After logging out with the server, the client should transition to the Prelogin 
                 ChessBoard board = new ChessBoard();
                 board.resetBoard();
 
+                // DONE FOR PHASE 6:
+                state = State.GAMEPLAY;
+
                 return printGameWhite(board);
             } else {
                 throw new ResponseException(ResponseException.Code.ClientError, "Game does not exist.\n");
@@ -190,7 +230,6 @@ After logging out with the server, the client should transition to the Prelogin 
 
         throw new ResponseException(ResponseException.Code.ClientError, "Expected: <ID>\n");
     }
-
 
 
 
@@ -226,8 +265,6 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
 
             // FOR PHASE 6?:
             int userNum;
@@ -247,19 +284,25 @@ After logging out with the server, the client should transition to the Prelogin 
 
             try {
                 server.joinGame(new JoinGameRequest(activeAuthToken, params[1], gameID));
+                ws.connect(activeAuthToken, gameID);
             } catch (GameAlreadyTakenException e) {
                 throw new ResponseException(ResponseException.Code.ClientError, "Color already taken in that game\n");
             }
 
+            // DONE FOR PHASE 6:
+            state = State.GAMEPLAY;
+            currentUserColor = params[1];
 
-            if (Objects.equals(params[1], "white") || Objects.equals(params[1], "WHITE")) {
-                return printGameWhite(board);
-            } else if (Objects.equals(params[1], "black") || Objects.equals(params[1], "BLACK")) {
-                return printGameBlack(board);
-            }
+
+//            if (Objects.equals(params[1], "white") || Objects.equals(params[1], "WHITE")) {
+//                return printGameWhite(activeChessBoard);
+//            } else if (Objects.equals(params[1], "black") || Objects.equals(params[1], "BLACK")) {
+//                return printGameBlack(activeChessBoard);
+//            }
+        } else {
+            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <ID> [WHITE|BLACK]\n");
         }
-        throw new ResponseException(ResponseException.Code.ClientError, "Expected: <ID> [WHITE|BLACK]\n");
-
+        return "";
     }
 // uppercase = white, lowercase = black
 
@@ -449,6 +492,15 @@ After logging out with the server, the client should transition to the Prelogin 
                     register <USERNAME> <PASSWORD> <EMAIL> - to create an account
                     login <USERNAME> <PASSWORD> - to play chess
                     quit - playing chess
+                    help - with possible commands
+                    """;
+        } else if (state == State.GAMEPLAY){
+            return """
+                    redraw chess board - to redraw current board
+                    leave - to leave game
+                    make move <START POSITION> <END POSITION> - to move a piece (e.g. "make move c2 d3")
+                    resign - to raise the white flag
+                    highlight legal moves <PIECE POSITION> - to see which moves any given piece can make
                     help - with possible commands
                     """;
         }

@@ -257,7 +257,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         mySqlGameDAO.updateGameData(new GameData(command.getGameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame));
 
 
-
         // 2. Server sends a Notification message to all clients in that game informing them that the root client resigned.
         // This applies to both players and observers.
         var message = String.format("%s has resigned from the game", username);

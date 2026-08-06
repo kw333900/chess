@@ -5,11 +5,15 @@ import com.google.gson.Gson;
 
 public class LoadGame extends ServerMessage{
 
-    private ChessGame game;
+    private final ChessGame game;
 
     public LoadGame(ChessGame userGame) {
         super(ServerMessageType.LOAD_GAME);
         game = userGame;
+    }
+
+    public ChessGame getGame (){
+        return game;
     }
 
 

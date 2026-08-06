@@ -4,8 +4,11 @@ import client.State;
 import com.google.gson.Gson;
 
 
+import dataaccess.MySqlAuthDAO;
 import exceptions.ResponseException;
 import jakarta.websocket.*;
+import model.AuthData;
+import websocket.commands.UserGameCommand;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
@@ -50,7 +53,17 @@ public class WebSocketFacade extends Endpoint {
 
 // create method for each wsHandler method:
 
+    public void connect (String activeAuthToken, int gameID){
+        try {
 
+
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, activeAuthToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 
 
