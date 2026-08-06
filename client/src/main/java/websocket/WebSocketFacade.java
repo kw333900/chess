@@ -55,8 +55,6 @@ public class WebSocketFacade extends Endpoint {
 
     public void connectFacade (String activeAuthToken, int gameID){
         try {
-
-
             UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, activeAuthToken, gameID);
             this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
         } catch (IOException e) {
@@ -64,6 +62,44 @@ public class WebSocketFacade extends Endpoint {
         }
 
     }
+
+
+
+    public void leaveGameFacade (String activeAuthToken, int gameID){
+        try {
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, activeAuthToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    public void makeMoveFacade (String activeAuthToken, int gameID){
+        try {
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, activeAuthToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    public void resignFacade (String activeAuthToken, int gameID){
+        try {
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, activeAuthToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+
+
 
 
 
