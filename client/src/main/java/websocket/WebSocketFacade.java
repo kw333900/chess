@@ -35,8 +35,8 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    Notification notification = new Gson().fromJson(message, Notification.class);
-                    notificationHandler.notify(notification);
+                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                    notificationHandler.notify(serverMessage, message);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -53,7 +53,7 @@ public class WebSocketFacade extends Endpoint {
 
 // create method for each wsHandler method:
 
-    public void connect (String activeAuthToken, int gameID){
+    public void connectFacade (String activeAuthToken, int gameID){
         try {
 
 

@@ -1,10 +1,8 @@
 package server.websocket;
 
 import chess.ChessGame;
-import chess.ChessMove;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
-import dataaccess.GameDAOinterface;
 import dataaccess.MySqlAuthDAO;
 import dataaccess.MySqlGameDAO;
 import dataaccess.exceptions.DataAccessException;
@@ -26,7 +24,6 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.Error;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
-import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -62,11 +59,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 // connect -> add to connections, leave -> remove from connections
 
                 switch (command.getCommandType()) {
-                    case CONNECT -> connect(session, username, command);
-                case MAKE_MOVE -> makeMove(session, username, Serializer.fromJson(
+                    case CONNECT -> connectHandler(session, username, command);
+                case MAKE_MOVE -> makeMoveHandler(session, username, Serializer.fromJson(
                         wsMessageContext.message(), MakeMoveCommand.class));
-                    case LEAVE -> leaveGame(session, username, command);
-                case RESIGN -> resign(session, username, command);
+                    case LEAVE -> leaveGameHandler(session, username, command);
+                case RESIGN -> resignHandler(session, username, command);
                 }
             } else {
                 session.getRemote().sendString(Serializer.toJson(new Error("Error: [insert error here?]")));
@@ -96,15 +93,20 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
 
-    public void connect (Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
+    public void connectHandler(Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
         connections.add(command.getGameID(), session);
 
         // Server sends a LOAD_GAME message back to the root client:
+
         Gson Serializer = new Gson();
         MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
         GameData gameData = mySqlGameDAO.getGameData(command.getGameID());
         if (gameData != null){
-            session.getRemote().sendString(Serializer.toJson(new LoadGame(gameData.game())));
+            var stringJSON = Serializer.toJson(new LoadGame(gameData.game()));
+            session.getRemote().sendString(stringJSON);
+//            session.getRemote().sendString("hello");
+
+//            session.getRemote().sendString(stringJSON);
             // Server sends a Notification message to all other clients in that game informing them the root client
             // connected to the game, either as a player (in which case their color must be specified) or as an observer:
             var message = String.format("%s has connected to the game", username);
@@ -123,7 +125,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
 
 
-    public void leaveGame (Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
+    public void leaveGameHandler (Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
         // If a player is leaving, then the game is updated to remove the root client. Game is updated in the database.
         connections.remove(command.getGameID(), session);
         MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
@@ -150,7 +152,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
 
 
-    private void makeMove(Session session, String username, MakeMoveCommand makeMoveCommand) throws InvalidMoveException, IOException, DataAccessException {
+    private void makeMoveHandler(Session session, String username, MakeMoveCommand makeMoveCommand) throws InvalidMoveException, IOException, DataAccessException {
         try{
 
             // 1. Server verifies the validity of the move.
@@ -237,7 +239,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
 
 
-    private void resign(Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
+    private void resignHandler(Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
         // 1. Server marks the game as over (no more moves can be made). Game is updated in the database.
         MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
         GameData gameData = mySqlGameDAO.getGameData(command.getGameID());

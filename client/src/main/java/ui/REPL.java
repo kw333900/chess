@@ -1,4 +1,5 @@
 package ui;
+import com.google.gson.Gson;
 import exceptions.ResponseException;
 import chess.ChessBoard;
 import chess.ChessGame;
@@ -10,6 +11,7 @@ import model.GameData;
 import service.*;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
+import websocket.commands.MakeMoveCommand;
 import websocket.messages.LoadGame;
 import websocket.messages.ServerMessage;
 
@@ -60,11 +62,13 @@ public class REPL implements NotificationHandler {
 
 // FROM LECTURE VIDEO:
     @Override
-    public void notify(ServerMessage message) {
+    public void notify(ServerMessage message, String jsonMessage) {
+        Gson Serializer = new Gson();
         switch (message.getServerMessageType()) {
 //            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
 //            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
-            case LOAD_GAME -> loadGame((LoadGame) message);
+            case LOAD_GAME -> loadGame(Serializer.fromJson(
+                    jsonMessage, LoadGame.class));
         }
     }
 
@@ -284,7 +288,7 @@ After logging out with the server, the client should transition to the Prelogin 
 
             try {
                 server.joinGame(new JoinGameRequest(activeAuthToken, params[1], gameID));
-                ws.connect(activeAuthToken, gameID);
+                ws.connectFacade(activeAuthToken, gameID);
             } catch (GameAlreadyTakenException e) {
                 throw new ResponseException(ResponseException.Code.ClientError, "Color already taken in that game\n");
             }
@@ -310,8 +314,10 @@ After logging out with the server, the client should transition to the Prelogin 
     public String printGameWhite(ChessBoard board) {
         // loop through board and print out pieces
         StringBuilder boardString = new StringBuilder();
+        boardString.append("\n");
         int k = 8;
         for (int i = 1; i < 9; i++) {
+
             boardString.append(String.format("%s", k));
 
             for (int j = 1; j < 9; j++) {
@@ -345,6 +351,7 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
         StringBuilder boardString = new StringBuilder();
+        boardString.append("\n");
         int k=1;
         for (int i = 8; i > 0; i--) {
             boardString.append(String.format("%s", k));

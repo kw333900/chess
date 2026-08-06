@@ -11,12 +11,10 @@ public class Notification extends ServerMessage{
         this.message = message;
     }
 
-//
-//    public enum Type {
-//        ROOT_ONLY,
-//        ALL_BUT_ROOT,
-//        ALL
-//    }
+
+    public String getNotificationMessage (){
+        return message;
+    }
 
     public String toString() {
         return new Gson().toJson(this);
