@@ -103,7 +103,7 @@ public class REPL implements NotificationHandler {
             }
 
         }
-
+        printPrompt();
 
 
     }
@@ -139,7 +139,7 @@ public class REPL implements NotificationHandler {
                 case "observe" -> observeGame(params);
                 case "logout" -> logout();
                 case "quit" -> "quit";
-//                case "redraw" -> redrawChessBoard();
+                case "redraw" -> redrawChessBoard();
                 case "leave" -> leaveGame();
                 // add new cases for phase6 commands?
                 default -> help();
@@ -151,10 +151,37 @@ public class REPL implements NotificationHandler {
 
 
 
+    public String redrawChessBoard() throws ResponseException {
 
-    public String leaveGame(){
-        ws.leaveGameFacade(activeAuthToken, activeGameID);
-        state = State.LOGGED_IN;
+        if (state == State.OBSERVER){
+            String result  = printGameWhite(activeChessBoard);
+            System.out.print(result);
+        } else if (state == State.GAMEPLAY) {
+            if (Objects.equals(currentUserColor, "white") || Objects.equals(currentUserColor, "WHTIE")) {
+                String result  = printGameWhite(activeChessBoard);
+                System.out.print(result);
+            } else if (Objects.equals(currentUserColor, "black") || Objects.equals(currentUserColor, "BLACK")) {
+                String result  = printGameBlack(activeChessBoard);
+                System.out.print(result);
+            }
+        } else {
+            throw new ResponseException(ResponseException.Code.ClientError, "Must be playing or observing a game to redraw board\n");
+        }
+
+        return "";
+    }
+
+
+
+
+    public String leaveGame() throws ResponseException {
+        if (state == State.GAMEPLAY || state == State.OBSERVER){
+            ws.leaveGameFacade(activeAuthToken, activeGameID);
+            state = State.LOGGED_IN;
+        } else {
+            throw new ResponseException(ResponseException.Code.ClientError, "Must be playing or observing a game to leave it\n");
+        }
+
         return "";
     }
 
@@ -289,6 +316,9 @@ After logging out with the server, the client should transition to the Prelogin 
 
     public String joinGame(String... params) throws ResponseException {
         // based on player color, print white or blacks perspective (create a method for each)
+        if (state == State.OBSERVER){
+            throw new ResponseException(ResponseException.Code.ClientError, "Cannot join a game while observing\n");
+        }
 
         if (state != State.LOGGED_IN){
             throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
