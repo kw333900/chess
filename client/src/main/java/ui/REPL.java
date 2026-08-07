@@ -344,11 +344,30 @@ public class REPL implements NotificationHandler {
 
 // logic for promotion piece:
     // if it's a promotion piece give the option:
-//
-//        System.out.print(startPosition);
-//        System.out.print(endPosition);
+        ChessPiece piece = activeChessBoard.getPiece(startPosition);
+        if (  (piece.getTeamColor() == ChessGame.TeamColor.WHITE && endPosition.getRow() == 8 && piece.getPieceType() == ChessPiece.PieceType.PAWN)
+        || (piece.getTeamColor() == ChessGame.TeamColor.BLACK && endPosition.getRow() == 1 && piece.getPieceType() == ChessPiece.PieceType.PAWN)  ) {
+            Scanner scanner = new Scanner(System.in);
+            printPrompt();
+            System.out.print("Enter piece you want to promote to ('queen' or 'bishop' or 'knight' or 'rook'): ");
+            String line = scanner.nextLine();
+            if (Objects.equals(line, "queen")){
+                ws.makeMoveFacade(activeAuthToken, activeGameID, new ChessMove(startPosition, endPosition, ChessPiece.PieceType.QUEEN));
+            } else if (Objects.equals(line, "bishop")){
+                ws.makeMoveFacade(activeAuthToken, activeGameID, new ChessMove(startPosition, endPosition, ChessPiece.PieceType.BISHOP));
+            } else if (Objects.equals(line, "knight")){
+                ws.makeMoveFacade(activeAuthToken, activeGameID, new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT));
+            } else if (Objects.equals(line, "rook")){
+                ws.makeMoveFacade(activeAuthToken, activeGameID, new ChessMove(startPosition, endPosition, ChessPiece.PieceType.ROOK));
+            }
 
-        ws.makeMoveFacade(activeAuthToken, activeGameID, new ChessMove(startPosition, endPosition, null));
+
+        } else {
+            ws.makeMoveFacade(activeAuthToken, activeGameID, new ChessMove(startPosition, endPosition, null));
+        }
+
+
+
 
 
 
