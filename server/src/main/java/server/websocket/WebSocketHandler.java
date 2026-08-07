@@ -1,6 +1,7 @@
 package server.websocket;
 
 import chess.ChessGame;
+import chess.ChessPosition;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.MySqlAuthDAO;
@@ -183,7 +184,10 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             // 4. Server sends a Notification message to all other clients in that game informing them what move was made.
             // TODO: find a way to return piece type and position in message
-            var message = String.format("%s moved ", username);
+            var string1 = convertPositionToString(makeMoveCommand.getMove().getStartPosition());
+            var string2 = convertPositionToString(makeMoveCommand.getMove().getEndPosition());
+
+            var message = String.format("%s moved %s to %s", username, string1, string2);
             var notification = new Notification(message);
             if (!connections.isEmpty()){
                 connections.broadcast(session, notification, makeMoveCommand.getGameID());
@@ -234,6 +238,59 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     }
 
+    // d2 = [2, 5]
+    private String convertPositionToString (ChessPosition position){
+        int row = position.getRow();
+        int col = position.getColumn();
+        col = flipRowValue(col);
+
+        char letter = getLetterFromNum(col);
+        String pos = "" + letter + row;
+        return pos;
+    }
+
+
+    public int flipRowValue(int num){
+        if (num == 1){
+            return 8;
+        } else if (num == 2){
+            return 7;
+        } else if (num == 3){
+            return 6;
+        } else if (num == 4){
+            return 5;
+        } else if (num == 5){
+            return 4;
+        } else if (num == 6){
+            return 3;
+        } else if (num == 7){
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
+
+    public char getLetterFromNum (int num){
+        if (num == 1){
+            return 'a';
+        } else if (num == 2){
+            return 'b';
+        } else if (num == 3){
+            return 'c';
+        } else if (num == 4){
+            return 'd';
+        } else if (num == 5){
+            return 'e';
+        } else if (num == 6){
+            return 'f';
+        } else if (num == 7){
+            return 'g';
+        } else {
+            return 'h';
+        }
+
+    }
 
 
 

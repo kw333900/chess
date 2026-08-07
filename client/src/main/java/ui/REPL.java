@@ -74,12 +74,18 @@ public class REPL implements NotificationHandler {
 
 
     public void displayError (Error message){
+
         System.out.print(message.getErrorMessage());
+        System.out.print("\n");
+        printPrompt();
     }
 
 
     public void displayNotification(Notification message){
+
         System.out.print(message.getNotificationMessage());
+        System.out.print("\n");
+        printPrompt();
     }
 
 
@@ -338,9 +344,9 @@ public class REPL implements NotificationHandler {
 
 // logic for promotion piece:
     // if it's a promotion piece give the option:
-
-        System.out.print(startPosition);
-        System.out.print(endPosition);
+//
+//        System.out.print(startPosition);
+//        System.out.print(endPosition);
 
         ws.makeMoveFacade(activeAuthToken, activeGameID, new ChessMove(startPosition, endPosition, null));
 
