@@ -159,6 +159,10 @@ public class REPL implements NotificationHandler {
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing or observing a game to highlight a piece's legal moves\n");
         }
 
+        if (params.length != 1){
+            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <PIECE POSITION> - lowercase letter and number (e.g. a7)\n");
+        }
+
         char letter = params[0].charAt(0);
         char numberChar = params[0].charAt(1);
 
@@ -201,6 +205,9 @@ public class REPL implements NotificationHandler {
     }
 
 
+
+
+
     public int flipRowValue(int num){
         if (num == 1){
             return 8;
@@ -240,6 +247,29 @@ public class REPL implements NotificationHandler {
         } else {
             return 8;
         }
+
+    }
+
+
+    public int fgetNumFromLetter (char letter){
+        if (letter == 'a'){
+            return 8;
+        } else if (letter == 'b'){
+            return 7;
+        } else if (letter == 'c'){
+            return 6;
+        } else if (letter == 'd'){
+            return 5;
+        } else if (letter == 'e'){
+            return 4;
+        } else if (letter == 'f'){
+            return 3;
+        } else if (letter == 'g'){
+            return 2;
+        } else {
+            return 1;
+        }
+
     }
 
 
@@ -249,6 +279,72 @@ public class REPL implements NotificationHandler {
         if (state != State.GAMEPLAY){
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing a game to make a move\n");
         }
+
+        if (params.length != 2){
+            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
+        }
+
+
+        // make startposition:
+        char letter = params[0].charAt(0);
+        char numberChar = params[0].charAt(1);
+
+        if (!Character.isLetter(letter) || !Character.isLowerCase(letter) || !Character.isDigit(numberChar)){
+            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
+        }
+        if ( !(letter >= 'a' && letter <= 'h') ){
+            throw new ResponseException(ResponseException.Code.ClientError, "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
+        }
+        int number = Character.getNumericValue(numberChar);
+        if ( !(number >= 1 && number <= 8) ){
+            throw new ResponseException(ResponseException.Code.ClientError, "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
+        }
+
+        int row1 = number;
+//        row1 = flipRowValue(row1);
+        int col1 = getNumFromLetter(letter);
+
+//        col1 = flipRowValue(col1);
+
+        ChessPosition startPosition = new ChessPosition(row1, col1);
+
+
+
+
+        // make endposition:
+        char letter2 = params[1].charAt(0);
+        char numberChar2 = params[1].charAt(1);
+
+        if (!Character.isLetter(letter2) || !Character.isLowerCase(letter2) || !Character.isDigit(numberChar2)){
+            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
+        }
+        if ( !(letter2 >= 'a' && letter2 <= 'h') ){
+            throw new ResponseException(ResponseException.Code.ClientError, "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
+        }
+        int number2 = Character.getNumericValue(numberChar2);
+        if ( !(number2 >= 1 && number2 <= 8) ){
+            throw new ResponseException(ResponseException.Code.ClientError, "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
+        }
+
+        int row2 = number2;
+//        row2 = flipRowValue(row2);
+        int col2 = getNumFromLetter(letter2);
+
+//        col2 = flipRowValue(col2);
+
+        ChessPosition endPosition = new ChessPosition(row2, col2);
+
+
+// logic for promotion piece:
+
+
+        System.out.print(startPosition);
+        System.out.print(endPosition);
+
+        ws.makeMoveFacade(activeAuthToken, activeGameID, new ChessMove(startPosition, endPosition, null));
+
+
+
 
         return "";
     }

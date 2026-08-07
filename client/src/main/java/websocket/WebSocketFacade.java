@@ -1,15 +1,14 @@
 package websocket;
 
-import client.State;
+import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 
 
-import dataaccess.MySqlAuthDAO;
 import exceptions.ResponseException;
 import jakarta.websocket.*;
-import model.AuthData;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
-import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -76,10 +75,14 @@ public class WebSocketFacade extends Endpoint {
     }
 
 
-    public void makeMoveFacade (String activeAuthToken, int gameID){
+    public void makeMoveFacade (String activeAuthToken, int gameID, ChessMove chessMove){
         try {
-            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, activeAuthToken, gameID);
-            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+
+            MakeMoveCommand makeMoveCommand = new MakeMoveCommand(chessMove, UserGameCommand.CommandType.MAKE_MOVE, activeAuthToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(makeMoveCommand));
+
+//            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, activeAuthToken, gameID);
+//            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

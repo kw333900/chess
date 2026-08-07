@@ -228,7 +228,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
         } catch (InvalidMoveException ex){
             Gson Serializer = new Gson();
-            session.getRemote().sendString(Serializer.toJson(new Error("Error: [insert error here?]")));
+            session.getRemote().sendString(Serializer.toJson(new Error("Error: move failed\n")));
         }
 
 
