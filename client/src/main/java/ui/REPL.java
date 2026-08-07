@@ -26,25 +26,18 @@ public class REPL implements NotificationHandler {
     private int activeGameID=1;
     private ChessGame activeChessGame;
 
-
     public REPL (String serverURL) throws ResponseException {
         server = new ServerFacade(serverURL);
          ws = new WebSocketFacade(serverURL, this);   // <---PHASE 6?
     }
 
-
     public void run(){
         System.out.println("Welcome to 240 chess. Type Help to get started.");
-//        System.out.print(help());
-
-
-
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
             printPrompt();
             String line = scanner.nextLine();
-
             try {
                 result = eval(line);
                 System.out.print(result);
@@ -54,14 +47,8 @@ public class REPL implements NotificationHandler {
             }
         }
         System.out.println();
-
-
-
-
     }
 
-
-// FROM LECTURE VIDEO:
     @Override
     public void notify(ServerMessage message, String jsonMessage) {
         Gson Serializer = new Gson();
@@ -72,33 +59,26 @@ public class REPL implements NotificationHandler {
         }
     }
 
-
     public void displayError (Error message){
-
         System.out.print(message.getErrorMessage());
         System.out.print("\n");
         printPrompt();
     }
 
-
     public void displayNotification(Notification message){
-
         System.out.print(message.getNotificationMessage());
         System.out.print("\n");
         printPrompt();
     }
 
-
     public void loadGame(LoadGame message){
         ChessGame chessGame = message.getGame();
         activeChessBoard = chessGame.getBoard();
         activeChessGame = chessGame;
-
         if (state == State.OBSERVER){
             String result  = printGameWhite(activeChessBoard, null);
             System.out.print(result);
         } else {
-
             if (Objects.equals(currentUserColor, "white") || Objects.equals(currentUserColor, "WHTIE")) {
                 String result  = printGameWhite(activeChessBoard, null);
                 System.out.print(result);
@@ -106,29 +86,13 @@ public class REPL implements NotificationHandler {
                 String result  = printGameBlack(activeChessBoard, null);
                 System.out.print(result);
             }
-
         }
         printPrompt();
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     private void printPrompt() {
         System.out.printf(" [%s] >>> ", state);
     }
-
 
     public String eval(String input) {
         try {
@@ -144,7 +108,6 @@ public class REPL implements NotificationHandler {
                 case "observe" -> observeGame(params);
                 case "logout" -> logout();
                 case "quit" -> "quit";
-
                 // GAMEPLAY:
                 case "redraw" -> redrawChessBoard();
                 case "leave" -> leaveGame();
@@ -158,17 +121,13 @@ public class REPL implements NotificationHandler {
         }
     }
 
-
-
     public String highlightLegalMoves(String... params) throws ResponseException {
         if (state != State.GAMEPLAY && state != State.OBSERVER){
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing or observing a game to highlight a piece's legal moves\n");
         }
-
         if (params.length != 1){
             throw new ResponseException(ResponseException.Code.ClientError, "Expected: <PIECE POSITION> - lowercase letter and number (e.g. a7)\n");
         }
-
         char letter = params[0].charAt(0);
         char numberChar = params[0].charAt(1);
 
@@ -182,14 +141,9 @@ public class REPL implements NotificationHandler {
         if ( !(number >= 1 && number <= 8) ){
             throw new ResponseException(ResponseException.Code.ClientError, "<PIECE POSITION> must be in bounds of the board ([a-h][1-8])\n");
         }
-
         int row = number;
-//        row = flipRowValue(row);
         int col = getNumFromLetter(letter);
-//        col = flipRowValue(col);
         Collection<ChessMove> movesToHighlight = activeChessGame.validMoves(new ChessPosition(row, col));
-
-        // get string of board and then iterate through and highlight moves of specific piece:
         if (state == State.OBSERVER){
             String result  = printGameWhite(activeChessBoard, movesToHighlight);
             System.out.print(result);
@@ -202,39 +156,8 @@ public class REPL implements NotificationHandler {
                 System.out.print(result);
             }
         }
-
-
-
-
-
-
         return "";
     }
-
-
-
-
-
-    public int flipRowValue(int num){
-        if (num == 1){
-            return 8;
-        } else if (num == 2){
-            return 7;
-        } else if (num == 3){
-            return 6;
-        } else if (num == 4){
-            return 5;
-        } else if (num == 5){
-            return 4;
-        } else if (num == 6){
-            return 3;
-        } else if (num == 7){
-            return 2;
-        } else {
-            return 1;
-        }
-    }
-
 
     public int getNumFromLetter (char letter){
         if (letter == 'a'){
@@ -254,48 +177,18 @@ public class REPL implements NotificationHandler {
         } else {
             return 8;
         }
-
     }
-
-
-    public int fgetNumFromLetter (char letter){
-        if (letter == 'a'){
-            return 8;
-        } else if (letter == 'b'){
-            return 7;
-        } else if (letter == 'c'){
-            return 6;
-        } else if (letter == 'd'){
-            return 5;
-        } else if (letter == 'e'){
-            return 4;
-        } else if (letter == 'f'){
-            return 3;
-        } else if (letter == 'g'){
-            return 2;
-        } else {
-            return 1;
-        }
-
-    }
-
-
-
 
     public String makeMoveREPL(String... params) throws ResponseException {
         if (state != State.GAMEPLAY){
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing a game to make a move\n");
         }
-
         if (params.length != 2){
             throw new ResponseException(ResponseException.Code.ClientError, "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
         }
-
-
         // make startposition:
         char letter = params[0].charAt(0);
         char numberChar = params[0].charAt(1);
-
         if (!Character.isLetter(letter) || !Character.isLowerCase(letter) || !Character.isDigit(numberChar)){
             throw new ResponseException(ResponseException.Code.ClientError, "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
         }
@@ -306,22 +199,12 @@ public class REPL implements NotificationHandler {
         if ( !(number >= 1 && number <= 8) ){
             throw new ResponseException(ResponseException.Code.ClientError, "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
         }
-
         int row1 = number;
-//        row1 = flipRowValue(row1);
         int col1 = getNumFromLetter(letter);
-
-//        col1 = flipRowValue(col1);
-
         ChessPosition startPosition = new ChessPosition(row1, col1);
-
-
-
-
         // make endposition:
         char letter2 = params[1].charAt(0);
         char numberChar2 = params[1].charAt(1);
-
         if (!Character.isLetter(letter2) || !Character.isLowerCase(letter2) || !Character.isDigit(numberChar2)){
             throw new ResponseException(ResponseException.Code.ClientError, "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
         }
@@ -332,18 +215,9 @@ public class REPL implements NotificationHandler {
         if ( !(number2 >= 1 && number2 <= 8) ){
             throw new ResponseException(ResponseException.Code.ClientError, "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
         }
-
         int row2 = number2;
-//        row2 = flipRowValue(row2);
         int col2 = getNumFromLetter(letter2);
-
-//        col2 = flipRowValue(col2);
-
         ChessPosition endPosition = new ChessPosition(row2, col2);
-
-
-// logic for promotion piece:
-    // if it's a promotion piece give the option:
         ChessPiece piece = activeChessBoard.getPiece(startPosition);
         if (  (piece.getTeamColor() == ChessGame.TeamColor.WHITE && endPosition.getRow() == 8 && piece.getPieceType() == ChessPiece.PieceType.PAWN)
         || (piece.getTeamColor() == ChessGame.TeamColor.BLACK && endPosition.getRow() == 1 && piece.getPieceType() == ChessPiece.PieceType.PAWN)  ) {
@@ -360,23 +234,11 @@ public class REPL implements NotificationHandler {
             } else if (Objects.equals(line, "rook")){
                 ws.makeMoveFacade(activeAuthToken, activeGameID, new ChessMove(startPosition, endPosition, ChessPiece.PieceType.ROOK));
             }
-
-
         } else {
             ws.makeMoveFacade(activeAuthToken, activeGameID, new ChessMove(startPosition, endPosition, null));
         }
-
-
-
-
-
-
-
         return "";
     }
-
-
-
 
     public String resign() throws ResponseException {
         if (state == State.GAMEPLAY){
@@ -387,20 +249,13 @@ public class REPL implements NotificationHandler {
             if (Objects.equals(line, "yes")){
                 ws.resignFacade(activeAuthToken, activeGameID);
             }
-
-
-
         } else {
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing a game to resign from it\n");
         }
-
         return "";
     }
 
-
-
     public String redrawChessBoard() throws ResponseException {
-
         if (state == State.OBSERVER){
             String result  = printGameWhite(activeChessBoard, null);
             System.out.print(result);
@@ -415,12 +270,8 @@ public class REPL implements NotificationHandler {
         } else {
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing or observing a game to redraw board\n");
         }
-
         return "";
     }
-
-
-
 
     public String leaveGame() throws ResponseException {
         if (state == State.GAMEPLAY || state == State.OBSERVER){
@@ -429,12 +280,8 @@ public class REPL implements NotificationHandler {
         } else {
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing or observing a game to leave it\n");
         }
-
         return "";
     }
-
-
-
 
 /* Prompts the user to input registration information. Calls the server register API to register and login the user.
 If successfully registered, the client should be logged in and transition to the Postlogin UI. */
@@ -452,8 +299,6 @@ If successfully registered, the client should be logged in and transition to the
 
     }
 
-
-
 /* Prompts the user to input login information. Calls the server login API to
 login the user. When successfully logged in, the client should transition to the Postlogin UI. */
     public String login(String... params) throws ResponseException {
@@ -467,28 +312,19 @@ login the user. When successfully logged in, the client should transition to the
             return String.format("You logged in as %s.\n", params[0]);
         }
         throw new ResponseException(ResponseException.Code.ClientError, "Expected: <USERNAME> <PASSWORD>\n");
-
     }
-
-
 
 /* Logs out the user. Calls the server logout API to logout the user.
 After logging out with the server, the client should transition to the Prelogin UI. */
     public String logout() throws ResponseException {
             LogoutResult result = server.logout(new LogoutRequest(activeAuthToken));
-
             if (state == State.LOGGED_IN){
                 activeAuthToken = null;
                 state = State.LOGGED_OUT;
                 return "You logged out\n";
             }
-
-
         throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
-
     }
-
-
 
     public String createGame(String... params) throws ResponseException {
         if (params.length == 1 && state == State.LOGGED_IN) {
@@ -499,10 +335,7 @@ After logging out with the server, the client should transition to the Prelogin 
             return String.format("You created a new game called: %s.\n", params[0]);
         }
         throw new ResponseException(ResponseException.Code.ClientError, "Expected: <NAME>\n");
-
     }
-
-
 
     public String observeGame(String... params) throws ResponseException {
         if (state != State.LOGGED_IN){
@@ -518,31 +351,16 @@ After logging out with the server, the client should transition to the Prelogin 
             int gameID = getidFromUserNum(userNum);
             activeGameID = gameID;
             if (gameID <= getGamesListSize() && gameID>0){
-//                ChessBoard board = new ChessBoard();
-//                board.resetBoard();
-
-                // DONE FOR PHASE 6:
                 state = State.OBSERVER;
-                ws.connectFacade(activeAuthToken, gameID);  // <--------- NOT SURE IF I NEED MORE THAN THIS?
-
-
-
-
-//                return printGameWhite(board);
+                ws.connectFacade(activeAuthToken, gameID);
             } else {
                 throw new ResponseException(ResponseException.Code.ClientError, "Game does not exist.\n");
             }
-
         } else {
             throw new ResponseException(ResponseException.Code.ClientError, "Expected: <ID>\n");
         }
         return "";
-
     }
-
-
-
-
 
     public int getidFromUserNum (int userNum) throws ResponseException {
         if (state == State.LOGGED_IN){
@@ -552,49 +370,28 @@ After logging out with the server, the client should transition to the Prelogin 
             GameData gameData = arrayList.get(userNum-1);
             return gameData.gameID();
         }
-
-
-
         throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
     }
 
-
-
-
-
     public String joinGame(String... params) throws ResponseException {
-        // based on player color, print white or blacks perspective (create a method for each)
         if (state == State.OBSERVER){
             throw new ResponseException(ResponseException.Code.ClientError, "Cannot join a game while observing\n");
         }
-
         if (state != State.LOGGED_IN){
             throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
         }
-
         if (params.length == 2) {
-//            int gameID2 = Integer.parseInt(params[0]);
-
-
-
-
-            // FOR PHASE 6?:
             int userNum;
             try {
                 userNum = Integer.parseInt(params[0]);
             } catch (NumberFormatException e) {
                 throw new ResponseException(ResponseException.Code.ClientError, "<ID> must be an integer (e.g. two is invalid)\n");
             }
-//            int userNum = Integer.parseInt(params[0]);
-            // match gameid from user with list of games
             int gameID = getidFromUserNum(userNum);
             activeGameID = gameID;
-
             if (!(gameID <= getGamesListSize() && gameID > 0)) {
-
                 throw new ResponseException(ResponseException.Code.ClientError, "Game does not exist.\n");
             }
-
             try {
                 server.joinGame(new JoinGameRequest(activeAuthToken, params[1], gameID));
                 state = State.GAMEPLAY;
@@ -602,68 +399,12 @@ After logging out with the server, the client should transition to the Prelogin 
             } catch (GameAlreadyTakenException e) {
                 throw new ResponseException(ResponseException.Code.ClientError, "Color already taken in that game\n");
             }
-
-            // DONE FOR PHASE 6:
-
             currentUserColor = params[1];
-
-
         } else {
             throw new ResponseException(ResponseException.Code.ClientError, "Expected: <ID> [WHITE|BLACK]\n");
         }
         return "";
     }
-
-
-//    public String printGameWhite(ChessBoard board, Collection<ChessMove> movesToHighlight) {
-//        List<ChessPosition> positionsToHighlight = new ArrayList<>();
-//        if (movesToHighlight != null){
-//            for (var m : movesToHighlight){
-//                positionsToHighlight.add(m.getEndPosition());
-//            }
-//        }
-//
-//
-//        // loop through board and print out pieces
-//        StringBuilder boardString = new StringBuilder();
-//        boardString.append("\n");
-//        int k = 8;
-//        for (int i = 1; i < 9; i++) {
-//
-//            boardString.append(String.format("%s", k));
-//
-//            for (int j = 1; j < 9; j++) {
-//
-//                if (positionsToHighlight.contains(new ChessPosition(i, j))){
-//                    printGameHelper(board, boardString, i, j, true);
-//                } else {
-//                    printGameHelper(board, boardString, i, j, false);
-//                }
-//
-//
-//
-//
-//
-//
-//
-//                if (j==8){
-////                    boardString.append(String.format("%s\n", k));
-//                    boardString.append("\n");
-//                }
-//
-//            }
-//            k--;
-//
-//        }
-//        boardString.append("  a   b   c  d   e  f   g   h\n");
-//
-//        return boardString.toString();
-//
-//
-//    }
-
-
-
 
     public String printGameWhite(ChessBoard board, Collection<ChessMove> movesToHighlight) {
         List<ChessPosition> positionsToHighlight = new ArrayList<>();
@@ -675,56 +416,28 @@ After logging out with the server, the client should transition to the Prelogin 
                 positionsToHighlight.add(m.getEndPosition());
             }
         }
-
-
-        // loop through board and print out pieces
         StringBuilder boardString = new StringBuilder();
         boardString.append("\n");
-
         boardString.append(String.format("%s = white\n", EscapeSequences.WHITE_KING));
         boardString.append(String.format("%s = black\n", EscapeSequences.BLACK_KING));
-
         int k = 8;
         for (int i = 8; i > 0; i--) {
-
             boardString.append(String.format("%s", k));
-
             for (int j = 1; j < 9; j++) {
-
                 if (positionsToHighlight.contains(new ChessPosition(i, j))){
                     printGameHelper(board, boardString, i, j, true);
                 } else {
                     printGameHelper(board, boardString, i, j, false);
                 }
-
-
-
-
-
-
-
                 if (j==8){
-    //                    boardString.append(String.format("%s\n", k));
                     boardString.append("\n");
                 }
-
             }
             k--;
-
         }
         boardString.append("  a   b   c  d   e  f   g   h\n");
-
         return boardString.toString();
-
-
     }
-
-
-
-
-
-
-
 
     private String printGameBlack(ChessBoard board, Collection<ChessMove> movesToHighlight) {
         List<ChessPosition> positionsToHighlight = new ArrayList<>();
@@ -735,55 +448,32 @@ After logging out with the server, the client should transition to the Prelogin 
                 }
                 positionsToHighlight.add(m.getEndPosition());
             }
-
         }
-
-
-
-
         StringBuilder boardString = new StringBuilder();
         boardString.append("\n");
-
         boardString.append(String.format("%s = white\n", EscapeSequences.WHITE_KING));
         boardString.append(String.format("%s = black\n", EscapeSequences.BLACK_KING));
-
         int k=1;
         for (int i = 1; i < 9; i++) {
             boardString.append(String.format("%s", k));
             for (int j = 8; j > 0; j--) {
-
-
                 if (positionsToHighlight.contains(new ChessPosition(i, j))){
                     printGameHelper(board, boardString, i, j, true);
                 } else {
                     printGameHelper(board, boardString, i, j, false);
                 }
-
                 if (j==1){
                     boardString.append("\n");
                 }
-
             }
             k++;
-
         }
-
         boardString.append("  h   g   f  e   d  c   b   a\n");
-
         return boardString.toString();
-
-
-
-
-
     }
 
     private void printGameHelper(ChessBoard board, StringBuilder boardString, int i, int j, boolean willHighlight) {
-
         ChessPiece piece = board.getPiece(new ChessPosition(i,j));
-
-
-
         if (willHighlight){
             boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_YELLOW));
         } else {
@@ -795,9 +485,6 @@ After logging out with the server, the client should transition to the Prelogin 
             }
 
         }
-
-
-
 
         if (piece != null){
             if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
@@ -820,7 +507,6 @@ After logging out with the server, the client should transition to the Prelogin 
                 boardString.append(String.format("%s", EscapeSequences.WHITE_QUEEN));
             }
 
-
             if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
                 boardString.append(String.format("%s", EscapeSequences.BLACK_PAWN));
 
@@ -841,38 +527,20 @@ After logging out with the server, the client should transition to the Prelogin 
                 boardString.append(String.format("%s", EscapeSequences.BLACK_QUEEN));
             }
 
-
-
         } else {
             boardString.append(String.format("%s", EscapeSequences.EMPTY));
         }
         boardString.append(String.format("%s", EscapeSequences.RESET_BG_COLOR));
-
-
-
-
-
-
-
-
-
     }
-
 
     public int getGamesListSize () throws ResponseException {
         if (state == State.LOGGED_IN){
             ListGamesResult result = server.listGames(new ListGamesRequest(activeAuthToken));
             return result.games().size();
-
         }
-
-
 
         throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
     }
-
-
-
 
     public String listGames() throws ResponseException {
         if (state == State.LOGGED_IN){
@@ -880,16 +548,10 @@ After logging out with the server, the client should transition to the Prelogin 
             if (result == null){
                 return "failed to list games";
             }
-
             return printGames(result);
         }
-
-
         throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
-
     }
-
-
 
     public String printGames (ListGamesResult result){
         StringBuilder gamesString = new StringBuilder();
@@ -899,15 +561,9 @@ After logging out with the server, the client should transition to the Prelogin 
             gamesString.append(String.format("Black user: %s\n", game.blackUsername()));
             gameCounter++;
         }
-
         return gamesString.toString();
-
     }
 
-
-
-
-    /* Displays text informing the user what actions they can take.*/
     public String help() {
         if (state == State.LOGGED_OUT) {
             return """
@@ -933,7 +589,6 @@ After logging out with the server, the client should transition to the Prelogin 
                     help - with possible commands
                     """;
         }
-
         return """
             create <NAME> - a game
             list - games
@@ -943,9 +598,5 @@ After logging out with the server, the client should transition to the Prelogin 
             quit - playing chess
             help - with possible commands
             """;
-
-
     }
-
-
 }
