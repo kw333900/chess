@@ -186,7 +186,7 @@ public class REPL implements NotificationHandler {
         int row = number;
 //        row = flipRowValue(row);
         int col = getNumFromLetter(letter);
-        col = flipRowValue(col);
+//        col = flipRowValue(col);
         Collection<ChessMove> movesToHighlight = activeChessGame.validMoves(new ChessPosition(row, col));
 
         // get string of board and then iterate through and highlight moves of specific piece:
@@ -311,7 +311,7 @@ public class REPL implements NotificationHandler {
 //        row1 = flipRowValue(row1);
         int col1 = getNumFromLetter(letter);
 
-        col1 = flipRowValue(col1);
+//        col1 = flipRowValue(col1);
 
         ChessPosition startPosition = new ChessPosition(row1, col1);
 
@@ -337,7 +337,7 @@ public class REPL implements NotificationHandler {
 //        row2 = flipRowValue(row2);
         int col2 = getNumFromLetter(letter2);
 
-        col2 = flipRowValue(col2);
+//        col2 = flipRowValue(col2);
 
         ChessPosition endPosition = new ChessPosition(row2, col2);
 
@@ -361,7 +361,16 @@ public class REPL implements NotificationHandler {
 
     public String resign() throws ResponseException {
         if (state == State.GAMEPLAY){
-            ws.resignFacade(activeAuthToken, activeGameID);
+            Scanner scanner = new Scanner(System.in);
+            printPrompt();
+            System.out.print("Are you sure you want to resign? (yes/no): ");
+            String line = scanner.nextLine();
+            if (Objects.equals(line, "yes")){
+                ws.resignFacade(activeAuthToken, activeGameID);
+            }
+
+
+
         } else {
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing a game to resign from it\n");
         }
@@ -661,7 +670,7 @@ After logging out with the server, the client should transition to the Prelogin 
 
             boardString.append(String.format("%s", k));
 
-            for (int j = 8; j > 0; j--) {
+            for (int j = 1; j < 9; j++) {
 
                 if (positionsToHighlight.contains(new ChessPosition(i, j))){
                     printGameHelper(board, boardString, i, j, true);
@@ -675,7 +684,7 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
-                if (j==1){
+                if (j==8){
     //                    boardString.append(String.format("%s\n", k));
                     boardString.append("\n");
                 }
@@ -722,7 +731,7 @@ After logging out with the server, the client should transition to the Prelogin 
         int k=1;
         for (int i = 1; i < 9; i++) {
             boardString.append(String.format("%s", k));
-            for (int j = 1; j < 9; j++) {
+            for (int j = 8; j > 0; j--) {
 
 
                 if (positionsToHighlight.contains(new ChessPosition(i, j))){
@@ -731,12 +740,7 @@ After logging out with the server, the client should transition to the Prelogin 
                     printGameHelper(board, boardString, i, j, false);
                 }
 
-
-
-
-
-
-                if (j==8){
+                if (j==1){
                     boardString.append("\n");
                 }
 

@@ -141,12 +141,12 @@ public class ChessGame {
 
         boolean a = validMoves(move.getStartPosition()).isEmpty() || !validMoves(move.getStartPosition()).contains(move);
 
-        if (chess_piece.getPieceType() != ChessPiece.PieceType.KING && (a)){
-            throw new InvalidMoveException("");
+        if (/*chess_piece.getPieceType() != ChessPiece.PieceType.KING && */(a)){
+            throw new InvalidMoveException("Invalid Move");
         } else {
             chess_piece = chessGameBoard.getPiece(move.getStartPosition());
             if (chess_piece.getTeamColor() != getTeamTurn()){
-                throw new InvalidMoveException("");
+                throw new InvalidMoveException("Invalid move");
             }
             if (move.getPromotionPiece()!=null){
                 ChessPiece.PieceType promo_piece_type = move.getPromotionPiece();

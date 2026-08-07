@@ -67,7 +67,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 case RESIGN -> resignHandler(session, username, command);
                 }
             } else {
-                session.getRemote().sendString(Serializer.toJson(new Error("Error: [insert error here?]")));
+                session.getRemote().sendString(Serializer.toJson(new Error("Error: connection failed")));
             }
 
 
@@ -113,7 +113,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             connections.broadcast(session, notification, command.getGameID());
 
         } else {
-            session.getRemote().sendString(Serializer.toJson(new Error("Error: [insert error here?]")));
+            session.getRemote().sendString(Serializer.toJson(new Error("Error: connection failed")));
         }
 
 
@@ -161,16 +161,16 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
 
             if ( (chessGame.getTeamTurn() == ChessGame.TeamColor.WHITE) && !Objects.equals(username, gameData.whiteUsername()) ){
-                throw new InvalidMoveException("");
+                throw new InvalidMoveException("It's not your turn");
             }
             else if ( (chessGame.getTeamTurn() == ChessGame.TeamColor.BLACK) && !Objects.equals(username, gameData.blackUsername()) ){
-                throw new InvalidMoveException("");
+                throw new InvalidMoveException("It's not your turn");
             }
 
             if (chessGame.getOpenStatus()){
                 chessGame.makeMove(makeMoveCommand.getMove());
             } else {
-                throw new InvalidMoveException("");
+                throw new InvalidMoveException("Game is closed");
             }
 
 
@@ -199,8 +199,13 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
 
             // 5. If the move results in check, checkmate or stalemate the server sends a Notification message to all clients.
-            if (chessGame.isInCheck(chessGame.getTeamTurn())){
-                message = String.format("%s is in check", username);
+            if (chessGame.isInCheckmate(chessGame.getTeamTurn())){
+                if (Objects.equals(gameData.blackUsername(), username)){
+                    username = gameData.whiteUsername();
+                } else {
+                    username = gameData.blackUsername();
+                }
+                message = String.format("%s is in checkmate", username);
                 notification = new Notification(message);
                 if (!connections.isEmpty()){
                     connections.broadcast(null, notification, makeMoveCommand.getGameID());
@@ -208,8 +213,13 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                     String msg = notification.toString();
                     session.getRemote().sendString(msg);
                 }
-            } else if (chessGame.isInCheckmate(chessGame.getTeamTurn())){
-                message = String.format("%s is in checkmate", username);
+            } else if (chessGame.isInCheck(chessGame.getTeamTurn())){
+                if (Objects.equals(gameData.blackUsername(), username)){
+                    username = gameData.whiteUsername();
+                } else {
+                    username = gameData.blackUsername();
+                }
+                message = String.format("%s is in check", username);
                 notification = new Notification(message);
                 if (!connections.isEmpty()){
                     connections.broadcast(null, notification, makeMoveCommand.getGameID());
@@ -232,17 +242,57 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
         } catch (InvalidMoveException ex){
             Gson Serializer = new Gson();
-            session.getRemote().sendString(Serializer.toJson(new Error("Error: move failed\n")));
+            session.getRemote().sendString(Serializer.toJson(new Error("Error: " + ex.getMessage() + "\n")));
         }
 
 
     }
 
+
+
+
+
+
+//
+//
+//
+//    if (chessGame.isInCheck(chessGame.getTeamTurn())){
+//        message = String.format("%s is in check", username);
+//        notification = new Notification(message);
+//        if (!connections.isEmpty()){
+//            connections.broadcast(null, notification, makeMoveCommand.getGameID());
+//        } else {
+//            String msg = notification.toString();
+//            session.getRemote().sendString(msg);
+//        }
+//    } else if (chessGame.isInCheckmate(chessGame.getTeamTurn())){
+//        message = String.format("%s is in checkmate", username);
+//        notification = new Notification(message);
+//        if (!connections.isEmpty()){
+//            connections.broadcast(null, notification, makeMoveCommand.getGameID());
+//        } else {
+//            String msg = notification.toString();
+//            session.getRemote().sendString(msg);
+//        }
+//    }
+//
+
+
+
+
+
+
+
+
+
+
+
+
     // d2 = [2, 5]
     private String convertPositionToString (ChessPosition position){
         int row = position.getRow();
         int col = position.getColumn();
-        col = flipRowValue(col);
+//        col = flipRowValue(col);
 
         char letter = getLetterFromNum(col);
         String pos = "" + letter + row;
@@ -302,12 +352,12 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         if (!username.equals(gameData.blackUsername()) && !username.equals(gameData.whiteUsername())){
             // observer:
             Gson Serializer = new Gson();
-            session.getRemote().sendString(Serializer.toJson(new Error("Error: [insert error here?]")));
+            session.getRemote().sendString(Serializer.toJson(new Error("Error: observer cannot resign from game")));
             return;
         }
         if (!chessGame.getOpenStatus()){
             Gson Serializer = new Gson();
-            session.getRemote().sendString(Serializer.toJson(new Error("Error: [insert error here?]")));
+            session.getRemote().sendString(Serializer.toJson(new Error("Error: game is closed")));
             return;
         }
         chessGame.markGameAsOver();
