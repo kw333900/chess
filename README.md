@@ -70,3 +70,85 @@ Notes for phase5:
 //        assertTrue(authData.authToken().length() > 10);
 //    }
 
+
+
+
+
+
+public String highlightLegalMoves(String... params) throws ResponseException {
+if (state != State.GAMEPLAY && state != State.OBSERVER){
+throw new ResponseException(ResponseException.Code.ClientError, "Must be playing or observing a game to highlight a piece's legal moves\n");
+}
+
+        if (params.length != 1){
+            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <PIECE POSITION> - lowercase letter and number (e.g. a7)\n");
+        }
+
+        char letter = params[0].charAt(0);
+        char numberChar = params[0].charAt(1);
+
+        if (!Character.isLetter(letter) || !Character.isLowerCase(letter) || !Character.isDigit(numberChar)){
+            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <PIECE POSITION> - lowercase letter and number (e.g. a7)\n");
+        }
+        if ( !(letter >= 'a' && letter <= 'h') ){
+            throw new ResponseException(ResponseException.Code.ClientError, "<PIECE POSITION> must be in bounds of the board ([a-h][1-8])\n");
+        }
+        int number = Character.getNumericValue(numberChar);
+        if ( !(number >= 1 && number <= 8) ){
+            throw new ResponseException(ResponseException.Code.ClientError, "<PIECE POSITION> must be in bounds of the board ([a-h][1-8])\n");
+        }
+
+        int row = number;
+        row = flipRowValue(row);
+        int col = getNumFromLetter(letter);
+        Collection<ChessMove> movesToHighlight = activeChessGame.validMoves(new ChessPosition(row, col));
+
+        // get string of board and then iterate through and highlight moves of specific piece:
+        if (state == State.OBSERVER){
+            String result  = printGameWhite(activeChessBoard, movesToHighlight);
+            System.out.print(result);
+        } else {
+            if (Objects.equals(currentUserColor, "white") || Objects.equals(currentUserColor, "WHTIE")) {
+                String result  = printGameWhite(activeChessBoard, movesToHighlight);
+                System.out.print(result);
+            } else if (Objects.equals(currentUserColor, "black") || Objects.equals(currentUserColor, "BLACK")) {
+                String result  = printGameBlack(activeChessBoard, movesToHighlight);
+                System.out.print(result);
+            }
+        }
+
+
+
+
+
+
+        return "";
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

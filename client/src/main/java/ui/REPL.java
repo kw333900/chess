@@ -178,8 +178,9 @@ public class REPL implements NotificationHandler {
         }
 
         int row = number;
-        row = flipRowValue(row);
+//        row = flipRowValue(row);
         int col = getNumFromLetter(letter);
+        col = flipRowValue(col);
         Collection<ChessMove> movesToHighlight = activeChessGame.validMoves(new ChessPosition(row, col));
 
         // get string of board and then iterate through and highlight moves of specific piece:
@@ -304,7 +305,7 @@ public class REPL implements NotificationHandler {
 //        row1 = flipRowValue(row1);
         int col1 = getNumFromLetter(letter);
 
-//        col1 = flipRowValue(col1);
+        col1 = flipRowValue(col1);
 
         ChessPosition startPosition = new ChessPosition(row1, col1);
 
@@ -330,13 +331,13 @@ public class REPL implements NotificationHandler {
 //        row2 = flipRowValue(row2);
         int col2 = getNumFromLetter(letter2);
 
-//        col2 = flipRowValue(col2);
+        col2 = flipRowValue(col2);
 
         ChessPosition endPosition = new ChessPosition(row2, col2);
 
 
 // logic for promotion piece:
-
+    // if it's a promotion piece give the option:
 
         System.out.print(startPosition);
         System.out.print(endPosition);
@@ -580,10 +581,63 @@ After logging out with the server, the client should transition to the Prelogin 
     }
 
 
+//    public String printGameWhite(ChessBoard board, Collection<ChessMove> movesToHighlight) {
+//        List<ChessPosition> positionsToHighlight = new ArrayList<>();
+//        if (movesToHighlight != null){
+//            for (var m : movesToHighlight){
+//                positionsToHighlight.add(m.getEndPosition());
+//            }
+//        }
+//
+//
+//        // loop through board and print out pieces
+//        StringBuilder boardString = new StringBuilder();
+//        boardString.append("\n");
+//        int k = 8;
+//        for (int i = 1; i < 9; i++) {
+//
+//            boardString.append(String.format("%s", k));
+//
+//            for (int j = 1; j < 9; j++) {
+//
+//                if (positionsToHighlight.contains(new ChessPosition(i, j))){
+//                    printGameHelper(board, boardString, i, j, true);
+//                } else {
+//                    printGameHelper(board, boardString, i, j, false);
+//                }
+//
+//
+//
+//
+//
+//
+//
+//                if (j==8){
+////                    boardString.append(String.format("%s\n", k));
+//                    boardString.append("\n");
+//                }
+//
+//            }
+//            k--;
+//
+//        }
+//        boardString.append("  a   b   c  d   e  f   g   h\n");
+//
+//        return boardString.toString();
+//
+//
+//    }
+
+
+
+
     public String printGameWhite(ChessBoard board, Collection<ChessMove> movesToHighlight) {
         List<ChessPosition> positionsToHighlight = new ArrayList<>();
         if (movesToHighlight != null){
             for (var m : movesToHighlight){
+                if (!positionsToHighlight.contains(m.getStartPosition())){
+                    positionsToHighlight.add(m.getStartPosition());
+                }
                 positionsToHighlight.add(m.getEndPosition());
             }
         }
@@ -592,12 +646,16 @@ After logging out with the server, the client should transition to the Prelogin 
         // loop through board and print out pieces
         StringBuilder boardString = new StringBuilder();
         boardString.append("\n");
+
+        boardString.append(String.format("%s = white\n", EscapeSequences.WHITE_KING));
+        boardString.append(String.format("%s = black\n", EscapeSequences.BLACK_KING));
+
         int k = 8;
-        for (int i = 1; i < 9; i++) {
+        for (int i = 8; i > 0; i--) {
 
             boardString.append(String.format("%s", k));
 
-            for (int j = 1; j < 9; j++) {
+            for (int j = 8; j > 0; j--) {
 
                 if (positionsToHighlight.contains(new ChessPosition(i, j))){
                     printGameHelper(board, boardString, i, j, true);
@@ -611,8 +669,8 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
-                if (j==8){
-//                    boardString.append(String.format("%s\n", k));
+                if (j==1){
+    //                    boardString.append(String.format("%s\n", k));
                     boardString.append("\n");
                 }
 
@@ -630,12 +688,20 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
+
+
+
+
     private String printGameBlack(ChessBoard board, Collection<ChessMove> movesToHighlight) {
         List<ChessPosition> positionsToHighlight = new ArrayList<>();
         if (movesToHighlight != null){
             for (var m : movesToHighlight){
+                if (!positionsToHighlight.contains(m.getStartPosition())){
+                    positionsToHighlight.add(m.getStartPosition());
+                }
                 positionsToHighlight.add(m.getEndPosition());
             }
+
         }
 
 
@@ -643,10 +709,14 @@ After logging out with the server, the client should transition to the Prelogin 
 
         StringBuilder boardString = new StringBuilder();
         boardString.append("\n");
+
+        boardString.append(String.format("%s = white\n", EscapeSequences.WHITE_KING));
+        boardString.append(String.format("%s = black\n", EscapeSequences.BLACK_KING));
+
         int k=1;
-        for (int i = 8; i > 0; i--) {
+        for (int i = 1; i < 9; i++) {
             boardString.append(String.format("%s", k));
-            for (int j = 8; j > 0; j--) {
+            for (int j = 1; j < 9; j++) {
 
 
                 if (positionsToHighlight.contains(new ChessPosition(i, j))){
@@ -660,7 +730,7 @@ After logging out with the server, the client should transition to the Prelogin 
 
 
 
-                if (j==1){
+                if (j==8){
                     boardString.append("\n");
                 }
 
@@ -690,9 +760,9 @@ After logging out with the server, the client should transition to the Prelogin 
         } else {
 
             if ((i+j)%2 == 0){
-                boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_LIGHT_GREY));
+                boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_DARK_GREY));
             } else {
-                boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_MAGENTA));
+                boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_LIGHT_GREY));
             }
 
         }
