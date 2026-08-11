@@ -8,14 +8,11 @@ import model.GameData;
 import service.*;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
-import websocket.commands.MakeMoveCommand;
 import websocket.messages.Error;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
-
 import java.util.*;
-
 public class REPL implements NotificationHandler {
     private final ServerFacade server;
     private State state = State.LOGGED_OUT;
@@ -89,11 +86,9 @@ public class REPL implements NotificationHandler {
         }
         printPrompt();
     }
-
     private void printPrompt() {
         System.out.printf(" [%s] >>> ", state);
     }
-
     public String eval(String input) {
         try {
             String[] tokens = input.toLowerCase().split(" ");
@@ -120,7 +115,6 @@ public class REPL implements NotificationHandler {
             return ex.getMessage();
         }
     }
-
     public String highlightLegalMoves(String... params) throws ResponseException {
         if (state != State.GAMEPLAY && state != State.OBSERVER){
             throw new ResponseException(ResponseException.Code.ClientError,
@@ -161,7 +155,6 @@ public class REPL implements NotificationHandler {
         }
         return "";
     }
-
     public int getNumFromLetter (char letter){
         if (letter == 'a'){
             return 1;
@@ -181,7 +174,6 @@ public class REPL implements NotificationHandler {
             return 8;
         }
     }
-
     public String makeMoveREPL(String... params) throws ResponseException {
         if (state != State.GAMEPLAY){
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing a game to make a move\n");
@@ -249,7 +241,6 @@ public class REPL implements NotificationHandler {
         }
         return "";
     }
-
     public String resign() throws ResponseException {
         if (state == State.GAMEPLAY){
             Scanner scanner = new Scanner(System.in);
@@ -264,7 +255,6 @@ public class REPL implements NotificationHandler {
         }
         return "";
     }
-
     public String redrawChessBoard() throws ResponseException {
         if (state == State.OBSERVER){
             String output  = printGameWhite(activeChessBoard, null);
@@ -282,7 +272,6 @@ public class REPL implements NotificationHandler {
         }
         return "";
     }
-
     public String leaveGame() throws ResponseException {
         if (state == State.GAMEPLAY || state == State.OBSERVER){
             ws.leaveGameFacade(activeAuthToken, activeGameID);
@@ -292,9 +281,6 @@ public class REPL implements NotificationHandler {
         }
         return "";
     }
-
-/* Prompts the user to input registration information. Calls the server register API to register and login the user.
-If successfully registered, the client should be logged in and transition to the Postlogin UI. */
     public String register(String... params) throws ResponseException {
         if (params.length == 3) {
             RegisterResult result = server.register(new RegisterRequest(params[0], params[1], params[2]));
@@ -308,9 +294,6 @@ If successfully registered, the client should be logged in and transition to the
         throw new ResponseException(ResponseException.Code.ClientError, "Expected: <USERNAME> <PASSWORD> <EMAIL>\n");
 
     }
-
-/* Prompts the user to input login information. Calls the server login API to
-login the user. When successfully logged in, the client should transition to the Postlogin UI. */
     public String login(String... params) throws ResponseException {
         if (params.length == 2) {
             LoginResult result = server.login(new LoginRequest(params[0], params[1]));
@@ -323,9 +306,6 @@ login the user. When successfully logged in, the client should transition to the
         }
         throw new ResponseException(ResponseException.Code.ClientError, "Expected: <USERNAME> <PASSWORD>\n");
     }
-
-/* Logs out the user. Calls the server logout API to logout the user.
-After logging out with the server, the client should transition to the Prelogin UI. */
     public String logout() throws ResponseException {
             LogoutResult result = server.logout(new LogoutRequest(activeAuthToken));
             if (state == State.LOGGED_IN){
@@ -335,7 +315,6 @@ After logging out with the server, the client should transition to the Prelogin 
             }
         throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
     }
-
     public String createGame(String... params) throws ResponseException {
         if (params.length == 1 && state == State.LOGGED_IN) {
             CreateGameResult result = server.createGame(new CreateGameRequest(activeAuthToken, params[0]));
@@ -346,7 +325,6 @@ After logging out with the server, the client should transition to the Prelogin 
         }
         throw new ResponseException(ResponseException.Code.ClientError, "Expected: <NAME>\n");
     }
-
     public String observeGame(String... params) throws ResponseException {
         if (state != State.LOGGED_IN){
             throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
@@ -371,7 +349,6 @@ After logging out with the server, the client should transition to the Prelogin 
         }
         return "";
     }
-
     public int getidFromUserNum (int userNum) throws ResponseException {
         if (state == State.LOGGED_IN){
             ListGamesResult result = server.listGames(new ListGamesRequest(activeAuthToken));
@@ -382,7 +359,6 @@ After logging out with the server, the client should transition to the Prelogin 
         }
         throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
     }
-
     public String joinGame(String... params) throws ResponseException {
         if (state == State.OBSERVER){
             throw new ResponseException(ResponseException.Code.ClientError, "Cannot join a game while observing\n");
@@ -415,7 +391,6 @@ After logging out with the server, the client should transition to the Prelogin 
         }
         return "";
     }
-
     public String printGameWhite(ChessBoard board, Collection<ChessMove> movesToHighlight) {
         List<ChessPosition> positionsToHighlight = new ArrayList<>();
         if (movesToHighlight != null){
@@ -448,7 +423,6 @@ After logging out with the server, the client should transition to the Prelogin 
         boardString.append("  a   b   c  d   e  f   g   h\n");
         return boardString.toString();
     }
-
     private String printGameBlack(ChessBoard board, Collection<ChessMove> movesToHighlight) {
         List<ChessPosition> positionsToHighlight = new ArrayList<>();
         if (movesToHighlight != null){
@@ -481,77 +455,17 @@ After logging out with the server, the client should transition to the Prelogin 
         boardString.append("  h   g   f  e   d  c   b   a\n");
         return boardString.toString();
     }
-
     private void printGameHelper(ChessBoard board, StringBuilder boardString, int i, int j, boolean willHighlight) {
-        ChessPiece piece = board.getPiece(new ChessPosition(i,j));
-        if (willHighlight){
-            boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_YELLOW));
-        } else {
-
-            if ((i+j)%2 == 0){
-                boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_DARK_GREY));
-            } else {
-                boardString.append(String.format("%s", EscapeSequences.SET_BG_COLOR_LIGHT_GREY));
-            }
-
-        }
-
-        if (piece != null){
-            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                boardString.append(String.format("%s", EscapeSequences.WHITE_PAWN));
-
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                boardString.append(String.format("%s", EscapeSequences.WHITE_ROOK));
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                boardString.append(String.format("%s", EscapeSequences.WHITE_BISHOP));
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                boardString.append(String.format("%s", EscapeSequences.WHITE_KING));
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                boardString.append(String.format("%s", EscapeSequences.WHITE_KNIGHT));
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                boardString.append(String.format("%s", EscapeSequences.WHITE_QUEEN));
-            }
-
-            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                boardString.append(String.format("%s", EscapeSequences.BLACK_PAWN));
-
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                boardString.append(String.format("%s", EscapeSequences.BLACK_ROOK));
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                boardString.append(String.format("%s", EscapeSequences.BLACK_BISHOP));
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                boardString.append(String.format("%s", EscapeSequences.BLACK_KING));
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                boardString.append(String.format("%s", EscapeSequences.BLACK_KNIGHT));
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                boardString.append(String.format("%s", EscapeSequences.BLACK_QUEEN));
-            }
-
-        } else {
-            boardString.append(String.format("%s", EscapeSequences.EMPTY));
-        }
-        boardString.append(String.format("%s", EscapeSequences.RESET_BG_COLOR));
+        PrintingREPL printingREPL = new PrintingREPL();
+        printingREPL.printGameHelperPrinter(board, boardString, i, j, willHighlight);
     }
-
     public int getGamesListSize () throws ResponseException {
         if (state == State.LOGGED_IN){
             ListGamesResult result = server.listGames(new ListGamesRequest(activeAuthToken));
             return result.games().size();
         }
-
         throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
     }
-
     public String listGames() throws ResponseException {
         if (state == State.LOGGED_IN){
             ListGamesResult result = server.listGames(new ListGamesRequest(activeAuthToken));
@@ -562,7 +476,6 @@ After logging out with the server, the client should transition to the Prelogin 
         }
         throw new ResponseException(ResponseException.Code.ClientError, "Not logged in\n");
     }
-
     public String printGames (ListGamesResult result){
         StringBuilder gamesString = new StringBuilder();
         int gameCounter = 1;
@@ -573,40 +486,8 @@ After logging out with the server, the client should transition to the Prelogin 
         }
         return gamesString.toString();
     }
-
     public String help() {
-        if (state == State.LOGGED_OUT) {
-            return """
-                    register <USERNAME> <PASSWORD> <EMAIL> - to create an account
-                    login <USERNAME> <PASSWORD> - to play chess
-                    quit - playing chess
-                    help - with possible commands
-                    """;
-        } else if (state == State.GAMEPLAY){
-            return """
-                    redraw - to redraw current chess board
-                    leave - to leave game
-                    move <START POSITION> <END POSITION> - to move a piece (e.g. "move c2 d3")
-                    resign - to raise the white flag
-                    highlight <PIECE POSITION> - to see which moves any given piece can make
-                    help - with possible commands
-                    """;
-        } else if (state == State.OBSERVER){
-            return """
-                    redraw - to redraw current chess board
-                    leave - to leave game
-                    highlight <PIECE POSITION> - to see which moves any given piece can make
-                    help - with possible commands
-                    """;
-        }
-        return """
-            create <NAME> - a game
-            list - games
-            join <ID> [WHITE|BLACK] - a game
-            observe <ID> - a game
-            logout - when you are done
-            quit - playing chess
-            help - with possible commands
-            """;
+        PrintingREPL printingREPL = new PrintingREPL();
+        return printingREPL.helpPrinter(state);
     }
 }
