@@ -258,25 +258,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
 
-    public int flipRowValue(int num){
-        if (num == 1){
-            return 8;
-        } else if (num == 2){
-            return 7;
-        } else if (num == 3){
-            return 6;
-        } else if (num == 4){
-            return 5;
-        } else if (num == 5){
-            return 4;
-        } else if (num == 6){
-            return 3;
-        } else if (num == 7){
-            return 2;
-        } else {
-            return 1;
-        }
-    }
 
 
     public char getLetterFromNum (int num){
@@ -302,10 +283,10 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
 
 
-    private void resignHandler(Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
+    private void resignHandler(Session session, String username, UserGameCommand cmnd) throws IOException, DataAccessException {
         // 1. Server marks the game as over (no more moves can be made). Game is updated in the database.
         MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
-        GameData gameData = mySqlGameDAO.getGameData(command.getGameID());
+        GameData gameData = mySqlGameDAO.getGameData(cmnd.getGameID());
         ChessGame chessGame = gameData.game();
         if (!username.equals(gameData.blackUsername()) && !username.equals(gameData.whiteUsername())){
             // observer:
@@ -319,7 +300,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             return;
         }
         chessGame.markGameAsOver();
-        mySqlGameDAO.updateGameData(new GameData(command.getGameID(),gameData.whiteUsername(),gameData.blackUsername(),gameData.gameName(),chessGame));
+        mySqlGameDAO.updateGameData(new GameData(cmnd.getGameID(),gameData.whiteUsername(),gameData.blackUsername(),gameData.gameName(),chessGame));
 
 
         // 2. Server sends a Notification message to all clients in that game informing them that the root client resigned.
@@ -327,7 +308,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         var message = String.format("%s has resigned from the game", username);
         var notification = new Notification(message);
         if (!connections.isEmpty()){
-            connections.broadcast(null, notification, command.getGameID());
+            connections.broadcast(null, notification, cmnd.getGameID());
         } else {
             String msg = notification.toString();
             session.getRemote().sendString(msg);

@@ -123,16 +123,19 @@ public class REPL implements NotificationHandler {
 
     public String highlightLegalMoves(String... params) throws ResponseException {
         if (state != State.GAMEPLAY && state != State.OBSERVER){
-            throw new ResponseException(ResponseException.Code.ClientError, "Must be playing or observing a game to highlight a piece's legal moves\n");
+            throw new ResponseException(ResponseException.Code.ClientError,
+                    "Must be playing or observing a game to highlight a piece's legal moves\n");
         }
         if (params.length != 1){
-            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <PIECE POSITION> - lowercase letter and number (e.g. a7)\n");
+            throw new ResponseException(ResponseException.Code.ClientError,
+                    "Expected: <PIECE POSITION> - lowercase letter and number (e.g. a7)\n");
         }
         char letter = params[0].charAt(0);
         char numberChar = params[0].charAt(1);
 
         if (!Character.isLetter(letter) || !Character.isLowerCase(letter) || !Character.isDigit(numberChar)){
-            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <PIECE POSITION> - lowercase letter and number (e.g. a7)\n");
+            throw new ResponseException(ResponseException.Code.ClientError,
+                    "Expected: <PIECE POSITION> - lowercase letter and number (e.g. a7)\n");
         }
         if ( !(letter >= 'a' && letter <= 'h') ){
             throw new ResponseException(ResponseException.Code.ClientError, "<PIECE POSITION> must be in bounds of the board ([a-h][1-8])\n");
@@ -184,20 +187,24 @@ public class REPL implements NotificationHandler {
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing a game to make a move\n");
         }
         if (params.length != 2){
-            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
+            throw new ResponseException(ResponseException.Code.ClientError,
+                    "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
         }
         // make startposition:
         char letter = params[0].charAt(0);
         char numberChar = params[0].charAt(1);
         if (!Character.isLetter(letter) || !Character.isLowerCase(letter) || !Character.isDigit(numberChar)){
-            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
+            throw new ResponseException(ResponseException.Code.ClientError,
+                    "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
         }
         if ( !(letter >= 'a' && letter <= 'h') ){
-            throw new ResponseException(ResponseException.Code.ClientError, "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
+            throw new ResponseException(ResponseException.Code.ClientError,
+                    "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
         }
         int number = Character.getNumericValue(numberChar);
         if ( !(number >= 1 && number <= 8) ){
-            throw new ResponseException(ResponseException.Code.ClientError, "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
+            throw new ResponseException(ResponseException.Code.ClientError,
+                    "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
         }
         int row1 = number;
         int col1 = getNumFromLetter(letter);
@@ -206,21 +213,24 @@ public class REPL implements NotificationHandler {
         char letter2 = params[1].charAt(0);
         char numberChar2 = params[1].charAt(1);
         if (!Character.isLetter(letter2) || !Character.isLowerCase(letter2) || !Character.isDigit(numberChar2)){
-            throw new ResponseException(ResponseException.Code.ClientError, "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
+            throw new ResponseException(ResponseException.Code.ClientError,
+                    "Expected: <START POSITION> <END POSITION> - lowercase letter and number (e.g. a7 a8)\n");
         }
         if ( !(letter2 >= 'a' && letter2 <= 'h') ){
-            throw new ResponseException(ResponseException.Code.ClientError, "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
+            throw new ResponseException(ResponseException.Code.ClientError,
+                    "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
         }
         int number2 = Character.getNumericValue(numberChar2);
         if ( !(number2 >= 1 && number2 <= 8) ){
-            throw new ResponseException(ResponseException.Code.ClientError, "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
+            throw new ResponseException(ResponseException.Code.ClientError,
+                    "<START POSITION> <END POSITION> must be in bounds of the board ([a-h][1-8])\n");
         }
         int row2 = number2;
         int col2 = getNumFromLetter(letter2);
         ChessPosition endPosition = new ChessPosition(row2, col2);
         ChessPiece piece = activeChessBoard.getPiece(startPosition);
-        if (  (piece.getTeamColor() == ChessGame.TeamColor.WHITE && endPosition.getRow() == 8 && piece.getPieceType() == ChessPiece.PieceType.PAWN)
-        || (piece.getTeamColor() == ChessGame.TeamColor.BLACK && endPosition.getRow() == 1 && piece.getPieceType() == ChessPiece.PieceType.PAWN)  ) {
+        if ( (piece.getTeamColor() == ChessGame.TeamColor.WHITE && endPosition.getRow() == 8 && piece.getPieceType() == ChessPiece.PieceType.PAWN)
+        || (piece.getTeamColor() == ChessGame.TeamColor.BLACK && endPosition.getRow() == 1 && piece.getPieceType() == ChessPiece.PieceType.PAWN) ) {
             Scanner scanner = new Scanner(System.in);
             printPrompt();
             System.out.print("Enter piece you want to promote to ('queen' or 'bishop' or 'knight' or 'rook'): ");
