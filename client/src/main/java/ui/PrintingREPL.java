@@ -1,16 +1,33 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import client.State;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class PrintingREPL {
 
     public PrintingREPL (){
 
     }
+
+    public List<ChessPosition> getListOfPositions (Collection<ChessMove> movesToHighlight){
+        List<ChessPosition> positionsToHighlight = new ArrayList<>();
+        if (movesToHighlight != null){
+            for (var m : movesToHighlight){
+                if (!positionsToHighlight.contains(m.getStartPosition())){
+                    positionsToHighlight.add(m.getStartPosition());
+                }
+                positionsToHighlight.add(m.getEndPosition());
+            }
+        }
+        return positionsToHighlight;
+    }
+
+
+
 
 
     public void printGameHelperPrinter(ChessBoard board, StringBuilder boardString, int i, int j, boolean willHighlight) {

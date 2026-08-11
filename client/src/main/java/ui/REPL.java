@@ -392,15 +392,9 @@ public class REPL implements NotificationHandler {
         return "";
     }
     public String printGameWhite(ChessBoard board, Collection<ChessMove> movesToHighlight) {
-        List<ChessPosition> positionsToHighlight = new ArrayList<>();
-        if (movesToHighlight != null){
-            for (var m : movesToHighlight){
-                if (!positionsToHighlight.contains(m.getStartPosition())){
-                    positionsToHighlight.add(m.getStartPosition());
-                }
-                positionsToHighlight.add(m.getEndPosition());
-            }
-        }
+        PrintingREPL printingREPL = new PrintingREPL();
+        List<ChessPosition> positionsToHighlight = printingREPL.getListOfPositions(movesToHighlight);
+
         StringBuilder boardString = new StringBuilder();
         boardString.append("\n");
         boardString.append(String.format("%s = white\n", EscapeSequences.WHITE_KING));
@@ -424,15 +418,9 @@ public class REPL implements NotificationHandler {
         return boardString.toString();
     }
     private String printGameBlack(ChessBoard board, Collection<ChessMove> movesToHighlight) {
-        List<ChessPosition> positionsToHighlight = new ArrayList<>();
-        if (movesToHighlight != null){
-            for (var m : movesToHighlight){
-                if (!positionsToHighlight.contains(m.getStartPosition())){
-                    positionsToHighlight.add(m.getStartPosition());
-                }
-                positionsToHighlight.add(m.getEndPosition());
-            }
-        }
+        PrintingREPL printingREPL = new PrintingREPL();
+        List<ChessPosition> positionsToHighlight = printingREPL.getListOfPositions(movesToHighlight);
+
         StringBuilder boardString = new StringBuilder();
         boardString.append("\n");
         boardString.append(String.format("%s = white\n", EscapeSequences.WHITE_KING));
