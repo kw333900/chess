@@ -93,11 +93,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
         // Server sends a LOAD_GAME message back to the root client:
 
-        Gson Serializer = new Gson();
+        Gson serializer = new Gson();
         MySqlGameDAO mySqlGameDAO = new MySqlGameDAO();
         GameData gameData = mySqlGameDAO.getGameData(command.getGameID());
         if (gameData != null){
-            var stringJSON = Serializer.toJson(new LoadGame(gameData.game()));
+            var stringJSON = serializer.toJson(new LoadGame(gameData.game()));
             session.getRemote().sendString(stringJSON);
 
             // Server sends a Notification message to all other clients in that game informing them the root client
@@ -107,7 +107,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             connections.broadcast(session, notification, command.getGameID());
 
         } else {
-            session.getRemote().sendString(Serializer.toJson(new Error("Error: connection failed")));
+            session.getRemote().sendString(serializer.toJson(new Error("Error: connection failed")));
         }
 
 
@@ -235,8 +235,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
 
         } catch (InvalidMoveException ex){
-            Gson Serializer = new Gson();
-            session.getRemote().sendString(Serializer.toJson(new Error("Error: " + ex.getMessage() + "\n")));
+            Gson serializer = new Gson();
+            session.getRemote().sendString(serializer.toJson(new Error("Error: " + ex.getMessage() + "\n")));
         }
 
 
@@ -345,8 +345,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         ChessGame chessGame = gameData.game();
         if (!username.equals(gameData.blackUsername()) && !username.equals(gameData.whiteUsername())){
             // observer:
-            Gson Serializer = new Gson();
-            session.getRemote().sendString(Serializer.toJson(new Error("Error: observer cannot resign from game")));
+            Gson serializer = new Gson();
+            session.getRemote().sendString(serializer.toJson(new Error("Error: observer cannot resign from game")));
             return;
         }
         if (!chessGame.getOpenStatus()){
