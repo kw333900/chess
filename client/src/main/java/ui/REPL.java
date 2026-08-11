@@ -257,15 +257,15 @@ public class REPL implements NotificationHandler {
 
     public String redrawChessBoard() throws ResponseException {
         if (state == State.OBSERVER){
-            String result  = printGameWhite(activeChessBoard, null);
-            System.out.print(result);
+            String output  = printGameWhite(activeChessBoard, null);
+            System.out.print(output);
         } else if (state == State.GAMEPLAY) {
             if (Objects.equals(currentUserColor, "white") || Objects.equals(currentUserColor, "WHTIE")) {
-                String result  = printGameWhite(activeChessBoard, null);
-                System.out.print(result);
+                String output  = printGameWhite(activeChessBoard, null);
+                System.out.print(output);
             } else if (Objects.equals(currentUserColor, "black") || Objects.equals(currentUserColor, "BLACK")) {
-                String result  = printGameBlack(activeChessBoard, null);
-                System.out.print(result);
+                String output  = printGameBlack(activeChessBoard, null);
+                System.out.print(output);
             }
         } else {
             throw new ResponseException(ResponseException.Code.ClientError, "Must be playing or observing a game to redraw board\n");

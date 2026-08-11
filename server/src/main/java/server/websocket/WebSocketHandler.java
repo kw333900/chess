@@ -145,7 +145,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
 
 
-    private void makeMoveHandler(Session session, String username, MakeMoveCommand makeMoveCommand) throws InvalidMoveException, IOException, DataAccessException {
+    private void makeMoveHandler(Session session, String username, MakeMoveCommand makeMoveCommand) throws IOException, DataAccessException {
         try{
 
             // 1. Server verifies the validity of the move.
@@ -246,42 +246,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
 
 
-
-//
-//
-//
-//    if (chessGame.isInCheck(chessGame.getTeamTurn())){
-//        message = String.format("%s is in check", username);
-//        notification = new Notification(message);
-//        if (!connections.isEmpty()){
-//            connections.broadcast(null, notification, makeMoveCommand.getGameID());
-//        } else {
-//            String msg = notification.toString();
-//            session.getRemote().sendString(msg);
-//        }
-//    } else if (chessGame.isInCheckmate(chessGame.getTeamTurn())){
-//        message = String.format("%s is in checkmate", username);
-//        notification = new Notification(message);
-//        if (!connections.isEmpty()){
-//            connections.broadcast(null, notification, makeMoveCommand.getGameID());
-//        } else {
-//            String msg = notification.toString();
-//            session.getRemote().sendString(msg);
-//        }
-//    }
-//
-
-
-
-
-
-
-
-
-
-
-
-
     // d2 = [2, 5]
     private String convertPositionToString (ChessPosition position){
         int row = position.getRow();
@@ -355,7 +319,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             return;
         }
         chessGame.markGameAsOver();
-        mySqlGameDAO.updateGameData(new GameData(command.getGameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), chessGame));
+        mySqlGameDAO.updateGameData(new GameData(command.getGameID(),gameData.whiteUsername(),gameData.blackUsername(),gameData.gameName(),chessGame));
 
 
         // 2. Server sends a Notification message to all clients in that game informing them that the root client resigned.
