@@ -51,11 +51,11 @@ public class REPL implements NotificationHandler {
 
     @Override
     public void notify(ServerMessage message, String jsonMessage) {
-        Gson Serializer = new Gson();
+        Gson serializer = new Gson();
         switch (message.getServerMessageType()) {
-            case NOTIFICATION -> displayNotification(Serializer.fromJson(jsonMessage, Notification.class));
-            case ERROR -> displayError(Serializer.fromJson(jsonMessage, Error.class));
-            case LOAD_GAME -> loadGame(Serializer.fromJson(jsonMessage, LoadGame.class));
+            case NOTIFICATION -> displayNotification(serializer.fromJson(jsonMessage, Notification.class));
+            case ERROR -> displayError(serializer.fromJson(jsonMessage, Error.class));
+            case LOAD_GAME -> loadGame(serializer.fromJson(jsonMessage, LoadGame.class));
         }
     }
 

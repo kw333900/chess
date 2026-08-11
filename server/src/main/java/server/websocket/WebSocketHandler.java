@@ -44,10 +44,10 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         int gameId = -1;
         Session session = wsMessageContext.session;
 
-        Gson Serializer = new Gson();
+        Gson serializer = new Gson();
 
         try {
-            UserGameCommand command = Serializer.fromJson(
+            UserGameCommand command = serializer.fromJson(
                     wsMessageContext.message(), UserGameCommand.class);
             gameId = command.getGameID();
 
@@ -61,13 +61,13 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
                 switch (command.getCommandType()) {
                     case CONNECT -> connectHandler(session, username, command);
-                case MAKE_MOVE -> makeMoveHandler(session, username, Serializer.fromJson(
+                case MAKE_MOVE -> makeMoveHandler(session, username, serializer.fromJson(
                         wsMessageContext.message(), MakeMoveCommand.class));
                     case LEAVE -> leaveGameHandler(session, username, command);
                 case RESIGN -> resignHandler(session, username, command);
                 }
             } else {
-                session.getRemote().sendString(Serializer.toJson(new Error("Error: connection failed")));
+                session.getRemote().sendString(serializer.toJson(new Error("Error: connection failed")));
             }
 
 
@@ -81,12 +81,6 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
 
-//    private String getUsername(String authToken) throws DataAccessException {
-//        // get username from auth data somehow?
-//        MySqlAuthDAO mySqlAuthDAO = new MySqlAuthDAO();
-//        AuthData authData = mySqlAuthDAO.getAuthDataByToken(authToken);
-//        return authData.username();
-//    }
 
     @Override
     public void handleClose(WsCloseContext ctx) {
