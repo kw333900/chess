@@ -350,8 +350,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             return;
         }
         if (!chessGame.getOpenStatus()){
-            Gson Serializer = new Gson();
-            session.getRemote().sendString(Serializer.toJson(new Error("Error: game is closed")));
+            Gson serializer = new Gson();
+            session.getRemote().sendString(serializer.toJson(new Error("Error: game is closed")));
             return;
         }
         chessGame.markGameAsOver();
